@@ -1,0 +1,1 @@
+set(PLUGIN_CATEGORY windowhandles)

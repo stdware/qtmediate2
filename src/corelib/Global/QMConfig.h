@@ -1,0 +1,6 @@
+#ifndef QMCONFIG_H
+#define QMCONFIG_H
+
+#define QTMEDIATE_WIN32_MSGBOX_TOPMOST
+
+#endif // QMCONFIG_H

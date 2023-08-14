@@ -1,0 +1,43 @@
+project(QMWidgets
+    VERSION ${QTMEDIATE_VERSION}
+    LANGUAGES CXX
+)
+
+set(CMAKE_AUTOUIC on)
+set(CMAKE_AUTOMOC on)
+set(CMAKE_AUTORCC on)
+
+# Platform libs
+set(_platform_libs)
+
+if(WIN32)
+    set(_platform_libs dwmapi)
+endif()
+
+# Configure target
+file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
+
+qtmediate_add_library(${PROJECT_NAME} ${_src})
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE QMWIDGETS_LIBRARY)
+
+# Link
+target_link_libraries(${PROJECT_NAME} PUBLIC QMGui)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${_platform_libs})
+
+qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
+    Core Gui Widgets Svg
+)
+
+# Include
+qtmediate_include_directories(${PROJECT_NAME} PUBLIC
+    Global Kernel Layout Tools Widgets
+)
+
+qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
+    Core Gui Widgets
+)
+
+# Extra
+qtmediate_install_headers(.)
