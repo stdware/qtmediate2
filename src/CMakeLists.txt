@@ -17,11 +17,13 @@ function(qtmediate_add_library _target)
             LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" OPTIONAL
             ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" OPTIONAL
         )
-        
+
         target_include_directories(${PROJECT_NAME} PUBLIC
             "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}>"
         )
     endif()
+
+    set_property(GLOBAL APPEND PROPERTY TRANSLATE_TARGETS ${_target})
 endfunction()
 
 function(qtmediate_add_plugin _target _category)
@@ -39,6 +41,8 @@ function(qtmediate_add_plugin _target _category)
             LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/qtmediate/plugins/${_category}" OPTIONAL
         )
     endif()
+
+    set_property(GLOBAL APPEND PROPERTY TRANSLATE_TARGETS ${_target})
 endfunction()
 
 function(qtmediate_include_directories _target _scope)

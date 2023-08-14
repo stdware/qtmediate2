@@ -20,8 +20,6 @@ void NativeHandle::setup() {
 
     auto w = window();
 
-    w->installEventFilter(this);
-
     // Not necessary, but better call this function, before the construction
     // of any Q(Core|Gui)Application instances.
     // FramelessHelper::Widgets::initialize();
@@ -48,7 +46,7 @@ void NativeHandle::setup() {
     titleBar->setWidget(w);
 
     hFrameless->setTitleBarWidget(titleBar);
-    
+
 #ifndef Q_OS_MAC
     hFrameless->setSystemButton(titleBar->minButton(), Global::SystemButtonType::Minimize);
     hFrameless->setSystemButton(titleBar->maxButton(), Global::SystemButtonType::Maximize);
@@ -56,6 +54,8 @@ void NativeHandle::setup() {
 #endif
 
     hFrameless->setHitTestVisible(bar); // IMPORTANT!
+
+    w->installEventFilter(this);
 }
 
 void NativeHandle::setMenuBar(QMenuBar *menuBar) {
@@ -83,6 +83,11 @@ bool NativeHandle::eventFilter(QObject *obj, QEvent *event) {
             case QEvent::WindowDeactivate:
                 titleBar->setTitleBarActive(false);
                 break;
+#ifndef Q_OS_MAC
+            case QEvent::WindowIconChange:
+                titleBar->iconButton()->setIcon(window()->windowIcon());
+                break;
+#endif
             default:
                 break;
         }

@@ -43,8 +43,11 @@ set(QTMEDIATE_MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(QTMEDIATE_VERSION ${PROJECT_VERSION})
 set(QTMEDIATE_INSTALL_NAME ${PROJECT_NAME})
 set(QTMEDIATE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(QTMEDIATE_TRANSLATIONS zh_CN zh_HK ja_JP)
 
 # ----------------------------------
 # Main Project
 # ----------------------------------
 add_subdirectory(src)
+
+add_subdirectory(share)

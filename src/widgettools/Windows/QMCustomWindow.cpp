@@ -81,7 +81,9 @@ void QMCustomWindowPrivate::init() {
     if (winHandle) {
         winHandle->setup();
     }
+
     q->setWindowTitle(qApp->applicationName());
+    q->setWindowIcon(qApp->windowIcon());
 }
 
 QMCustomWindow::QMCustomWindow(QWidget *parent) : QMCustomWindow(*new QMCustomWindowPrivate(), parent) {

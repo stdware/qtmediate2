@@ -9,3 +9,7 @@ file(GLOB_RECURSE _src *.h *.cpp)
 add_executable(${PROJECT_NAME} ${_src})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE QMWidgetTools)
+
+qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
+    Core Gui Widgets Svg
+)
