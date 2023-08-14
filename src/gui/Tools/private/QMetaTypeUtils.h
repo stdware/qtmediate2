@@ -8,8 +8,8 @@
 
 #include "QMGuiGlobal.h"
 
-const char PixelSizeUnit[] = "px";
-const char PointSizeUnit[] = "pt";
+static const char PixelSizeUnit[] = "px";
+static const char PointSizeUnit[] = "pt";
 
 namespace QMetaTypeUtils {
 
@@ -39,11 +39,11 @@ namespace QMetaTypeUtils {
 
     QMGUI_EXPORT bool ParseClickStateArgList(const QString &s, QString arr[], bool resolveFallback = true);
 
-    QMGUI_EXPORT void InitializeStateIndexes(int arr[]);
+    QMGUI_EXPORT void InitClickStateIndexes(int arr[]);
 
-    QMGUI_EXPORT void UpdateStateIndex(int i, int arr[]);
+    QMGUI_EXPORT void UpdateClickStateIndex(int i, int arr[]);
 
-    QMGUI_EXPORT void UpdateStateIndexes(int arr[]);
+    QMGUI_EXPORT void UpdateClickStateIndexes(int arr[]);
 
 }
 

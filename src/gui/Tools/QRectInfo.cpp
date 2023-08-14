@@ -17,7 +17,7 @@ public:
         numSize = 0;
         radius = 0;
 
-        QMetaTypeUtils::InitializeStateIndexes(colorIndexes);
+        QMetaTypeUtils::InitClickStateIndexes(colorIndexes);
     }
 
     int nums[4];
@@ -115,7 +115,7 @@ QColor QRectInfo::color(QM::ClickState state) const {
 void QRectInfo::setColor(const QColor &color, QM::ClickState state) {
     d->color[state] = color;
     d->colorIndexes[state] = state;
-    QMetaTypeUtils::UpdateStateIndexes(d->colorIndexes);
+    QMetaTypeUtils::UpdateClickStateIndexes(d->colorIndexes);
 }
 
 void QRectInfo::setColors(const QList<QColor> &colors) {
@@ -125,7 +125,7 @@ void QRectInfo::setColors(const QList<QColor> &colors) {
         d->color[state] = colors.at(state);
         d->colorIndexes[state] = state;
     }
-    QMetaTypeUtils::UpdateStateIndexes(d->colorIndexes);
+    QMetaTypeUtils::UpdateClickStateIndexes(d->colorIndexes);
 }
 
 int QRectInfo::radius() const {

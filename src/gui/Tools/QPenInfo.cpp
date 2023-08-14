@@ -67,7 +67,7 @@ public:
     int brushIndexes[8];
 
     QPenInfoData() {
-        QMetaTypeUtils::InitializeStateIndexes(brushIndexes);
+        QMetaTypeUtils::InitClickStateIndexes(brushIndexes);
     }
 };
 
@@ -133,7 +133,7 @@ void QPenInfo::setBrush(const QBrush &brush, QM::ClickState state) {
     if (state != QM::CS_Normal) {
         d->brush[state] = brush;
         d->brushIndexes[state] = state;
-        QMetaTypeUtils::UpdateStateIndexes(d->brushIndexes);
+        QMetaTypeUtils::UpdateClickStateIndexes(d->brushIndexes);
         return;
     }
     QPen::setBrush(brush);
@@ -158,7 +158,7 @@ void QPenInfo::setColors(const QList<QColor> &colors) {
         }
         QPen::setBrush(colors.at(state));
     }
-    QMetaTypeUtils::UpdateStateIndexes(d->brushIndexes);
+    QMetaTypeUtils::UpdateClickStateIndexes(d->brushIndexes);
 }
 
 QPenInfo QPenInfo::fromStringList(const QStringList &stringList) {

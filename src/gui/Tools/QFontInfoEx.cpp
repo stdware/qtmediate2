@@ -16,7 +16,7 @@ public:
         point = -1;
         pixel = -1;
 
-        QMetaTypeUtils::InitializeStateIndexes(colorIndexes);
+        QMetaTypeUtils::InitClickStateIndexes(colorIndexes);
     }
 
     int weight;
@@ -146,7 +146,7 @@ QColor QFontInfoEx::color(QM::ClickState state) const {
 void QFontInfoEx::setColor(const QColor &color, QM::ClickState state) {
     d->color[state] = color;
     d->colorIndexes[state] = state;
-    QMetaTypeUtils::UpdateStateIndexes(d->colorIndexes);
+    QMetaTypeUtils::UpdateClickStateIndexes(d->colorIndexes);
 }
 
 void QFontInfoEx::setColors(const QList<QColor> &colors) {
@@ -156,7 +156,7 @@ void QFontInfoEx::setColors(const QList<QColor> &colors) {
         d->color[state] = colors.at(state);
         d->colorIndexes[state] = state;
     }
-    QMetaTypeUtils::UpdateStateIndexes(d->colorIndexes);
+    QMetaTypeUtils::UpdateClickStateIndexes(d->colorIndexes);
 }
 
 static int StringToWeight(const QString &str, int defaultValue) {
@@ -280,6 +280,6 @@ QDebug operator<<(QDebug debug, const QFontInfoEx &info) {
     }
     list << "[" + info.families().join(", ") + "]";
 
-    debug.nospace().noquote() << "QFontInfo(" << list.join(", ") << ")";
+    debug.nospace().noquote() << "QFontInfoEx(" << list.join(", ") << ")";
     return debug;
 }

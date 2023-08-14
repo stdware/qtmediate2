@@ -1,1 +1,3 @@
-set(PLUGIN_CATEGORY windowhandles)
+_init_category(windowhandles)
+
+add_subdirectory(nativewindow)

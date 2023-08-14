@@ -1,3 +1,3 @@
-set(PLUGIN_CATEGORY iconengines)
+_init_category(iconengines)
 
 add_subdirectory(svgx)

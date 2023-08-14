@@ -306,7 +306,7 @@ namespace QMetaTypeUtils {
         return true;
     }
 
-    void InitializeStateIndexes(int arr[]) {
+    void InitClickStateIndexes(int arr[]) {
         arr[QM::CS_Normal] = QM::CS_Normal;
         arr[QM::CS_Hover] = QM::CS_Normal;
         arr[QM::CS_Pressed] = QM::CS_Hover;
@@ -317,7 +317,7 @@ namespace QMetaTypeUtils {
         arr[QM::CS_Disabled_Checked] = QM::CS_Normal_Checked;
     }
 
-    void UpdateStateIndex(int i, int arr[]) {
+    void UpdateClickStateIndex(int i, int arr[]) {
         switch (static_cast<QM::ClickState>(i)) {
             case QM::CS_Hover:
             case QM::CS_Disabled: {
@@ -346,11 +346,11 @@ namespace QMetaTypeUtils {
         }
     }
 
-    void UpdateStateIndexes(int arr[]) {
+    void UpdateClickStateIndexes(int arr[]) {
         for (int i = 0; i < 8; ++i) {
             if (arr[i] == i)
                 continue;
-            UpdateStateIndex(i, arr);
+            UpdateClickStateIndex(i, arr);
         }
     }
 

@@ -34,7 +34,7 @@ qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
 
 # Include
 qtmediate_include_directories(${PROJECT_NAME} PUBLIC
-    Collections Global Kernel Serialization Text
+    Collections Global Kernel Serialization Text .
 )
 
 qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
