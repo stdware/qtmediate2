@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+    <assemblyIdentity
+        version="1.0.0.0"
+        processorArchitecture="X86"
+        name="YourCompanyName.YourAppName"
+        type="win32"
+    />
+    <description>Test Frameless</description>
+
+    <!-- Dependency on the Windows Common Controls. -->
+    <dependency>
+        <dependentAssembly>
+            <assemblyIdentity
+                type="win32"
+                name="Microsoft.Windows.Common-Controls"
+                version="6.0.0.0"
+                processorArchitecture="X86"
+                publicKeyToken="6595b64144ccf1df"
+                language="*"
+            />
+        </dependentAssembly>
+    </dependency>
+
+    <!-- Windows 10 and 11 compatibility -->
+    <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+        <application>
+            <!-- IDs for Windows 10 -->
+            <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
+            <!-- Add IDs for future versions as needed -->
+        </application>
+    </compatibility>
+
+    <!-- Additional manifest content here -->
+</assembly>

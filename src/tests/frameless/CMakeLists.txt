@@ -6,7 +6,7 @@ set(CMAKE_AUTORCC on)
 
 file(GLOB_RECURSE _src *.h *.cpp)
 
-add_executable(${PROJECT_NAME} ${_src})
+add_executable(${PROJECT_NAME} ${_src} frameless.manifest)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE QMWidgetTools)
 

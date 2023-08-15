@@ -35,10 +35,10 @@ public:
     void setTitleBarActive(bool active);
 
 private:
-    CToolButton *m_minButton;
-    CToolButton *m_maxButton;
-    CToolButton *m_closeButton;
-    CToolButton *m_iconButton;
+    QAbstractButton *m_minButton;
+    QAbstractButton *m_maxButton;
+    QAbstractButton *m_closeButton;
+    QAbstractButton *m_iconButton;
 
     QLabel *m_titleLabel;
 
@@ -51,7 +51,8 @@ private:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    bool eventFilter(QObject *obj, QEvent *event) override;
+
+    void titleChanged(const QString &text) override;
 
 signals:
     void minRequested();

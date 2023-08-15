@@ -48,12 +48,13 @@ public:
 
 protected:
     ANativeTitleBar(ANativeTitleBarPrivate &d, QWidget *parent);
-
-protected:
     QScopedPointer<ANativeTitleBarPrivate> d_ptr;
 
     void resizeEvent(QResizeEvent *event) override;
     bool eventFilter(QObject *obj, QEvent *event) override;
+
+    virtual void titleChanged(const QString &text);
+    virtual void iconChanged(const QIcon &icon);
 
 private:
     void q_minButtonClicked();

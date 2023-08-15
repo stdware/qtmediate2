@@ -8,11 +8,24 @@
 
 #include "QMDecoratorV2.h"
 
+#include "SystemButton.h"
+
+class TitleLabel : public QLabel {
+public:
+    explicit TitleLabel(QWidget *parent = nullptr) : QLabel(parent) {
+    }
+
+protected:
+    void paintEvent(QPaintEvent *) override {
+        // Do nothing
+    }
+};
+
 CWindowBarV2::CWindowBarV2(QMenuBar *menuBar, QWidget *parent) : ANativeTitleBar(parent) {
     m_titleMargin = 20;
     m_titleVisible = true;
 
-    m_titleLabel = new QLabel();
+    m_titleLabel = new TitleLabel();
     m_titleLabel->setObjectName("win-title-label");
     m_titleLabel->installEventFilter(this);
     m_titleLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -25,15 +38,15 @@ CWindowBarV2::CWindowBarV2(QMenuBar *menuBar, QWidget *parent) : ANativeTitleBar
     m_iconButton->setObjectName("icon-button");
     m_iconButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    m_minButton = new CToolButton();
+    m_minButton = new SystemButton();
     m_minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_minButton->setObjectName("min-button");
 
-    m_maxButton = new CToolButton();
+    m_maxButton = new SystemButton();
     m_maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_maxButton->setObjectName("max-button");
 
-    m_closeButton = new CToolButton();
+    m_closeButton = new SystemButton();
     m_closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_closeButton->setObjectName("win-close-button");
 
@@ -120,7 +133,7 @@ void CWindowBarV2::drawCentralTitle(QPainter &painter) {
         return;
     }
 
-    QString title = w->windowTitle();
+    QString title = m_titleLabel->text();
     QFontMetrics font(m_titleLabel->font());
     int offset = m_titleMargin.value();
 
@@ -154,23 +167,6 @@ void CWindowBarV2::paintEvent(QPaintEvent *event) {
     }
 }
 
-bool CWindowBarV2::eventFilter(QObject *obj, QEvent *event) {
-    auto w = widget();
-    if (obj == w) {
-        switch (event->type()) {
-            case QEvent::WindowTitleChange:
-                update();
-                break;
-            default:
-                break;
-        }
-    } else if (obj == m_titleLabel) {
-        switch (event->type()) {
-            case QEvent::Paint:
-                return true;
-            default:
-                break;
-        }
-    }
-    return ANativeTitleBar::eventFilter(obj, event);
+void CWindowBarV2::titleChanged(const QString &title) {
+    update();
 }
