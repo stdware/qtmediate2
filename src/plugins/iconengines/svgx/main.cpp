@@ -13,7 +13,7 @@
 
 class SvgxIconPlugin : public QIconEnginePlugin {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QIconEngineFactoryInterface" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID QIconEngineFactoryInterface_iid FILE "plugin.json")
 public:
     QIconEngine *create(const QString &fileName) override;
 };

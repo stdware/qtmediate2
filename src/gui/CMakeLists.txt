@@ -12,6 +12,8 @@ file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 
 qtmediate_add_library(${PROJECT_NAME} ${_src})
 
+add_library(qtmediate::Gui ALIAS ${PROJECT_NAME})
+
 target_compile_definitions(${PROJECT_NAME} PRIVATE QMGUI_LIBRARY)
 
 # Link

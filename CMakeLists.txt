@@ -55,3 +55,7 @@ set(QTMEDIATE_TRANSLATIONS zh_CN zh_HK ja_JP)
 add_subdirectory(src)
 
 add_subdirectory(share)
+
+if(QTMEDIATE_BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

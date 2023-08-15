@@ -3,7 +3,6 @@
 # ----------------------------------
 function(qtmediate_add_library _target)
     add_library(${_target} SHARED ${ARGN})
-    add_library(qtmediate::${_target} ALIAS ${_target})
 
     if(WIN32)
         set(RC_VERSION_STRING ${QTMEDIATE_INSTALL_NAME})
@@ -108,10 +107,6 @@ add_subdirectory(widgets)
 add_subdirectory(widgettools)
 
 add_subdirectory(plugins)
-
-if(QTMEDIATE_BUILD_TESTS)
-    add_subdirectory(tests)
-endif()
 
 if(QTMEDIATE_INSTALL)
     qtmediate_install_headers(corelib)
