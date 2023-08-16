@@ -34,10 +34,16 @@ function(qtmediate_add_plugin _target _category)
         include(${QTMEDIATE_MODULES_DIR}/winrc.cmake)
     endif()
 
+    set_target_properties(${_target} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/${_category}
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/${_category}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/${_category}
+    )
+
     if(QTMEDIATE_INSTALL)
         install(TARGETS ${_target}
-            RUNTIME DESTINATION "${CMAKE_INSTALL_LIBDIR}/qtmediate/plugins/${_category}" OPTIONAL
-            LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/qtmediate/plugins/${_category}" OPTIONAL
+            RUNTIME DESTINATION "${CMAKE_INSTALL_LIBDIR}/${QTMEDIATE_INSTALL_NAME}/plugins/${_category}" OPTIONAL
+            LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/${QTMEDIATE_INSTALL_NAME}/plugins/${_category}" OPTIONAL
         )
     endif()
 

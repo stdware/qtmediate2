@@ -16,6 +16,8 @@ public:
 
 protected:
     bool event(QEvent *event) override;
+
+    void nextCheckState() override;
 };
 
 #endif // SYSTEMBUTTON_H

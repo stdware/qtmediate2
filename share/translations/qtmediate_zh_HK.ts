@@ -45,22 +45,22 @@
 <context>
     <name>CWindowBarV2</name>
     <message>
-        <location filename="../../src/plugins/windowhandles/nativewindow/Widgets/CWindowBarV2.cpp" line="69"/>
+        <location filename="../../src/plugins/windowhandles/nativewindow/Widgets/CWindowBarV2.cpp" line="82"/>
         <source>Minimize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/windowhandles/nativewindow/Widgets/CWindowBarV2.cpp" line="70"/>
+        <location filename="../../src/plugins/windowhandles/nativewindow/Widgets/CWindowBarV2.cpp" line="83"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/windowhandles/nativewindow/Widgets/CWindowBarV2.cpp" line="81"/>
+        <location filename="../../src/plugins/windowhandles/nativewindow/Widgets/CWindowBarV2.cpp" line="94"/>
         <source>Restore%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/windowhandles/nativewindow/Widgets/CWindowBarV2.cpp" line="84"/>
+        <location filename="../../src/plugins/windowhandles/nativewindow/Widgets/CWindowBarV2.cpp" line="97"/>
         <source>Maximize</source>
         <translation type="unfinished"></translation>
     </message>

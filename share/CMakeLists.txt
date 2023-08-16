@@ -2,15 +2,15 @@ if(QTMEDIATE_BUILD_TRANSLATIONS)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS LinguistTools REQUIRED)
     find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools REQUIRED)
 
-    set(_ts_files)
-    set(_qm_files)
-    set(_qm_dir ${CMAKE_BINARY_DIR}/share/qtmediate/translations)
+    set(_my_ts_files)
+    set(_my_qm_files)
+    set(_qm_dir ${CMAKE_BINARY_DIR}/share/${QTMEDIATE_INSTALL_NAME}/translations)
 
     foreach(_item ${QTMEDIATE_TRANSLATIONS})
-        list(APPEND _ts_files ${CMAKE_CURRENT_SOURCE_DIR}/translations/qtmediate_${_item}.ts)
+        list(APPEND _my_ts_files ${CMAKE_CURRENT_SOURCE_DIR}/translations/qtmediate_${_item}.ts)
     endforeach()
 
-    set_source_files_properties(${_ts_files}
+    set_source_files_properties(${_my_ts_files}
         PROPERTIES OUTPUT_LOCATION ${_qm_dir}
     )
 
@@ -24,16 +24,16 @@ if(QTMEDIATE_BUILD_TRANSLATIONS)
         list(APPEND _src ${_files})
     endforeach()
 
-    qt5_create_translation(_qm_files ${_ts_files} ${_src})
+    qt5_create_translation(_my_qm_files ${_my_ts_files} ${_src})
 
-    add_custom_target(lupdate_task DEPENDS ${_ts_files})
-    add_custom_target(lrelease_task DEPENDS ${_qm_files})
+    add_custom_target(lupdate_task DEPENDS ${_my_ts_files})
+    add_custom_target(lrelease_task DEPENDS ${_my_qm_files})
 
     if(QTMEDIATE_INSTALL)
         install(CODE "
-        execute_process(COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target lupdate_task)
-        execute_process(COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target lrelease_task)
-    ")
+            execute_process(COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target lupdate_task)
+            execute_process(COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target lrelease_task)
+        ")
         install(DIRECTORY ${_qm_dir}/
             DESTINATION ${CMAKE_INSTALL_PREFIX}/share/${QTMEDIATE_INSTALL_NAME}/translations
             FILES_MATCHING PATTERN "*.qm"
