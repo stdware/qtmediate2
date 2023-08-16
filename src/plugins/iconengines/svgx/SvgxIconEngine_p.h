@@ -1,7 +1,10 @@
 #ifndef SVGXICONENGINE_P_H
 #define SVGXICONENGINE_P_H
 
+#include <QIcon>
 #include <QSvgRenderer>
+
+#include "QMNamespace.h"
 
 class SvgxIconEnginePrivate {
 public:

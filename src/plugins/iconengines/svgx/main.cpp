@@ -9,7 +9,10 @@
 
 #include <QMCodec.h>
 
+#include <private/QMetaTypeUtils.h>
+
 #include "Common.h"
+#include "SvgxIconEngine.h"
 
 class SvgxIconPlugin : public QIconEnginePlugin {
     Q_OBJECT
