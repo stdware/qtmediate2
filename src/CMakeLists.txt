@@ -1,8 +1,8 @@
 # ----------------------------------
 # CMake API
 # ----------------------------------
-function(qtmediate_add_library _target)
-    add_library(${_target} SHARED ${ARGN})
+function(qtmediate_add_library _target _type)
+    add_library(${_target} ${_type} ${ARGN})
 
     if(WIN32)
         set(RC_VERSION_STRING ${QTMEDIATE_INSTALL_NAME})
@@ -22,7 +22,7 @@ function(qtmediate_add_library _target)
         )
     endif()
 
-    set_property(GLOBAL APPEND PROPERTY TRANSLATE_TARGETS ${_target})
+    set_property(GLOBAL APPEND PROPERTY QTMEDIATE_TRANSLATE_TARGETS ${_target})
 endfunction()
 
 function(qtmediate_add_plugin _target _category)
@@ -50,21 +50,15 @@ function(qtmediate_add_plugin _target _category)
     set_property(GLOBAL APPEND PROPERTY TRANSLATE_TARGETS ${_target})
 endfunction()
 
-function(qtmediate_include_directories _target _scope)
-    if(${_scope} STREQUAL PRIVATE)
-        foreach(_dir ${ARGN})
-            target_include_directories(${_target} PRIVATE ${_dir})
-        endforeach()
-    else()
-        foreach(_dir ${ARGN})
-            get_filename_component(_abs_dir ${_dir} ABSOLUTE)
-            file(RELATIVE_PATH _rel_path ${QTMEDIATE_SOURCE_DIR} ${_abs_dir})
-            target_include_directories(${_target} PUBLIC
-                "$<BUILD_INTERFACE:${_abs_dir}>"
-                "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_rel_path}>"
-            )
-        endforeach()
-    endif()
+function(qtmediate_include_directories _target)
+    foreach(_dir ${ARGN})
+        get_filename_component(_abs_dir ${_dir} ABSOLUTE)
+        file(RELATIVE_PATH _rel_path ${QTMEDIATE_SOURCE_DIR} ${_abs_dir})
+        target_include_directories(${_target} PUBLIC
+            "$<BUILD_INTERFACE:${_abs_dir}>"
+            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_rel_path}>"
+        )
+    endforeach()
 endfunction()
 
 macro(qtmediate_install_headers _dir)
@@ -115,11 +109,6 @@ add_subdirectory(widgettools)
 add_subdirectory(plugins)
 
 if(QTMEDIATE_INSTALL)
-    qtmediate_install_headers(corelib)
-    qtmediate_install_headers(gui)
-    qtmediate_install_headers(widgets)
-    qtmediate_install_headers(widgettools)
-
     # Add install target
     set(_install_dir ${CMAKE_INSTALL_LIBDIR}/cmake/${QTMEDIATE_INSTALL_NAME})
 

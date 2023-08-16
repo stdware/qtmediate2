@@ -21,7 +21,7 @@ endif()
 # Configure target
 file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 
-qtmediate_add_library(${PROJECT_NAME} ${_src})
+qtmediate_add_library(${PROJECT_NAME} SHARED ${_src})
 
 add_library(qtmediate::Core ALIAS ${PROJECT_NAME})
 
@@ -35,7 +35,7 @@ qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
 )
 
 # Include
-qtmediate_include_directories(${PROJECT_NAME} PUBLIC
+qtmediate_include_directories(${PROJECT_NAME}
     Collections Global Kernel Serialization Text .
 )
 
@@ -45,3 +45,5 @@ qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
 
 # Extra
 qtmediate_dir_skip_automoc(Collections Serialization Text)
+
+qtmediate_install_headers(.)

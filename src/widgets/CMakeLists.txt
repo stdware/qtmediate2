@@ -17,7 +17,7 @@ endif()
 # Configure target
 file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 
-qtmediate_add_library(${PROJECT_NAME} ${_src})
+qtmediate_add_library(${PROJECT_NAME} SHARED ${_src})
 
 add_library(qtmediate::Widget ALIAS ${PROJECT_NAME})
 
@@ -33,7 +33,7 @@ qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
 )
 
 # Include
-qtmediate_include_directories(${PROJECT_NAME} PUBLIC
+qtmediate_include_directories(${PROJECT_NAME}
     Global Kernel Layout Tools Widgets .
 )
 

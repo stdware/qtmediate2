@@ -14,7 +14,7 @@ if(QTMEDIATE_BUILD_TRANSLATIONS)
         PROPERTIES OUTPUT_LOCATION ${_qm_dir}
     )
 
-    get_property(_targets GLOBAL PROPERTY TRANSLATE_TARGETS)
+    get_property(_targets GLOBAL PROPERTY QTMEDIATE_TRANSLATE_TARGETS)
     set(_src)
 
     foreach(_item ${_targets})
@@ -26,13 +26,13 @@ if(QTMEDIATE_BUILD_TRANSLATIONS)
 
     qt5_create_translation(_my_qm_files ${_my_ts_files} ${_src})
 
-    add_custom_target(lupdate_task DEPENDS ${_my_ts_files})
-    add_custom_target(lrelease_task DEPENDS ${_my_qm_files})
+    add_custom_target(qtmediate_lupdate_task DEPENDS ${_my_ts_files})
+    add_custom_target(qtmediate_lrelease_task DEPENDS ${_my_qm_files})
 
     if(QTMEDIATE_INSTALL)
         install(CODE "
-            execute_process(COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target lupdate_task)
-            execute_process(COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target lrelease_task)
+            execute_process(COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target qtmediate_lupdate_task)
+            execute_process(COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target qtmediate_lrelease_task)
         ")
         install(DIRECTORY ${_qm_dir}/
             DESTINATION ${CMAKE_INSTALL_PREFIX}/share/${QTMEDIATE_INSTALL_NAME}/translations
