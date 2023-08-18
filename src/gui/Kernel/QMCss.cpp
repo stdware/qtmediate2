@@ -1,6 +1,6 @@
 #include "QMCss.h"
 
-#include <QtGui/private/qcssparser_p.h>
+#include <private/qcssparser_p.h>
 
 namespace QMCss {
 

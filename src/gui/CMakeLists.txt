@@ -22,7 +22,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 )
 
 qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
-    Gui
+    Core Gui
 )
 
 # Include
