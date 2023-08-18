@@ -4,7 +4,7 @@ if(QTMEDIATE_BUILD_TRANSLATIONS)
 
     set(_my_ts_files)
     set(_my_qm_files)
-    set(_qm_dir ${CMAKE_BINARY_DIR}/share/${QTMEDIATE_INSTALL_NAME}/translations)
+    set(_qm_dir ${CMAKE_BUILD_SHARE_DIR}/${QTMEDIATE_INSTALL_NAME}/translations)
 
     foreach(_item ${QTMEDIATE_TRANSLATIONS})
         list(APPEND _my_ts_files ${CMAKE_CURRENT_SOURCE_DIR}/translations/qtmediate_${_item}.ts)

@@ -2,11 +2,11 @@
 #include <QDebug>
 
 #include <QMCustomWindow.h>
+#include <QMAppExtension.h>
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-
-    QApplication::addLibraryPath(QApplication::applicationDirPath() + "/plugins");
+    QMAppExtension host;
 
     QMCustomWindow w;
     w.show();

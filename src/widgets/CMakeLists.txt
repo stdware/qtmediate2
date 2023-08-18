@@ -12,6 +12,8 @@ set(_platform_libs)
 
 if(WIN32)
     set(_platform_libs dwmapi)
+else()
+    set(_platform_libs dl)
 endif()
 
 # Configure target
