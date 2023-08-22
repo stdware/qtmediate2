@@ -28,17 +28,17 @@ class QMCORE_EXPORT QMXmlAdaptorElement {
 public:
     using Ref = QSharedPointer<QMXmlAdaptorElement>;
 
-    QString name;
-    QMap<QString, QString> properties;
-    QString value;
-    QList<Ref> children;
+    QString name;                      // Tag name
+    QMap<QString, QString> properties; // Tag properties
+    QString value;                     // Characters if no children
+    QList<Ref> children;               // Children
 
     QMXmlAdaptorElement(){};
     ~QMXmlAdaptorElement() = default;
 
     QJsonObject toObject() const;
     static QMXmlAdaptorElement fromObject(const QJsonObject &obj);
-    
+
     void writeXml(QXmlStreamWriter &writer) const;
 };
 
