@@ -22,7 +22,7 @@ if(NOT DEFINED RC_DESCRIPTION)
 endif()
 
 if(NOT DEFINED RC_COPYRIGHT)
-    set(RC_COPYRIGHT "Copyright 2022-2023 SineStriker")
+    set(RC_COPYRIGHT "Copyright 2019-2023 SineStriker")
 endif()
 
 function(_parse_version _prefix _version)
