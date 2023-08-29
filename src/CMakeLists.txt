@@ -137,6 +137,8 @@ if(QTMEDIATE_INSTALL)
 
     # Install cmake targets files
     install(EXPORT ${QTMEDIATE_INSTALL_NAME}Targets
+        FILE "${QTMEDIATE_INSTALL_NAME}Targets.cmake"
+        NAMESPACE qtmediate::
         DESTINATION ${_install_dir}
     )
 endif()

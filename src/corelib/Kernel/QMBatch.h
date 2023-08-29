@@ -14,15 +14,18 @@ namespace QMBatch {
      *
      * @param token String
      * @param escape Unescape quoted string
-     * @return
      */
-    QMCORE_EXPORT QString removeSideQuote(const QString &token, bool escape = false);
+    QMCORE_EXPORT QString removeSideQuote(const QString &token, bool unescape = false);
+
+    /**
+     * @brief Unescape a string (backslash)
+     */
+    QMCORE_EXPORT QString unescape(const QString &s);
 
     /**
      * @brief Convert a list of string to a list of int, skip if fail
      *
      * @param list String list
-     * @return
      */
     QMCORE_EXPORT QList<int> toIntList(const QStringList &list);
 
@@ -30,7 +33,6 @@ namespace QMBatch {
      * @brief Convert a list of string to a list of double, skip if fail
      *
      * @param list String list
-     * @return
      */
     QMCORE_EXPORT QList<double> toDoubleList(const QStringList &list);
 
@@ -38,7 +40,6 @@ namespace QMBatch {
      * @brief Iterate json array and append string element to a string list
      *
      * @param arr Json array
-     * @return
      */
     QMCORE_EXPORT QStringList arrayToStringList(const QJsonArray &arr, bool considerNumber = false);
 

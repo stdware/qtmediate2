@@ -24,6 +24,7 @@ file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 qtmediate_add_library(${PROJECT_NAME} SHARED ${_src})
 
 add_library(qtmediate::Core ALIAS ${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME Core)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE QMCORE_LIBRARY)
 

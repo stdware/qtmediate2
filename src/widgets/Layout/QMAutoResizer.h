@@ -12,12 +12,14 @@ public:
         SizeHint,
         MinimumSizeHint,
     };
+    Q_ENUM(SizeOption)
 
     enum MeasureOption {
         Width = 1,
         Height = 2,
         WidthAndHeight = Width | Height,
     };
+    Q_ENUM(MeasureOption)
 
     explicit QMAutoResizer(QWidget *parent = nullptr);
     QMAutoResizer(SizeOption so, QWidget *parent = nullptr);

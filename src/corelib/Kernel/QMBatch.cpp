@@ -6,21 +6,38 @@
 
 #include <cstdio>
 
-#include "QMCodec.h"
-
 namespace QMBatch {
 
-    QString removeSideQuote(const QString &token, bool escape) {
+    QString removeSideQuote(const QString &token, bool unescape) {
         auto str = token;
         if (str.front() == '\"' && str.back() == '\"') {
             str.remove(0, 1);
             str.remove(str.size() - 1, 1);
-            if (escape) {
-                // str.replace(R"(\")", R"(")");
-                str = QMCodec::unescape(str);
+            if (unescape) {
+                str = QMBatch::unescape(str);
             }
         }
         return str;
+    }
+
+    QString unescape(const QString &s) {
+        QString res;
+        auto p = s.data();
+        while (!p->isNull()) {
+            if (*p == '\\') {
+                auto pNext = p + 1;
+                if (!pNext->isNull()) {
+                    res += *pNext;
+                    p += 2;
+                } else {
+                    break;
+                }
+            } else {
+                res += *p;
+                p++;
+            }
+        }
+        return res;
     }
 
     QList<int> toIntList(const QStringList &list) {

@@ -13,6 +13,7 @@ file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 qtmediate_add_library(${PROJECT_NAME} SHARED ${_src})
 
 add_library(qtmediate::WidgetTools ALIAS ${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME WidgetTools)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE QMWTOOLS_LIBRARY)
 

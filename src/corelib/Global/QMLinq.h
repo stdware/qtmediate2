@@ -7,10 +7,7 @@
 
 namespace QMLinq {
 
-    /**
-     * @brief C# IEnumerable.Where
-     *
-     */
+    // C# IEnumerable.Where
     template <template <class> class Array, class T, class Selector>
     Array<T> Where(const Array<T> &list, Selector selector) { // Same collection
         Array<T> res;
@@ -33,11 +30,7 @@ namespace QMLinq {
         return res;
     }
 
-    /**
-     * @brief C# IEnumerable.Select
-     *
-     */
-
+    // C# IEnumerable.Select
     template <class V, template <class> class Array, class T, class Mapper>
     Array<V> Select(const Array<T> &list, Mapper mapper) { // Same collection
         Array<V> res;
@@ -59,10 +52,7 @@ namespace QMLinq {
         return res;
     }
 
-    /**
-     * @brief C# IEnumerable.Any
-     *
-     */
+    // C# IEnumerable.Any
     template <template <class> class Array, class T, class Validator>
     bool Any(const Array<T> &list, Validator validator) {
         for (const auto &item : qAsConst(list)) {
@@ -83,10 +73,7 @@ namespace QMLinq {
         return true;
     }
 
-    /**
-     * @brief C# IEnumerable.ForEach
-     *
-     */
+    // C# IEnumerable.ForEach
     template <template <class> class Array, class T, class Func>
     void ForEach(const Array<T> &list, Func func) {
         for (const auto &item : qAsConst(list)) {

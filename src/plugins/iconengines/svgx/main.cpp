@@ -7,9 +7,9 @@
 #include <qiodevice.h>
 #include <qstringlist.h>
 
-#include <QMCodec.h>
-
 #include <private/QMetaTypeUtils.h>
+
+#include <QMBatch.h>
 
 #include "Common.h"
 #include "SvgxIconEngine.h"
@@ -44,7 +44,7 @@ QIconEngine *SvgxIconPlugin::create(const QString &fileName) {
     // Handle file contents
     QByteArray svgContents[8];
     for (int i = 0; i < 8; ++i) {
-        const auto &item = QMCodec::unescape(files[i]);
+        const auto &item = QMBatch::unescape(files[i]);
         if (item.isEmpty())
             continue;
 
@@ -63,11 +63,6 @@ QIconEngine *SvgxIconPlugin::create(const QString &fileName) {
     if (valueList.size() > 1) {
         QMetaTypeUtils::ParseClickStateArgList(valueList.at(1).trimmed(), colors);
     }
-    //    else {
-    //        for (auto &c : colors)
-    //            c = "transparent";
-    //    }
-
     engine->setValues(svgContents, colors);
 
     return engine;

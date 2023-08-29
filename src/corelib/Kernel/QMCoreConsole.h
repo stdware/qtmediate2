@@ -24,14 +24,8 @@ public:
         Question,
         Information,
     };
+    Q_ENUM(MessageBoxFlag)
 
-    /**
-     * @brief MsgBox            Execute a message box displaying information
-     * @param parent            Parent window or object
-     * @param flag              Message type
-     * @param title             Message box title
-     * @param text              Message box text
-     */
     virtual void MsgBox(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text);
     
 protected:

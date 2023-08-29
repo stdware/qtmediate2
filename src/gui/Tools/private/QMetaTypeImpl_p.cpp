@@ -16,12 +16,12 @@
 namespace QMetaTypeImpl {
 
     template <class T>
-    void registerFromString() {
+    static void registerFromString() {
         QMetaType::registerConverter<QString, T>(T::fromString);
     }
 
     template <class T>
-    void registerFromStringList() {
+    static void registerFromStringList() {
         QMetaType::registerConverter<QStringList, T>(T::fromStringList);
     }
 
