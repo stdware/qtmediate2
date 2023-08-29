@@ -19,6 +19,8 @@ public:
     explicit QMAppExtension(QObject *parent = nullptr);
     ~QMAppExtension();
 
+    void MsgBox(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const override;
+
 protected:
     QMAppExtension(QMAppExtensionPrivate &d, QObject *parent = nullptr);
 };

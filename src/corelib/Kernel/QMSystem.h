@@ -103,7 +103,7 @@ namespace QMOs {
      * @brief System Dpi base, 96 on Windows/Linux, 72 on Mac
      *
      */
-    inline int unitDpi() {
+    Q_DECL_CONSTEXPR inline int unitDpi() {
 #ifdef Q_OS_MACOS
         return 72;
 #else

@@ -5,7 +5,6 @@ Qt with custom implementations, the name is taken from "intermediate" because it
 ## Dependencies
 
 + Qt 5.15.2 (Maybe work with 5.15.X)
-
 + [FramelessHelper](https://github.com/wangwenx190/framelesshelper)
 
 ## Build & Install

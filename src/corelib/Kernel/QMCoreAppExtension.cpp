@@ -10,8 +10,13 @@
 #include <QMessageLogger>
 #include <QSettings>
 
-#include "QMBatch.h"
 #include "QMSystem.h"
+
+#ifdef Q_OS_WINDOWS
+#    include <Windows.h>
+#elif defined(Q_OS_MACOS)
+#    include <CoreFoundation/CoreFoundation.h>
+#endif
 
 Q_LOGGING_CATEGORY(qAppExtLog, "qtmediate")
 
@@ -32,14 +37,6 @@ Q_SINGLETON_DECLARE(QMCoreAppExtension);
 static QString appUpperDir() {
     static QString dir = QDir::cleanPath(QCoreApplication::applicationDirPath() + "/..");
     return dir;
-}
-
-QMCoreConsole *QMCoreInitFactory::createConsole(QObject *parent) {
-    return new QMCoreConsole(parent);
-}
-
-QMCoreDecoratorV2 *QMCoreInitFactory::createDecorator(QObject *parent) {
-    return new QMCoreDecoratorV2(parent);
 }
 
 QMCoreAppExtensionPrivate::QMCoreAppExtensionPrivate() {
@@ -77,14 +74,10 @@ void QMCoreAppExtensionPrivate::init() {
     }
 
     // Polymorphic factory
-    QScopedPointer<QMCoreInitFactory> fac(createFactory());
 
     // Create instances
-    s_dec = fac->createDecorator(q);
+    s_dec = createDecorator(q);
     qCDebug(qAppExtLog) << s_dec->metaObject()->className() << "initializing.";
-
-    s_cs = fac->createConsole(q);
-    qCDebug(qAppExtLog) << s_cs->metaObject()->className() << "initializing.";
 
     QObject::connect(qApp, &QCoreApplication::aboutToQuit, this, [this]() {
         isAboutToQuit = true; //
@@ -226,15 +219,98 @@ bool QMCoreAppExtensionPrivate::readConfiguration(const QString &fileName) {
     return true;
 }
 
-QMCoreInitFactory *QMCoreAppExtensionPrivate::createFactory() {
-    return new QMCoreInitFactory();
+QMCoreDecoratorV2 *QMCoreAppExtensionPrivate::createDecorator(QObject *parent) {
+    return new QMCoreDecoratorV2(parent);
 }
+
+#if defined(Q_OS_WINDOWS) || defined(Q_OS_MAC)
+
+void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle, QMCoreAppExtension::MessageBoxFlag flag,
+                                                    const QString &title, const QString &text) const {
+#    ifdef Q_OS_WINDOWS
+    int winFlag;
+    switch (flag) {
+        case QMCoreAppExtension::Critical:
+            winFlag = MB_ICONERROR;
+            break;
+        case QMCoreAppExtension::Warning:
+            winFlag = MB_ICONWARNING;
+            break;
+        case QMCoreAppExtension::Question:
+            winFlag = MB_ICONQUESTION;
+            break;
+        case QMCoreAppExtension::Information:
+            winFlag = MB_ICONINFORMATION;
+            break;
+    };
+
+    ::MessageBoxW(static_cast<HWND>(winHandle), text.toStdWString().data(), title.toStdWString().data(),
+                  MB_OK
+#        ifdef QTMEDIATE_WIN32_MSGBOX_TOPMOST
+                      | MB_TOPMOST
+#        endif
+                      | MB_SETFOREGROUND | winFlag);
+#    else
+    // From
+    // https://web.archive.org/web/20111127025605/http://jorgearimany.blogspot.com/2010/05/messagebox-from-windows-to-mac.html
+    CFOptionFlags result;
+    int level = 0;
+    switch (flag) {
+        case QMCoreConsole::Critical:
+            level = 2;
+            break;
+        case QMCoreConsole::Warning:
+            level = 1;
+            break;
+        case QMCoreConsole::Question:
+            level = 3;
+            break;
+        case QMCoreConsole::Information:
+            level = 0;
+            break;
+    };
+    CFUserNotificationDisplayAlert(0,     // no timeout
+                                   level, // change it depending message_type flags ( MB_ICONASTERISK.... etc.)
+                                   NULL,  // icon url, use default, you can change it depending message_type flags
+                                   NULL,  // not used
+                                   NULL,  // localization of strings
+                                   title.toCFString(), // header text
+                                   text.toCFString(),  // message text
+                                   NULL,               // default "ok" text in button
+                                   NULL,               // alternate button title
+                                   NULL,               // other button title, null--> no other button
+                                   &result             // response flags
+    );
+#    endif
+}
+
+#endif
 
 QMCoreAppExtension::QMCoreAppExtension(QObject *parent) : QMCoreAppExtension(*new QMCoreAppExtensionPrivate(), parent) {
 }
 
 QMCoreAppExtension::~QMCoreAppExtension() {
     destruct();
+}
+
+void QMCoreAppExtension::MsgBox(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
+    Q_UNUSED(parent);
+
+#if defined(Q_OS_WINDOWS) || defined(Q_OS_MAC)
+    Q_D(const QMCoreAppExtension);
+    d->osMessageBox_helper(nullptr, flag, title, text);
+#else
+    switch (flag) {
+        case Critical:
+        case Warning:
+            fputs(qPrintable(text), stderr);
+            break;
+        case Question:
+        case Information:
+            fputs(qPrintable(text), stdout);
+            break;
+    };
+#endif
 }
 
 bool QMCoreAppExtension::isAboutToQuit() const {
@@ -303,11 +379,11 @@ void QMCoreAppExtension::setAppPluginsDir(const QString &dir) {
 }
 
 bool QMCoreAppExtension::createDataAndTempDirs() const {
-    auto func = [](const QString &path) {
+    auto func = [this](const QString &path) {
         qCDebug(qAppExtLog) << "qmcorehost:" << (QMFs::isDirExist(path) ? "find" : "create") << "directory" << path;
         if (!QMFs::mkDir(path)) {
-            qmCon->MsgBox(nullptr, QMCoreConsole::Critical, qApp->applicationName(),
-                          QString("Failed to create %1 directory!").arg(QMFs::PathFindFileName(path)));
+            MsgBox(nullptr, Critical, qApp->applicationName(),
+                   QString("Failed to create %1 directory!").arg(QMFs::PathFindFileName(path)));
             return false;
         }
         return true;

@@ -7,12 +7,6 @@
 
 #include "../QMGuiAppExtension.h"
 
-class QMGUI_EXPORT QMGuiInitFactory : public QMCoreInitFactory {
-public:
-    QMCoreConsole *createConsole(QObject *parent) override;
-    QMCoreDecoratorV2 *createDecorator(QObject *parent) override;
-};
-
 class QMGUI_EXPORT QMGuiAppExtensionPrivate : public QMCoreAppExtensionPrivate {
     Q_DECLARE_PUBLIC(QMGuiAppExtension)
 public:
@@ -20,8 +14,8 @@ public:
     ~QMGuiAppExtensionPrivate();
 
     void init();
-
-    QMCoreInitFactory *createFactory() override;
+    
+    QMCoreDecoratorV2 *createDecorator(QObject *parent) override;
 
     static QAtomicInt globalImageCacheSerialNum;
 };

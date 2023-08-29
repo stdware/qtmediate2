@@ -3,10 +3,10 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
+#include <QMessageBox>
 
-#include "QMConsole.h"
 #include "QMDecoratorV2.h"
-#include "QMSystem.h"
+
 #include "private/QMAppExtension_p.h"
 
 #ifdef _WIN32
@@ -39,14 +39,6 @@ static QString GetLibraryPath() {
 #endif
 }
 
-QMCoreConsole *QMInitFactory::createConsole(QObject *parent) {
-    return new QMConsole(parent);
-}
-
-QMCoreDecoratorV2 *QMInitFactory::createDecorator(QObject *parent) {
-    return new QMDecoratorV2(parent);
-}
-
 QMAppExtensionPrivate::QMAppExtensionPrivate() {
 }
 
@@ -62,14 +54,44 @@ void QMAppExtensionPrivate::init() {
     QApplication::addLibraryPath(QDir::cleanPath(GetLibraryPath() + "/../../lib/qtmediate/plugins"));
 }
 
-QMCoreInitFactory *QMAppExtensionPrivate::createFactory() {
-    return new QMInitFactory();
+QMCoreDecoratorV2 *QMAppExtensionPrivate::createDecorator(QObject *parent) {
+    return new QMDecoratorV2(parent);
 }
 
 QMAppExtension::QMAppExtension(QObject *parent) : QMAppExtension(*new QMAppExtensionPrivate(), parent) {
 }
 
 QMAppExtension::~QMAppExtension() {
+}
+
+void QMAppExtension::MsgBox(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
+    Q_D(const QMAppExtension);
+
+    QWidget *w = nullptr;
+    if (parent && parent->isWidgetType()) {
+        w = qobject_cast<QWidget *>(parent)->window();
+    }
+
+#if defined(Q_OS_WINDOWS)
+    d->osMessageBox_helper(w ? (HWND) w->winId() : nullptr, flag, title, text);
+#elif defined(Q_OS_MAC)
+    d->osMessageBox_helper(nullptr, flag, title, text);
+#else
+    switch (flag) {
+        case Critical:
+            QMessageBox::critical(w, title, text);
+            break;
+        case Warning:
+            QMessageBox::warning(w, title, text);
+            break;
+        case Question:
+            QMessageBox::question(w, title, text);
+            break;
+        case Information:
+            QMessageBox::information(w, title, text);
+            break;
+    };
+#endif
 }
 
 QMAppExtension::QMAppExtension(QMAppExtensionPrivate &d, QObject *parent) : QMGuiAppExtension(d, parent) {

@@ -19,6 +19,17 @@ public:
     explicit QMCoreAppExtension(QObject *parent = nullptr);
     ~QMCoreAppExtension();
 
+    enum MessageBoxFlag {
+        Critical,
+        Warning,
+        Question,
+        Information,
+    };
+    Q_ENUM(MessageBoxFlag)
+
+    // Wrapper of native message box
+    virtual void MsgBox(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const;
+
 public:
     /**
      * @brief Tell if QCoreApplication::quit() is emitted

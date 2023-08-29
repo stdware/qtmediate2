@@ -5,21 +5,11 @@
 #include <QGuiApplication>
 #include <QScreen>
 
-#include "QMGuiConsole.h"
 #include "QMGuiDecoratorV2.h"
-#include "QMSvg.h"
 #include "QMSystem.h"
 
 #include "private/QMGuiAppExtension_p.h"
 #include "private/QMetaTypeImpl_p.h"
-
-QMCoreConsole *QMGuiInitFactory::createConsole(QObject *parent) {
-    return new QMGuiConsole(parent);
-}
-
-QMCoreDecoratorV2 *QMGuiInitFactory::createDecorator(QObject *parent) {
-    return new QMGuiDecoratorV2(parent);
-}
 
 QMGuiAppExtensionPrivate::QMGuiAppExtensionPrivate() {
 }
@@ -85,8 +75,8 @@ void QMGuiAppExtensionPrivate::init() {
 
 QAtomicInt QMGuiAppExtensionPrivate::globalImageCacheSerialNum;
 
-QMCoreInitFactory *QMGuiAppExtensionPrivate::createFactory() {
-    return new QMGuiInitFactory();
+QMCoreDecoratorV2 *QMGuiAppExtensionPrivate::createDecorator(QObject *parent) {
+    return new QMGuiDecoratorV2(parent);
 }
 
 QMGuiAppExtension::QMGuiAppExtension(QObject *parent) : QMGuiAppExtension(*new QMGuiAppExtensionPrivate(), parent) {

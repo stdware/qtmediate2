@@ -4,16 +4,9 @@
 #include <QJsonObject>
 
 #include "../QMCoreAppExtension.h"
-#include "../QMCoreConsole.h"
 #include "../QMCoreDecoratorV2.h"
 
 #include "QMSimpleVarExp.h"
-
-class QMCORE_EXPORT QMCoreInitFactory {
-public:
-    virtual QMCoreConsole *createConsole(QObject *parent);
-    virtual QMCoreDecoratorV2 *createDecorator(QObject *parent);
-};
 
 class QMCORE_EXPORT QMCoreAppExtensionPrivate : public QObject {
     Q_OBJECT
@@ -47,11 +40,15 @@ public:
 
     QJsonObject appFont;
 
-    virtual QMCoreInitFactory *createFactory();
+    virtual QMCoreDecoratorV2 *createDecorator(QObject *parent);
+
+#if defined(Q_OS_WINDOWS) || defined(Q_OS_MAC)
+    void osMessageBox_helper(void *winHandle, QMCoreAppExtension::MessageBoxFlag flag, const QString &title,
+                             const QString &text) const;
+#endif
 
 private:
     QMCoreDecoratorV2 *s_dec;
-    QMCoreConsole *s_cs;
 };
 
 
