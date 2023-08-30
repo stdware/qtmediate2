@@ -30,7 +30,7 @@ QStringList WindowHandleFactory::keys() {
 }
 
 QString WindowHandleFactory::requested() {
-    QByteArray env = qgetenv("QSAPI_WINDOW_HANDLE");
+    QByteArray env = qgetenv("QTMEDIATE_WINDOW_HANDLE");
     return env.isNull() ? "NativeWindow" : QString::fromLocal8Bit(env);
 }
 
