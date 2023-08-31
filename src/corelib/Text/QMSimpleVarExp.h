@@ -17,6 +17,7 @@ public:
 public:
     void addJsonObject(const QJsonObject &obj);
     void addVariantMap(const QVariantMap &map);
+    void addVariantHash(const QVariantHash &hash);
     void addMap(const QMap<QString, QString> &map);
     void addHash(const QHash<QString, QString> &hash);
     void add(const QString &key, const QString &value);

@@ -3,8 +3,6 @@
 
 #include <QtGlobal>
 
-#include "QMMacros.h"
-
 #ifndef QMCORE_EXPORT
 #  ifdef QMCORE_STATIC
 #    define QMCORE_EXPORT

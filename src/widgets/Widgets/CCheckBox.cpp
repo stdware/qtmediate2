@@ -2,6 +2,8 @@
 
 #include <QMouseEvent>
 
+#include "CToolButton.h"
+
 class CCheckBoxPrivate {
 public:
     CCheckBox *q;

@@ -11,6 +11,7 @@
 #include <QMAppExtension.h>
 #include <QMCss.h>
 #include <QMNamespace.h>
+#include <QMarginsImpl.h>
 
 #ifdef Q_OS_WIN
 // For Windows drop shadow enhancement
@@ -19,7 +20,6 @@
 
 #include <private/IconColorImpl.h>
 
-
 class CMenuPrivate {
 public:
     CMenu *q;
@@ -27,8 +27,11 @@ public:
     CMenuPrivate(CMenu *q) : q(q) {
         // Initialize Font
         q->setFont(qApp->font());
+
+#ifdef Q_OS_WINDOWS
         // Call Windows enhancement (if applicable)
         initWindowsEnhancement();
+#endif
     }
 
     void updateActionStats() {
@@ -53,18 +56,18 @@ public:
     }
 
 private:
+#ifdef Q_OS_WINDOWS
     void initWindowsEnhancement() {
-#ifdef Q_OS_WIN
         // Disable Qt drop shadow attribute in order to remove CS_DROPSHADOW
         q->setWindowFlag(Qt::NoDropShadowWindowHint, true);
         // Enable DWM shadow for popup
-        m_winEnhanceTrigger = QObject::connect(q, &CMenu::aboutToShow, [&]() {
+        m_winEnhanceTrigger = QObject::connect(q, &CMenu::aboutToShow, q, [this]() {
             constexpr int mgn = 1;
             // Constants defined to make older Windows SDK happy
             constexpr int DWMWA_USE_IMMERSIVE_DARK_MODE_ = 20;
             constexpr int DWMWA_WINDOW_CORNER_PREFERENCE_ = 33;
             DWMNCRENDERINGPOLICY ncrp = DWMNCRP_ENABLED;
-            /*DWM_WINDOW_CORNER_PREFERENCE*/INT dwcp = /*DWMWCP_ROUNDSMALL*/3;
+            /*DWM_WINDOW_CORNER_PREFERENCE*/ INT dwcp = /*DWMWCP_ROUNDSMALL*/ 3;
             UINT dark = 1;
             MARGINS margins = {mgn, mgn, mgn, mgn};
             Q_ASSERT(this->q->winId());
@@ -88,8 +91,6 @@ private:
         });
     }
     QMetaObject::Connection m_winEnhanceTrigger;
-#else
-    }
 #endif
 };
 

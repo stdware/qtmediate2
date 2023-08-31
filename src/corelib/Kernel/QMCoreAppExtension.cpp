@@ -20,8 +20,6 @@
 
 Q_LOGGING_CATEGORY(qAppExtLog, "qtmediate")
 
-Q_SINGLETON_DECLARE(QMCoreAppExtension);
-
 #ifdef Q_OS_MAC
 #    define QT_CONFIG_FILE_DIR  appUpperDir() + "/Resources"
 #    define QT_CONFIG_BASE_DIR  appUpperDir()
@@ -33,6 +31,8 @@ Q_SINGLETON_DECLARE(QMCoreAppExtension);
 #    define DEFAULT_LIBRARY_DIR "lib"
 #    define DEFAULT_SHARE_DIR   "share"
 #endif
+
+static QMCoreAppExtension *m_instance =  nullptr;
 
 static QString appUpperDir() {
     static QString dir = QDir::cleanPath(QCoreApplication::applicationDirPath() + "/..");
@@ -290,7 +290,11 @@ QMCoreAppExtension::QMCoreAppExtension(QObject *parent) : QMCoreAppExtension(*ne
 }
 
 QMCoreAppExtension::~QMCoreAppExtension() {
-    destruct();
+    m_instance = nullptr;
+}
+
+QMCoreAppExtension* QMCoreAppExtension::instance() {
+    return m_instance;
 }
 
 void QMCoreAppExtension::MsgBox(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
@@ -409,7 +413,7 @@ QString QMCoreAppExtension::configurationBasePrefix() {
 }
 
 QMCoreAppExtension::QMCoreAppExtension(QMCoreAppExtensionPrivate &d, QObject *parent) : QObject(parent), d_ptr(&d) {
-    construct();
+    m_instance = this;
 
     d.q_ptr = this;
     d.init();

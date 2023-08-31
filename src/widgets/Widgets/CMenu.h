@@ -4,7 +4,6 @@
 #include <QMenu>
 
 #include "QMWidgetsGlobal.h"
-#include "QMarginsImpl.h"
 
 class CMenuPrivate;
 

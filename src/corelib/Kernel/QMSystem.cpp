@@ -17,6 +17,17 @@
 
 static const char Slash = '/';
 
+
+#define Q_D_EXPLORE(str)                                                                                               \
+    QFileInfoList d;                                                                                                   \
+    {                                                                                                                  \
+        QDir dir;                                                                                                      \
+        dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot);                                              \
+        dir.setPath(str);                                                                                              \
+        d = dir.entryInfoList();                                                                                       \
+    }
+
+
 namespace QMFs {
 
     QString PathFindFileName(const QString &path) {

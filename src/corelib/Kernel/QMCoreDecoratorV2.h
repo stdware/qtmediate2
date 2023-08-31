@@ -12,10 +12,11 @@ class QMCoreDecoratorV2Private;
 class QMCORE_EXPORT QMCoreDecoratorV2 : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QMCoreDecoratorV2)
-    Q_SINGLETON(QMCoreDecoratorV2)
 public:
     explicit QMCoreDecoratorV2(QObject *parent = nullptr);
     ~QMCoreDecoratorV2();
+
+    static QMCoreDecoratorV2 *instance();
 
 public:
     void addTranslationPath(const QString &path);

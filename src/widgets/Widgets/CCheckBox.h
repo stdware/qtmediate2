@@ -5,9 +5,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-#include "CToolButton.h"
-#include "QPixelSize.h"
-
 #include "QMWidgetsGlobal.h"
 
 class CCheckBoxPrivate;

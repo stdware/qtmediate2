@@ -8,7 +8,7 @@
 #include <QLocale>
 #include <QRegularExpression>
 
-Q_SINGLETON_DECLARE(QMCoreDecoratorV2)
+static QMCoreDecoratorV2 *m_instance = nullptr;
 
 QMCoreDecoratorV2Private::QMCoreDecoratorV2Private() {
     qmFilesDirty = false;
@@ -25,7 +25,11 @@ QMCoreDecoratorV2::QMCoreDecoratorV2(QObject *parent) : QMCoreDecoratorV2(*new Q
 }
 
 QMCoreDecoratorV2::~QMCoreDecoratorV2() {
-    destruct();
+    m_instance = nullptr;
+}
+
+QMCoreDecoratorV2 *QMCoreDecoratorV2::instance() {
+    return m_instance;
 }
 
 static QMap<QString, QStringList> scanTranslation_helper(const QString &path) {
@@ -217,7 +221,7 @@ void QMCoreDecoratorV2::installLocale(QObject *o, const std::function<void()> &u
 }
 
 QMCoreDecoratorV2::QMCoreDecoratorV2(QMCoreDecoratorV2Private &d, QObject *parent) : QObject(parent), d_ptr(&d) {
-    construct();
+    m_instance = this;
 
     d.q_ptr = this;
     d.init();

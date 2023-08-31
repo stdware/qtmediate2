@@ -14,10 +14,11 @@ class QMCoreAppExtensionPrivate;
 class QMCORE_EXPORT QMCoreAppExtension : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QMCoreAppExtension)
-    Q_SINGLETON(QMCoreAppExtension)
 public:
     explicit QMCoreAppExtension(QObject *parent = nullptr);
     ~QMCoreAppExtension();
+
+    static QMCoreAppExtension *instance();
 
     enum MessageBoxFlag {
         Critical,

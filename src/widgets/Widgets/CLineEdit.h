@@ -2,8 +2,9 @@
 #define CHORUSKIT_CLINEEDIT_H
 
 // QLineEdit has a bug that the placeholder color would be black (wrong color) if
-// a polish event is handled when the window is not active
-// This override class is a temporary solution
+// a polish event is handled when the window is not active.
+
+// This override class is a temporary solution.
 
 #include <QLineEdit>
 
@@ -23,7 +24,5 @@ protected:
     bool event(QEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 };
-
-
 
 #endif // CHORUSKIT_CLINEEDIT_H

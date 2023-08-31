@@ -18,7 +18,7 @@ if(NOT DEFINED RC_VERSION_STRING)
 endif()
 
 if(NOT DEFINED RC_DESCRIPTION)
-    set(RC_DESCRIPTION "Qt Intermediate Patching Framework")
+    set(RC_DESCRIPTION "Qt with custom implementations")
 endif()
 
 if(NOT DEFINED RC_COPYRIGHT)

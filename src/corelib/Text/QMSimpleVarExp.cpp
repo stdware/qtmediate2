@@ -35,6 +35,14 @@ void QMSimpleVarExp::addVariantMap(const QVariantMap &map) {
     }
 }
 
+void QMSimpleVarExp::addVariantHash(const QVariantHash &hash) {
+    for (auto it = hash.begin(); it != hash.end(); ++it) {
+        if (it->type() == QVariant::String) {
+            Variables.insert(it.key(), it->toString());
+        }
+    }
+}
+
 void QMSimpleVarExp::addMap(const QMap<QString, QString> &map) {
     for (auto it = map.begin(); it != map.end(); ++it) {
         Variables.insert(it.key(), it.value());

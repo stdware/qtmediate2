@@ -9,7 +9,6 @@
 #include <QWidget>
 
 #include <CToolButton.h>
-#include <QPixelSize.h>
 
 #include "ANativeTitleBar.h"
 
