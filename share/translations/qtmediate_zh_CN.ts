@@ -78,27 +78,27 @@
 <context>
     <name>QMSystem</name>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="270"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="281"/>
         <source>Explorer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="272"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="283"/>
         <source>Finder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="274"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="285"/>
         <source>File Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="280"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="291"/>
         <source>Administrator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="282"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="293"/>
         <source>Root User</source>
         <translation type="unfinished"></translation>
     </message>

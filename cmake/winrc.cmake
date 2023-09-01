@@ -18,11 +18,11 @@ if(NOT DEFINED RC_VERSION_STRING)
 endif()
 
 if(NOT DEFINED RC_DESCRIPTION)
-    set(RC_DESCRIPTION "Qt with custom implementations")
+    message(FATAL_ERROR "RC_DESCRIPTION is not defined!!!")
 endif()
 
 if(NOT DEFINED RC_COPYRIGHT)
-    set(RC_COPYRIGHT "Copyright 2019-2023 SineStriker")
+    message(FATAL_ERROR "RC_COPYRIGHT is not defined!!!")
 endif()
 
 function(_parse_version _prefix _version)
