@@ -348,5 +348,4 @@ inline QDebug operator<<(QDebug debug, const QMChronMap<Key, T> &map) {
     return debug.maybeSpace();
 }
 
-
 #endif // QMCHRONMAP_H

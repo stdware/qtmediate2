@@ -62,7 +62,7 @@ void ThemeGuardV2::updateScreen() {
                     }
 
                     // Evaluate variables
-                    stylesheet = QMSimpleVarExp::EvaluateVariables(stylesheet, d->variables.value(curTheme, {}),
+                    stylesheet = QMSimpleVarExp::evaluate(stylesheet, d->variables.value(curTheme, {}),
                                                                    R"(\$\{([^\}]+)\})");
 
                     stylesheet = QMDecoratorV2Private::replaceSizes(

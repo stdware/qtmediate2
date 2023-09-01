@@ -92,7 +92,7 @@ QString QMSimpleVarExp::parse(const QString &exp) const {
     return dfs(exp, QRegularExpression(Pattern), Variables);
 }
 
-QHash<QString, QString> QMSimpleVarExp::SystemValues() {
+QHash<QString, QString> QMSimpleVarExp::systemValues() {
     return {
         {"DESKTOP",      QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)     },
         {"DOCUMENTS",    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)   },
@@ -106,7 +106,7 @@ QHash<QString, QString> QMSimpleVarExp::SystemValues() {
     };
 }
 
-QString QMSimpleVarExp::EvaluateVariables(const QString &s, const QHash<QString, QString> &dict, const QString &pattern,
+QString QMSimpleVarExp::evaluate(const QString &s, const QHash<QString, QString> &dict, const QString &pattern,
                                           bool recursive) {
     return dfs(s, QRegularExpression(pattern.isEmpty() ? DefaultPattern : pattern), dict, recursive);
 }

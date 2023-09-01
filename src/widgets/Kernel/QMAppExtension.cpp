@@ -64,7 +64,7 @@ QMAppExtension::QMAppExtension(QObject *parent) : QMAppExtension(*new QMAppExten
 QMAppExtension::~QMAppExtension() {
 }
 
-void QMAppExtension::MsgBox(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
+void QMAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
     Q_D(const QMAppExtension);
 
     QWidget *w = nullptr;

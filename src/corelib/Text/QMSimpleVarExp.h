@@ -26,10 +26,10 @@ public:
     QString parse(const QString &exp) const;
 
 public:
-    static QHash<QString, QString> SystemValues();
+    static QHash<QString, QString> systemValues();
 
-    static QString EvaluateVariables(const QString &s, const QHash<QString, QString> &dict, const QString &pattern = {},
-                                     bool recursive = false);
+    static QString evaluate(const QString &s, const QHash<QString, QString> &dict, const QString &pattern = {},
+                            bool recursive = false);
 };
 
 #endif // QMSIMPLEVAREXP_H

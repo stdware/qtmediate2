@@ -56,7 +56,7 @@ void QMCoreAppExtensionPrivate::init() {
     libDir = appUpperDir() + "/" + DEFAULT_LIBRARY_DIR;
     shareDir = appUpperDir() + "/" + DEFAULT_SHARE_DIR;
 
-    configVars.addHash(QMSimpleVarExp::SystemValues());
+    configVars.addHash(QMSimpleVarExp::systemValues());
     configVars.add("DEFAULT_APPDATA", appDataDir);
     configVars.add("DEFAULT_TEMP", tempDir);
 
@@ -297,7 +297,7 @@ QMCoreAppExtension* QMCoreAppExtension::instance() {
     return m_instance;
 }
 
-void QMCoreAppExtension::MsgBox(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
+void QMCoreAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
     Q_UNUSED(parent);
 
 #if defined(Q_OS_WINDOWS) || defined(Q_OS_MAC)
@@ -386,7 +386,7 @@ bool QMCoreAppExtension::createDataAndTempDirs() const {
     auto func = [this](const QString &path) {
         qCDebug(qAppExtLog) << "qmcorehost:" << (QMFs::isDirExist(path) ? "find" : "create") << "directory" << path;
         if (!QMFs::mkDir(path)) {
-            MsgBox(nullptr, Critical, qApp->applicationName(),
+            showMessage(nullptr, Critical, qApp->applicationName(),
                    QString("Failed to create %1 directory!").arg(QMFs::PathFindFileName(path)));
             return false;
         }
