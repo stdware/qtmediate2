@@ -127,6 +127,24 @@ namespace QMBatch {
         }
     }
 
+    template <class K, class T>
+    QHash<K, T> MapToHash(const QMap<K, T> &map) {
+        QHash<K, T> res;
+        for (auto it = map.begin(); it != map.end(); ++it) {
+            res.insert(it.key(), it.value());
+        }
+        return res;
+    }
+
+    template <class K, class T>
+    QMap<K, T> HashToMap(const QHash<K, T> &map) {
+        QMap<K, T> res;
+        for (auto it = map.begin(); it != map.end(); ++it) {
+            res.insert(it.key(), it.value());
+        }
+        return res;
+    }
+
 };
 
 

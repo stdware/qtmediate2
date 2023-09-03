@@ -1,7 +1,5 @@
 #include "QMSystem.h"
 
-#include "QMConfig.h"
-
 #include <QCoreApplication>
 #include <QDirIterator>
 #include <QProcess>
@@ -27,9 +25,58 @@ static const char Slash = '/';
         d = dir.entryInfoList();                                                                                       \
     }
 
+/*!
+    \namespace QMFs
+    \brief QtMediate filesystem utility namespace.
+*/
 
 namespace QMFs {
 
+    /*!
+        \fn bool isPathRelative(const QString &path)
+        
+        Returns if the given path is a relative path.
+    */
+
+    /*!
+        \fn bool isPathExist(const QString &path)
+        
+        Returns true if the given path is absolute and exists.
+    */
+
+    /*!
+        \fn bool isFileExist(const QString &path)
+        
+        Returns true if the given path is absolute and is a file.
+    */
+
+    /*!
+        \fn bool isDirExist(const QString &path)
+        
+        Returns true if the given path is absolute and is a directory.
+    */
+
+    /*!
+        \fn bool isSamePath(const QString &path)
+        
+        Returns true if the canonical form of two given paths are identical.
+    */
+
+    /*!
+        \fn QString PathFindSuffix(const QString &path)
+        
+        Get the suffix of the given path.
+    */
+
+    /*!
+        \fn QString PathFindDirPath(const QString &path)
+        
+        Get the absolute directory path of the given path.
+    */
+
+    /*!
+        Returns the file name if the path is not the root, otherwise returns the path itself.
+    */
     QString PathFindFileName(const QString &path) {
         QFileInfo info(path);
         if (info.isRoot()) {
@@ -38,6 +85,9 @@ namespace QMFs {
         return info.fileName();
     }
 
+    /*!
+        Get the next file or directory name after the given \c dir in the \c path string.
+    */
     QString PathFindNextDir(const QString &path, const QString &dir) {
         if (!path.startsWith(dir)) {
             return "";
@@ -53,7 +103,9 @@ namespace QMFs {
         return suffix.mid(0, slashIndex);
     }
 
-
+    /*!
+        Combine two files at binary level.
+    */
     bool combine(const QString &fileName1, const QString &fileName2, const QString &newName) {
         QFile file1(fileName1);
         QFile file2(fileName2);
@@ -77,6 +129,9 @@ namespace QMFs {
         return true;
     }
 
+    /*!
+        Reveal a file or directory in the system file manager.
+    */
     void reveal(const QString &filename) {
         QFileInfo info(filename);
 #if defined(Q_OS_WINDOWS)
@@ -117,6 +172,9 @@ namespace QMFs {
 #endif
     }
 
+    /*!
+        Removes all files whose name is prefixed with the given string in a directory.
+    */
     int rmPreStr(const QString &dirname, const QString &prefix) {
         if (!isDirExist(dirname)) {
             return 0;
@@ -138,6 +196,9 @@ namespace QMFs {
         return cnt;
     }
 
+    /*!
+        Removes all files whose name is strictly prefixed with the given number in a directory.
+    */
     int rmPreNum(const QString &dirname, int prefix) {
         if (!isDirExist(dirname)) {
             return 0;
@@ -146,9 +207,8 @@ namespace QMFs {
         Q_D_EXPLORE(dirname)
 
         int cnt = 0;
-        QFileInfo cur;
         for (auto it = d.rbegin(); it != d.rend(); ++it) {
-            cur = *it;
+            const auto &cur = *it;
             QString num = QString::number(prefix);
             QString filename = cur.fileName();
             if (filename.startsWith(num) && (filename.size() == num.size() || !filename.at(num.size()).isNumber())) {
@@ -162,6 +222,9 @@ namespace QMFs {
         return cnt;
     }
 
+    /*!
+        Removes the path separators at the end of the string.
+    */
     QString removeTailSlashes(const QString &dirname) {
         QString path = dirname;
         while (!path.isEmpty() && (path.endsWith('/') || path.endsWith('\\'))) {
@@ -170,6 +233,12 @@ namespace QMFs {
         return path;
     }
 
+    /*!
+        Returns the standard AppData location.
+
+        \li On Windows, returns <tt>\%UserProfile\%/AppData</tt>
+        \li On Mac/Linux, returns <tt>\%HOME\%/.config</tt>
+    */
     QString appDataPath() {
         QString path;
         QString slashName;
@@ -191,84 +260,28 @@ namespace QMFs {
         return path;
     }
 
-    QStringList FindRecursiveDirs(const QString &base, int max) {
-        QDir dir(base);
-        dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-
-        if (!dir.exists()) {
-            return {};
-        }
-
-        QDirIterator iter(dir, QDirIterator::Subdirectories);
-        QStringList res;
-
-        while (iter.hasNext()) {
-            if (max >= 0 && res.size() >= max) {
-                break;
-            }
-            iter.next();
-            QFileInfo aInfo = iter.fileInfo();
-            res.append(aInfo.absoluteFilePath());
-        }
-
-        return res;
-    }
-
-    QString invalidFileNameChars() {
-        QChar ch[] = {'\"',      '<',       '>',       '|',       '\0',      (char) 1,  (char) 2,  (char) 3,  (char) 4,
-                      (char) 5,  (char) 6,  (char) 7,  (char) 8,  (char) 9,  (char) 10, (char) 11, (char) 12, (char) 13,
-                      (char) 14, (char) 15, (char) 16, (char) 17, (char) 18, (char) 19, (char) 20, (char) 21, (char) 22,
-                      (char) 23, (char) 24, (char) 25, (char) 26, (char) 27, (char) 28, (char) 29, (char) 30, (char) 31,
-                      ':',       '*',       '?',       '\\',      '/'};
-        return QString(ch, sizeof(ch));
-    }
-
-    QString getSharedLibraryPath(void *&func) {
-#ifdef _WIN32
-        wchar_t buf[MAX_PATH + 1] = {0};
-        HMODULE hm = NULL;
-        if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                                (LPCWSTR) &func, &hm) ||
-            !GetModuleFileNameW(hm, buf, sizeof(buf))) {
-            return {};
-        }
-        return QString::fromStdWString(buf);
-#else
-        Dl_info dl_info;
-        dladdr((void *) func, &dl_info);
-        auto buf = dl_info.dli_fname;
-        return QString::fromStdString(buf);
-#endif
-    }
-
 }
+
+/*!
+    \namespace QMOs
+    \brief QtMediate OS utility namespace.
+*/
 
 namespace QMOs {
 
-    void exitApp(int code) {
-        ::exit(code);
-    }
+    /*!
+        \fn int unitDpi()
 
-    void messageStderr(const QString &title, const QString &text) {
-#ifdef Q_OS_WINDOWS
-        ::MessageBoxW(0, text.toStdWString().data(), title.toStdWString().data(),
-                      MB_OK
-#    ifdef QTMEDIATE_WIN32_MSGBOX_TOPMOST
-                          | MB_TOPMOST
-#    endif
-                          | MB_SETFOREGROUND | MB_ICONWARNING);
-#elif defined(Q_OS_LINUX)
-        fputs(qPrintable(text), stdout);
-#else
-        fputs(qPrintable(text), stdout);
-#endif
-    }
+        Returns the system unit dpi value.
 
+        \li on Mac, returns 72
+        \li on Windows/Linux, returns 96
+    */
+
+    /*!
+        Returns true if running with Administrator/Root privilege.
+    */
     bool isUserRoot() {
-        //    QString name = qgetenv("USER");
-        //    if (name.isEmpty())
-        //        name = qgetenv("USERNAME");
-
 #ifdef Q_OS_WINDOWS
         return ::IsUserAnAdmin();
 #else
@@ -276,6 +289,13 @@ namespace QMOs {
 #endif
     }
 
+    /*!
+        Returns the translated file manager name on current system.
+
+        \li On Windows, returns \a Explorer
+        \li On Mac, returns \a Finder
+        \li on Linux, returns <em>File Manager</em>
+    */
     QString fileManagerName() {
 #ifdef Q_OS_WINDOWS
         return QCoreApplication::translate("QMSystem", "Explorer");
@@ -286,6 +306,9 @@ namespace QMOs {
 #endif
     }
 
+    /*!
+        Returns the translated root user name on current system.
+    */
     QString rootUserName() {
 #if defined(Q_OS_WINDOWS)
         return QCoreApplication::translate("QMSystem", "Administrator");
@@ -294,6 +317,9 @@ namespace QMOs {
 #endif
     }
 
+    /*!
+        Returns the file filter string matching all files.
+    */
     QString allFilesFilter() {
 #if defined(Q_OS_WINDOWS)
         return "*.*";
@@ -302,6 +328,9 @@ namespace QMOs {
 #endif
     }
 
+    /*!
+        Returns the library file name based on the given name, mainly used to search a library in a directory.
+    */
     QString toLibFile(const QString &dir, const QString &name) {
 #if defined(Q_OS_LINUX) || defined(__MINGW32__)
         return dir + "/lib" + name;

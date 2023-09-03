@@ -362,7 +362,7 @@ bool QMCoreAppExtension::isAboutToQuit() const {
 /*!
     Returns application data directory.
 
-    \li On Mac/Linux, the default path is <tt>\%Home\%/.config/ChorusKit/\%AppName\%</tt>
+    \li On Mac/Linux, the default path is <tt>\%HOME\%/.config/ChorusKit/\%AppName\%</tt>
     \li On Windows, the default path is <tt>\%UserProfile\%/AppData/Local/\%AppName\%</tt>
  */
 QString QMCoreAppExtension::appDataDir() const {

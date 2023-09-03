@@ -77,32 +77,10 @@ namespace QMFs {
 
     QMCORE_EXPORT QString appDataPath();
 
-    QMCORE_EXPORT QStringList FindRecursiveDirs(const QString &base, int max = -1);
-
-    QMCORE_EXPORT QString invalidFileNameChars();
-
-    QMCORE_EXPORT QString getSharedLibraryPath(void *&func);
-
 }
 
 namespace QMOs {
-
-    /**
-     * @brief Call std::exit with code
-     *
-     */
-    QMCORE_EXPORT void exitApp(int code);
-
-    /**
-     * @brief Display error without QtWidgets module
-     *
-     */
-    QMCORE_EXPORT void messageStderr(const QString &title, const QString &text);
-
-    /**
-     * @brief System Dpi base, 96 on Windows/Linux, 72 on Mac
-     *
-     */
+    
     Q_DECL_CONSTEXPR inline int unitDpi() {
 #ifdef Q_OS_MACOS
         return 72;
@@ -111,16 +89,8 @@ namespace QMOs {
 #endif
     }
 
-    /**
-     * @brief Tell if running in root/Administrator privilege
-     *
-     */
     QMCORE_EXPORT bool isUserRoot();
 
-    /**
-     * @brief OS file manager name, "Explorer" on Windows, "Finder" on Mac, "File Manager" on Linux
-     *
-     */
     QMCORE_EXPORT QString fileManagerName();
 
     QMCORE_EXPORT QString rootUserName();
