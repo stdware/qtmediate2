@@ -21,17 +21,6 @@ void QMCoreDecoratorV2Private::init() {
     currentLocale = QLocale::system().name();
 }
 
-QMCoreDecoratorV2::QMCoreDecoratorV2(QObject *parent) : QMCoreDecoratorV2(*new QMCoreDecoratorV2Private(), parent) {
-}
-
-QMCoreDecoratorV2::~QMCoreDecoratorV2() {
-    m_instance = nullptr;
-}
-
-QMCoreDecoratorV2 *QMCoreDecoratorV2::instance() {
-    return m_instance;
-}
-
 static QMap<QString, QStringList> scanTranslation_helper(const QString &path) {
     QMap<QString, QStringList> res;
 
@@ -99,6 +88,36 @@ void QMCoreDecoratorV2Private::_q_localeSubscriberDestroyed() {
     localeSubscribers.remove(sender());
 }
 
+/*!
+    \class QMCoreDecoratorV2
+    \brief The QMCoreDecoratorV2 class provides a translation registry and a notification system.
+
+    Usually created when QMCoreAppExtension initializes, so you should not manually create it.
+*/
+
+/*
+    Constructor.
+*/
+QMCoreDecoratorV2::QMCoreDecoratorV2(QObject *parent) : QMCoreDecoratorV2(*new QMCoreDecoratorV2Private(), parent) {
+}
+
+/*
+    Destructor.
+*/
+QMCoreDecoratorV2::~QMCoreDecoratorV2() {
+    m_instance = nullptr;
+}
+
+/*!
+    Returns a pointer to the application's QMCoreDecoratorV2 instance.
+*/
+QMCoreDecoratorV2 *QMCoreDecoratorV2::instance() {
+    return m_instance;
+}
+
+/*!
+    Add a directory to the searching paths, the subscribers will be notified immediately.
+*/
 void QMCoreDecoratorV2::addTranslationPath(const QString &path) {
     Q_D(QMCoreDecoratorV2);
 
@@ -137,6 +156,10 @@ void QMCoreDecoratorV2::addTranslationPath(const QString &path) {
             updater();
 }
 
+/*!
+    Remove a directory from the searching paths, you may need to call refreshLocale() to reload
+    subscribers' states.
+*/
 void QMCoreDecoratorV2::removeTranslationPath(const QString &path) {
     Q_D(QMCoreDecoratorV2);
 
@@ -155,20 +178,28 @@ void QMCoreDecoratorV2::removeTranslationPath(const QString &path) {
     d->qmFilesDirty = true;
 }
 
+/*!
+    Returns a list of locale names.
+*/
 QStringList QMCoreDecoratorV2::locales() const {
     Q_D(const QMCoreDecoratorV2);
     if (d->qmFilesDirty) {
         d->scanTranslations();
     }
-
     return d->qmFiles.keys();
 }
 
+/*!
+    Returns the current locale name.
+*/
 QString QMCoreDecoratorV2::locale() const {
     Q_D(const QMCoreDecoratorV2);
     return d->currentLocale;
 }
 
+/*!
+    Sets the current locale.
+*/
 void QMCoreDecoratorV2::setLocale(const QString &locale) {
     Q_D(QMCoreDecoratorV2);
 
@@ -199,11 +230,17 @@ void QMCoreDecoratorV2::setLocale(const QString &locale) {
     emit localeChanged(locale);
 }
 
+/*!
+    Reload translation subscribers' states.
+*/
 void QMCoreDecoratorV2::refreshLocale() {
     Q_D(QMCoreDecoratorV2);
     setLocale(d->currentLocale);
 }
 
+/*!
+    Add a translation subscriber with a callback to receive notifications.
+*/
 void QMCoreDecoratorV2::installLocale(QObject *o, const std::function<void()> &updater) {
     Q_D(QMCoreDecoratorV2);
 
@@ -220,6 +257,15 @@ void QMCoreDecoratorV2::installLocale(QObject *o, const std::function<void()> &u
     updater();
 }
 
+/*!
+    \fn void QMCoreDecoratorV2::localeChanged(const QString &locale)
+    
+    This signal is emitted when the current locale changes.
+*/
+
+/*!
+    \internal
+*/
 QMCoreDecoratorV2::QMCoreDecoratorV2(QMCoreDecoratorV2Private &d, QObject *parent) : QObject(parent), d_ptr(&d) {
     m_instance = this;
 

@@ -37,7 +37,7 @@ qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
 
 # Include
 qtmediate_include_directories(${PROJECT_NAME}
-    Global Kernel Layout Tools Widgets .
+    Global Kernel Layout Widgets .
 )
 
 qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE

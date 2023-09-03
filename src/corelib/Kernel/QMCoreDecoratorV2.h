@@ -22,13 +22,12 @@ public:
     void addTranslationPath(const QString &path);
     void removeTranslationPath(const QString &path);
 
-    void installLocale(QObject *o, const std::function<void()> &updater);
-
-public:
     QStringList locales() const;
     QString locale() const;
     void setLocale(const QString &locale);
     void refreshLocale();
+
+    void installLocale(QObject *o, const std::function<void()> &updater);
 
 signals:
     void localeChanged(const QString &locale);

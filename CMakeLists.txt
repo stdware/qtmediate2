@@ -7,6 +7,7 @@ project(qtmediate VERSION 0.2.18.1 LANGUAGES CXX)
 # ----------------------------------
 option(QTMEDIATE_BUILD_TRANSLATIONS "Build translations" ON)
 option(QTMEDIATE_BUILD_TESTS "Build test cases" ON)
+option(QTMEDIATE_BUILD_DOCUMENTATIONS "Build documentations" OFF)
 option(QTMEDIATE_INSTALL "Install library" ON)
 
 # ----------------------------------
@@ -47,7 +48,7 @@ endif()
 # ----------------------------------
 # Project Variables
 # ----------------------------------
-set(QTMEDIATE_MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake CACHE PATH "qtmediate cmake modules directory")
+set(QTMEDIATE_MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake CACHE PATH "qtmediate cmake modules directory" FORCE)
 set(QTMEDIATE_VERSION ${PROJECT_VERSION})
 set(QTMEDIATE_INSTALL_NAME ${PROJECT_NAME})
 set(QTMEDIATE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)

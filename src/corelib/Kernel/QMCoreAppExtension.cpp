@@ -32,7 +32,7 @@ Q_LOGGING_CATEGORY(qAppExtLog, "qtmediate")
 #    define DEFAULT_SHARE_DIR   "share"
 #endif
 
-static QMCoreAppExtension *m_instance =  nullptr;
+static QMCoreAppExtension *m_instance = nullptr;
 
 static QString appUpperDir() {
     static QString dir = QDir::cleanPath(QCoreApplication::applicationDirPath() + "/..");
@@ -72,8 +72,6 @@ void QMCoreAppExtensionPrivate::init() {
     } else {
         qCDebug(qAppExtLog) << "user configuration file not found";
     }
-
-    // Polymorphic factory
 
     // Create instances
     s_dec = createDecorator(q);
@@ -230,6 +228,9 @@ void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle, QMCoreAppEx
 #    ifdef Q_OS_WINDOWS
     int winFlag;
     switch (flag) {
+        case QMCoreAppExtension::NoIcon:
+            winFlag = MB_OK;
+            break;
         case QMCoreAppExtension::Critical:
             winFlag = MB_ICONERROR;
             break;
@@ -265,7 +266,7 @@ void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle, QMCoreAppEx
         case QMCoreConsole::Question:
             level = 3;
             break;
-        case QMCoreConsole::Information:
+        default:
             level = 0;
             break;
     };
@@ -286,18 +287,52 @@ void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle, QMCoreAppEx
 
 #endif
 
+/*!
+    \class QMCoreAppExtension
+    \brief The QMCoreAppExtension class is the global resources manager for \c qtmediate framework.
+*/
+
+/*!
+    Constructor.
+*/
 QMCoreAppExtension::QMCoreAppExtension(QObject *parent) : QMCoreAppExtension(*new QMCoreAppExtensionPrivate(), parent) {
 }
 
+/*!
+    Destructor.
+*/
 QMCoreAppExtension::~QMCoreAppExtension() {
     m_instance = nullptr;
 }
 
-QMCoreAppExtension* QMCoreAppExtension::instance() {
+/*!
+    Returns a pointer to the application's QMCoreAppExtension instance.
+*/
+QMCoreAppExtension *QMCoreAppExtension::instance() {
     return m_instance;
 }
 
-void QMCoreAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
+/*!
+    \enum QMCoreAppExtension::MessageBoxFlag
+    \brief Message level enumeration.
+
+    \var QMCoreAppExtension::NoIcon
+    \brief Normal level.
+    \var QMCoreAppExtension::Information
+    \brief Information level.
+    \var QMCoreAppExtension::Question
+    \brief Question level.
+    \var QMCoreAppExtension::Warning
+    \brief Warning level.
+    \var QMCoreAppExtension::Critical
+    \brief Error level.
+*/
+
+/*!
+    Show system message box if supported.
+*/
+void QMCoreAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QString &title,
+                                     const QString &text) const {
     Q_UNUSED(parent);
 
 #if defined(Q_OS_WINDOWS) || defined(Q_OS_MAC)
@@ -309,85 +344,144 @@ void QMCoreAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const
         case Warning:
             fputs(qPrintable(text), stderr);
             break;
-        case Question:
-        case Information:
+        default:
             fputs(qPrintable(text), stdout);
             break;
     };
 #endif
 }
 
+/*!
+    Returns true if QCoreApplication::aboutToQuit() has emitted, otherwise returns false.
+*/
 bool QMCoreAppExtension::isAboutToQuit() const {
     Q_D(const QMCoreAppExtension);
     return d->isAboutToQuit;
 }
 
+/*!
+    Returns application data directory.
+
+    \li On Mac/Linux, the default path is <tt>\%Home\%/.config/ChorusKit/\%AppName\%</tt>
+    \li On Windows, the default path is <tt>\%UserProfile\%/AppData/Local/\%AppName\%</tt>
+ */
 QString QMCoreAppExtension::appDataDir() const {
     Q_D(const QMCoreAppExtension);
     return d->appDataDir;
 }
 
+/*!
+    Sets the application data directory.
+*/
 void QMCoreAppExtension::setAppDataDir(const QString &dir) {
     Q_D(QMCoreAppExtension);
     d->appDataDir = dir;
 }
 
+/*!
+    Returns the application temporary directory.
+
+    \li On Mac/Linux, the default path is <tt>\%TMPDIR\%</tt>
+    \li On Windows, the default path is <tt>\%TEMP\%</tt>
+*/
 QString QMCoreAppExtension::tempDir() const {
     Q_D(const QMCoreAppExtension);
     return d->tempDir;
 }
 
+/*!
+    Sets the application temporary directory.
+*/
 void QMCoreAppExtension::setTempDir(const QString &dir) {
     Q_D(QMCoreAppExtension);
     d->tempDir = dir;
 }
 
+/*!
+    Returns the library directory.
+
+    \li On Mac/Linux, the default path is <tt>\%AppPath\%/../Frameworks</tt>
+    \li On Windows, the default path is <tt>\%AppPath\%/../lib</tt>
+*/
 QString QMCoreAppExtension::libDir() const {
     Q_D(const QMCoreAppExtension);
     return d->libDir;
 }
 
+/*!
+    Sets the library directory.
+*/
 void QMCoreAppExtension::setLibDir(const QString &dir) {
     Q_D(QMCoreAppExtension);
     d->libDir = dir;
 }
 
+/*!
+    Returns the share directory.
+
+    \li On Mac, the default path is <tt>\%AppPath\%/../Resources</tt>
+    \li On Windows/Linux, the default path is <tt>\%AppPath\%/../share</tt>
+*/
 QString QMCoreAppExtension::shareDir() const {
     Q_D(const QMCoreAppExtension);
     return d->shareDir;
 }
 
+/*!
+    Sets the share directory.
+*/
 void QMCoreAppExtension::setShareDir(const QString &dir) {
     Q_D(QMCoreAppExtension);
     d->shareDir = dir;
 }
 
+/*!
+    Returns the application's share directory.
+
+    \li On Mac, the default path is <tt>\%ShareDir\%/\%AppName\%</tt>
+    \li On Windows/Linux, the default path is <tt>\%ShareDir\%</tt>
+*/
 QString QMCoreAppExtension::appShareDir() const {
     Q_D(const QMCoreAppExtension);
     return d->appShareDir;
 }
 
+/*!
+    Sets the application's share directory.
+*/
 void QMCoreAppExtension::setAppShareDir(const QString &dir) {
     Q_D(QMCoreAppExtension);
     d->appShareDir = dir;
 }
 
+/*!
+    Returns the application's plugins directory.
+
+    \li On Mac, the default path is <tt>\%AppPath\%/../Plugins</tt>
+    \li On Windows/Linux, the default path is <tt>\%LibDir\%/\%AppName\%/plugins</tt>
+*/
 QString QMCoreAppExtension::appPluginsDir() const {
     Q_D(const QMCoreAppExtension);
     return d->appPluginsDir;
 }
 
+/*!
+    Sets the application's plugins directory.
+*/
 void QMCoreAppExtension::setAppPluginsDir(const QString &dir) {
     Q_D(QMCoreAppExtension);
     d->appPluginsDir = dir;
 }
 
+/*!
+    Creates data and temp directories for further use, returns true if success.
+*/
 bool QMCoreAppExtension::createDataAndTempDirs() const {
     auto func = [this](const QString &path) {
         qCDebug(qAppExtLog) << "qmcorehost:" << (QMFs::isDirExist(path) ? "find" : "create") << "directory" << path;
         if (!QMFs::mkDir(path)) {
             showMessage(nullptr, Critical, qApp->applicationName(),
-                   QString("Failed to create %1 directory!").arg(QMFs::PathFindFileName(path)));
+                        QString("Failed to create %1 directory!").arg(QMFs::PathFindFileName(path)));
             return false;
         }
         return true;
@@ -404,14 +498,26 @@ bool QMCoreAppExtension::createDataAndTempDirs() const {
     return true;
 }
 
+/*!
+    Returns the \c qtmediate configuration file that will be read.
+*/
 QString QMCoreAppExtension::configurationPath(QSettings::Scope scope) {
     return QT_CONFIG_FILE_DIR + "/" + (scope == QSettings::SystemScope ? "qtmediate.json" : "qtmediate.user.json");
 }
 
+/*!
+    Returns the \c qtmediate configuration file directory, it's the same as where <tt>qt.conf</tt> locates.
+
+    \li On Mac, the default path is <tt>\%AppPath\%/../Resources</tt>
+    \li On Windows/Linux, the default path is <tt>\%AppPath\%</tt>
+*/
 QString QMCoreAppExtension::configurationBasePrefix() {
     return QT_CONFIG_BASE_DIR;
 }
 
+/*!
+    \internal
+*/
 QMCoreAppExtension::QMCoreAppExtension(QMCoreAppExtensionPrivate &d, QObject *parent) : QObject(parent), d_ptr(&d) {
     m_instance = this;
 

@@ -91,6 +91,40 @@ add_subdirectory(widgettools)
 
 add_subdirectory(plugins)
 
+if(QTMEDIATE_BUILD_DOCUMENTATIONS)
+    if(NOT DOXYGEN_EXECUTABLE)
+        find_package(Doxygen REQUIRED)
+    endif()
+
+    include(${QTMEDIATE_MODULES_DIR}/doxygen/doxygen.cmake)
+
+    set(_install_options)
+
+    if(QTMEDIATE_INSTALL)
+        set(_install_options INSTALL_DIR share/doc/${QTMEDIATE_INSTALL_NAME})
+    endif()
+
+    set(_doc_targets QMCore QMGui QMWidgets QMWidgetTools)
+
+    set(QTMEDIATE_DOXYGEN_TAGFILE ${CMAKE_BUILD_SHARE_DIR}/doc/${QTMEDIATE_INSTALL_NAME}/qtmediate_tagfile.xml
+        CACHE FILEPATH "qtmediate doxygen tag file path" FORCE
+    )
+
+    setup_doxygen_command(qtmediate_RunDoxygen
+        NAME "Qt Mediate"
+        DESCRIPTION "${RC_DESCRIPTION}"
+        MDFILE ../README.md
+        OUTPUT_DIR ${CMAKE_BUILD_SHARE_DIR}/doc/${QTMEDIATE_INSTALL_NAME}
+        INPUT corelib gui widgets widgettools
+        TARGETS ${_doc_targets}
+        DEPENDS ${_doc_targets}
+        NO_EXPAND_MACROS Q_OBJECT Q_GADGET Q_DECLARE_TR_FUNCTIONS
+        COMPILE_DEFINITIONS Q_SIGNALS=Q_SIGNALS Q_SLOTS=Q_SLOTS
+        GENERATE_TAGFILE "${QTMEDIATE_DOXYGEN_TAGFILE}"
+        ${_install_options}
+    )
+endif()
+
 if(QTMEDIATE_INSTALL)
     # Add install target
     set(_install_dir ${CMAKE_INSTALL_LIBDIR}/cmake/${QTMEDIATE_INSTALL_NAME})
