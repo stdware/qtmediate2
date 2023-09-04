@@ -9,77 +9,26 @@
 
 namespace QMBatch {
 
-    /**
-     * @brief Remove begin and end quote of a string
-     *
-     * @param token String
-     * @param escape Unescape quoted string
-     */
-    QMCORE_EXPORT QString removeSideQuote(const QString &token, bool unescape = false);
+    QMCORE_EXPORT QString strUnescape(const QString &s);
 
-    /**
-     * @brief Unescape a string (backslash)
-     */
-    QMCORE_EXPORT QString unescape(const QString &s);
+    QMCORE_EXPORT QString strRemoveSideQuote(const QString &token, bool unescape = false);
 
-    /**
-     * @brief Convert a list of string to a list of int, skip if fail
-     *
-     * @param list String list
-     */
-    QMCORE_EXPORT QList<int> toIntList(const QStringList &list);
+    QMCORE_EXPORT QList<int> strListToIntList(const QStringList &list);
 
-    /**
-     * @brief Convert a list of string to a list of double, skip if fail
-     *
-     * @param list String list
-     */
-    QMCORE_EXPORT QList<double> toDoubleList(const QStringList &list);
+    QMCORE_EXPORT QList<double> strListToDoubleList(const QStringList &list);
 
-    /**
-     * @brief Iterate json array and append string element to a string list
-     *
-     * @param arr Json array
-     */
-    QMCORE_EXPORT QStringList arrayToStringList(const QJsonArray &arr, bool considerNumber = false);
+    QMCORE_EXPORT QStringList jsonArrayToStrList(const QJsonArray &arr, bool considerNumber = false);
 
-    /**
-     * @brief Determine if a string is all of number(dot, minus)
-     *
-     * @param s String
-     * @param considerDot Consider . as number
-     * @param considerNeg Consider - as number
-     */
-    QMCORE_EXPORT bool isNumber(const QString &s, bool considerDot, bool considerNeg);
+    QMCORE_EXPORT bool strIsNumber(const QString &s, bool considerDot, bool considerNeg);
 
-    /**
-     * @brief Determine if A starts with B and not equals to B
-     *
-     */
-    inline bool isPrefixedWith(const QString &A, const QString &B) {
+    inline bool strPrefixedWith(const QString &A, const QString &B) {
         return A.startsWith(B) && (A != B);
     }
 
-    /**
-     * @brief Calculate Euclidean distance of 2 points
-     *
-     */
-    QMCORE_EXPORT double euclideanDistance(const QPoint &p1, const QPoint &p2);
-
-    QMCORE_EXPORT QStringList splitAll(const QString &str, const QChar &delim);
-
-    /**
-     * @brief Adjust file system name if there's a file with same name
-     *
-     */
     QMCORE_EXPORT QString adjustRepeatedName(const QSet<QString> &set, const QString &name);
 
-    /**
-     * @brief Move item inside the array
-     *
-     */
     template <template <class> class Array, class T>
-    void arrayMove(Array<T> &arr, int index, int count, int dest) {
+    void arrayMoveElements(Array<T> &arr, int index, int count, int dest) {
         count = qMin(count, arr.size() - index);
         if (count <= 0 || count > arr.size() || (dest >= index && dest <= index + count)) {
             return;
@@ -89,7 +38,6 @@ namespace QMBatch {
         tmp.resize(count);
         std::copy(arr.begin() + index, arr.begin() + index + count, tmp.begin());
 
-        // Do change
         int correctDest;
         if (dest > index) {
             correctDest = dest - count;
@@ -107,12 +55,8 @@ namespace QMBatch {
         std::copy(tmp.begin(), tmp.end(), arr.begin() + correctDest);
     }
 
-    /**
-     * @brief Insert sort an array
-     *
-     */
     template <template <class> class Array, class T>
-    inline void insertSort(Array<T> &array) {
+    void arrayInsertSort(Array<T> &array) {
         int i, j;
         T key;
 
@@ -128,7 +72,7 @@ namespace QMBatch {
     }
 
     template <class K, class T>
-    QHash<K, T> MapToHash(const QMap<K, T> &map) {
+    QHash<K, T> mapToHash(const QMap<K, T> &map) {
         QHash<K, T> res;
         for (auto it = map.begin(); it != map.end(); ++it) {
             res.insert(it.key(), it.value());
@@ -137,7 +81,7 @@ namespace QMBatch {
     }
 
     template <class K, class T>
-    QMap<K, T> HashToMap(const QHash<K, T> &map) {
+    QMap<K, T> hashToMap(const QHash<K, T> &map) {
         QMap<K, T> res;
         for (auto it = map.begin(); it != map.end(); ++it) {
             res.insert(it.key(), it.value());

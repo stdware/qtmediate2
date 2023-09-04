@@ -6,21 +6,17 @@
 
 #include <cstdio>
 
+/*!
+    \namespace QMBatch
+    \brief QtMediate batch process utility namespace.
+*/
+
 namespace QMBatch {
 
-    QString removeSideQuote(const QString &token, bool unescape) {
-        auto str = token;
-        if (str.front() == '\"' && str.back() == '\"') {
-            str.remove(0, 1);
-            str.remove(str.size() - 1, 1);
-            if (unescape) {
-                str = QMBatch::unescape(str);
-            }
-        }
-        return str;
-    }
-
-    QString unescape(const QString &s) {
+    /*!
+        Unescape the given string.
+    */
+    QString strUnescape(const QString &s) {
         QString res;
         auto p = s.data();
         while (!p->isNull()) {
@@ -40,7 +36,27 @@ namespace QMBatch {
         return res;
     }
 
-    QList<int> toIntList(const QStringList &list) {
+    /*!
+        Remove the first quote at the beginning and end of the string.
+
+        \param unescape Unescape the result if the string is enclosed in quotation marks.
+    */
+    QString strRemoveSideQuote(const QString &token, bool unescape) {
+        auto str = token;
+        if (str.front() == '\"' && str.back() == '\"') {
+            str.remove(0, 1);
+            str.remove(str.size() - 1, 1);
+            if (unescape) {
+                str = QMBatch::strUnescape(str);
+            }
+        }
+        return str;
+    }
+
+    /*!
+        Convert a string list to a int list, the non-number elements will be skipped.
+    */
+    QList<int> strListToIntList(const QStringList &list) {
         QList<int> res;
         for (const auto &item : list) {
             bool isNum;
@@ -53,7 +69,10 @@ namespace QMBatch {
         return res;
     }
 
-    QList<double> toDoubleList(const QStringList &list) {
+    /*!
+        Convert a string list to a double list, the non-number elements will be skipped.
+    */
+    QList<double> strListToDoubleList(const QStringList &list) {
         QList<double> res;
         for (const auto &it : list) {
             bool isNum;
@@ -66,7 +85,10 @@ namespace QMBatch {
         return res;
     }
 
-    QStringList arrayToStringList(const QJsonArray &arr, bool considerNumber) {
+    /*!
+        Convert a json array to a double list, the non-number elements will be skipped.
+    */
+    QStringList jsonArrayToStrList(const QJsonArray &arr, bool considerNumber) {
         QStringList res;
         for (const auto &item : arr)
             if (item.isString())
@@ -76,7 +98,13 @@ namespace QMBatch {
         return res;
     }
 
-    bool isNumber(const QString &s, bool considerDot, bool considerNeg) {
+    /*!
+        Determine if a string can be converted to a number.
+
+        \param considerDot If set, the dot will be considered as a number char
+        \param considerNeg If set, the minus sign will be considered as a number char
+    */
+    bool strIsNumber(const QString &s, bool considerDot, bool considerNeg) {
         bool flag = true;
 
         for (int i = 0; i < s.size(); ++i) {
@@ -92,30 +120,15 @@ namespace QMBatch {
         return flag;
     }
 
-    double euclideanDistance(const QPoint &p1, const QPoint &p2) {
-        return qSqrt(qPow(p1.x() - p2.x(), 2) + qPow(p1.y() - p2.y(), 2));
-    }
+    /*!
+        \fn bool strPrefixedWith(const QString &A, const QString &B)
 
-    QStringList splitAll(const QString &str, const QChar &delim) {
-        QStringList res;
-        QString buf;
-        for (int i = 0; i < str.size(); ++i) {
-            auto cur = str.at(i);
-            if (cur == delim) {
-                if (!buf.isEmpty()) {
-                    res.append(buf);
-                    buf.clear();
-                }
-                continue;
-            }
-            buf += cur;
-        }
-        if (!buf.isEmpty()) {
-            res.append(buf);
-        }
-        return res;
-    }
+        Returns true if \c A is strictly prefied with \c B.
+    */
 
+    /*!
+        Returns the next available name in the given string collection even if there's a duplication.
+    */
     QString adjustRepeatedName(const QSet<QString> &set, const QString &name) {
         if (!set.contains(name)) {
             return name;
@@ -160,5 +173,29 @@ namespace QMBatch {
 
         return newName;
     }
+
+    /*!
+        \fn void arrayMoveElements(Array<T> &arr, int index, int count, int dest) 
+
+        Move elements in the given array, the \c dest should be the position after move.
+    */
+
+    /*!
+        \fn void arrayInsertSort(Array<T> &array)
+
+        Sort the array using insert sort algorithm.
+    */
+
+    /*!
+        \fn QHash<K, T> mapToHash(const QMap<K, T> &map)
+
+        Convert a QMap to QHash.
+    */
+
+    /*!
+        \fn QMap<K, T> hashToMap(const QHash<K, T> &map)
+
+        Convert a QHash to QMap
+    */
 
 }

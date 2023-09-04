@@ -253,7 +253,7 @@ QFontInfoEx QFontInfoEx::fromStringList(const QStringList &stringList) {
                                ? QMetaTypeUtils::SplitStringByComma(val.midRef(1, val.size() - 2))
                                : QStringList{val};
         for (auto &item : list)
-            item = QMBatch::removeSideQuote(item.trimmed());
+            item = QMBatch::strRemoveSideQuote(item.trimmed());
         res.setFamilies(list);
     }
 

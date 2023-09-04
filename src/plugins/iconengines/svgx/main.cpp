@@ -44,7 +44,7 @@ QIconEngine *SvgxIconPlugin::create(const QString &fileName) {
     // Handle file contents
     QByteArray svgContents[8];
     for (int i = 0; i < 8; ++i) {
-        const auto &item = QMBatch::unescape(files[i]);
+        const auto &item = QMBatch::strUnescape(files[i]);
         if (item.isEmpty())
             continue;
 

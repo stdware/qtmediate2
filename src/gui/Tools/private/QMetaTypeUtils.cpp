@@ -231,16 +231,16 @@ namespace QMetaTypeUtils {
                         return res;
                     }
 
-                    res.insert(keys.at(i), QMBatch::removeSideQuote(item.trimmed()));
+                    res.insert(keys.at(i), QMBatch::strRemoveSideQuote(item.trimmed()));
                     continue;
                 }
 
                 // Keyword argument
                 isKeywordArg = true;
-                res.insert(item.left(eq).trimmed(), QMBatch::removeSideQuote(item.mid(eq + 1).trimmed()));
+                res.insert(item.left(eq).trimmed(), QMBatch::strRemoveSideQuote(item.mid(eq + 1).trimmed()));
             }
         } else {
-            res.insert(keys.front(), QMBatch::removeSideQuote(s.trimmed()));
+            res.insert(keys.front(), QMBatch::strRemoveSideQuote(s.trimmed()));
         }
 
         // Handle fallbacks

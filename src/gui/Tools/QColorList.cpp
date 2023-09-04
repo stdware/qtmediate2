@@ -12,7 +12,7 @@ QColorList QColorList::fromStringList(const QStringList &stringList) {
     QColorList res;
     QStringList valueList = QMetaTypeUtils::SplitStringByComma(strData);
     for (const auto &item : qAsConst(valueList)) {
-        res.get().append(QMCss::CssStringToColor(QMBatch::removeSideQuote(item.simplified())));
+        res.get().append(QMCss::CssStringToColor(QMBatch::strRemoveSideQuote(item.simplified())));
     }
 
     return res;
