@@ -3,24 +3,25 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-namespace QMPrivate {
+// The internal class should be transparent in an anonymous namespace.
+namespace {
     class BaseString;
 }
 
 class QMDisplayStringData {
 public:
     QMDisplayString *q;
-    QMPrivate::BaseString *str;
+    BaseString *str;
     QVariantHash properties;
 
     explicit QMDisplayStringData(const QString &s, QMDisplayString *q);
     explicit QMDisplayStringData(QMDisplayString::GetText func, QMDisplayString *q);
     explicit QMDisplayStringData(QMDisplayString::GetTextEx func, void *userdata, QMDisplayString *q);
-    explicit QMDisplayStringData(QMPrivate::BaseString *str, const QVariantHash &properties, QMDisplayString *q);
+    explicit QMDisplayStringData(BaseString *str, const QVariantHash &properties, QMDisplayString *q);
     ~QMDisplayStringData();
 };
 
-namespace QMPrivate {
+namespace {
 
     class BaseString {
     public:
@@ -67,37 +68,35 @@ namespace QMPrivate {
 
     class CallbackExString : public BaseString {
     public:
-        explicit CallbackExString(QMDisplayString::GetTextEx func, void *userdata, QMDisplayStringData *q)
-            : BaseString(QMDisplayString::TranslateAlwaysEx, q), func(std::move(func)), userdata(userdata){};
+        explicit CallbackExString(QMDisplayString::GetTextEx func, QMDisplayStringData *q)
+            : BaseString(QMDisplayString::TranslateAlwaysEx, q), func(std::move(func)){};
 
         QString text() const override {
-            return func(*(q->q), userdata);
+            return func(*(q->q));
         }
         BaseString *clone(QMDisplayStringData *q) const override {
-            return new CallbackExString(func, userdata, q);
+            return new CallbackExString(func, q);
         }
 
         QMDisplayString::GetTextEx func;
-        void *userdata;
     };
 
 }
 
-QMDisplayStringData::QMDisplayStringData(const QString &s, QMDisplayString *q)
-    : q(q), str(new QMPrivate::PlainString(s, this)) {
+QMDisplayStringData::QMDisplayStringData(const QString &s, QMDisplayString *q) : q(q), str(new PlainString(s, this)) {
 }
 
 QMDisplayStringData::QMDisplayStringData(QMDisplayString::GetText func, QMDisplayString *q)
-    : q(q), str(func ? decltype(str)(new QMPrivate::CallbackString(std::move(func), this))
-                     : decltype(str)(new QMPrivate::PlainString({}, this))) {
+    : q(q),
+      str(func ? decltype(str)(new CallbackString(std::move(func), this)) : decltype(str)(new PlainString({}, this))) {
 }
 
 QMDisplayStringData::QMDisplayStringData(QMDisplayString::GetTextEx func, void *userdata, QMDisplayString *q)
-    : q(q), str(func ? decltype(str)(new QMPrivate::CallbackExString(std::move(func), userdata, this))
-                     : decltype(str)(new QMPrivate::PlainString({}, this))) {
+    : q(q), str(func ? decltype(str)(new CallbackExString(std::move(func), this))
+                     : decltype(str)(new PlainString({}, this))) {
 }
 
-QMDisplayStringData::QMDisplayStringData(QMPrivate::BaseString *str, const QVariantHash &properties, QMDisplayString *q)
+QMDisplayStringData::QMDisplayStringData(BaseString *str, const QVariantHash &properties, QMDisplayString *q)
     : q(q), str(str->clone(this)), properties(properties) {
 }
 
@@ -105,34 +104,74 @@ QMDisplayStringData::~QMDisplayStringData() {
     delete str;
 }
 
+/*!
+    \class QMDisplayString
+    \brief A wrapper of QString that always returns a translated string.
+*/
+
+/*!
+    \typedef QMDisplayString::GetText
+    \brief Translation callback
+*/
+
+/*!
+    \typedef QMDisplayString::GetTextEx
+    \brief Advanced translation callback
+*/
+
+/*!
+    Construct from a plain string.
+*/
 QMDisplayString::QMDisplayString(const QString &s) : d(new QMDisplayStringData(s, this)) {
 }
 
+/*!
+    Construct from a translation callback, you should call QCoreApplication::tr() in this callback.
+*/
 QMDisplayString::QMDisplayString(const QMDisplayString::GetText &func) : d(new QMDisplayStringData(func, this)) {
 }
 
+/*!
+    Construct from a translation callback that provides the QMDisplayString instance, you may use
+    the property map in this callback.
+*/
 QMDisplayString::QMDisplayString(const GetTextEx &func, void *userdata)
     : d(new QMDisplayStringData(func, userdata, this)) {
 }
 
+/*!
+    Destructor.
+*/
 QMDisplayString::~QMDisplayString() {
     delete d;
 }
 
+/*!
+    Copy constructor.
+*/
 QMDisplayString::QMDisplayString(const QMDisplayString &other)
     : d(new QMDisplayStringData(other.d->str, other.d->properties, this)) {
 }
 
+/*!
+    Move constructor.
+*/
 QMDisplayString::QMDisplayString(QMDisplayString &&other) noexcept : d(other.d) {
     other.d = nullptr;
     d->q = this;
 }
 
+/*!
+    Sets the QMDisplayString as the given plain string.
+*/
 QMDisplayString &QMDisplayString::operator=(const QString &s) {
     setPlainString(s);
     return *this;
 }
 
+/*!
+    Copy assign.
+*/
 QMDisplayString &QMDisplayString::operator=(const QMDisplayString &other) {
     if (&other == this) {
         return *this;
@@ -142,24 +181,37 @@ QMDisplayString &QMDisplayString::operator=(const QMDisplayString &other) {
     return *this;
 }
 
+/*!
+    Move assign.
+*/
 QMDisplayString &QMDisplayString::operator=(QMDisplayString &&other) noexcept {
     if (&other == this) {
         return *this;
     }
 
     d = other.d;
+    other.d = nullptr;
     d->q = this;
     return *this;
 }
 
+/*!
+    Returns the plain string or translated string.
+*/
 QString QMDisplayString::text() const {
     return d->str->text();
 }
 
+/*!
+    Returns the translation policy.
+*/
 QMDisplayString::TranslatePolicy QMDisplayString::translatePolicy() const {
     return d->str->p;
 }
 
+/*!
+    Assign translation callback, the translation policy may be changed.
+*/
 void QMDisplayString::setTranslateCallback(const QMDisplayString::GetText &func) {
     if (!func) {
         setPlainString({});
@@ -168,14 +220,17 @@ void QMDisplayString::setTranslateCallback(const QMDisplayString::GetText &func)
 
     if (d->str->p != TranslateAlways) {
         delete d->str;
-        d->str = new QMPrivate::CallbackString(func, d);
+        d->str = new CallbackString(func, d);
     } else {
-        auto str = static_cast<QMPrivate::CallbackString *>(d->str);
+        auto str = static_cast<CallbackString *>(d->str);
         str->func = func;
     }
 }
 
-void QMDisplayString::setTranslateCallback(const QMDisplayString::GetTextEx &func, void *userdata) {
+/*!
+    Assign translation callback, the translation policy may be changed.
+*/
+void QMDisplayString::setTranslateCallback(const QMDisplayString::GetTextEx &func) {
     if (!func) {
         setPlainString({});
         return;
@@ -183,28 +238,36 @@ void QMDisplayString::setTranslateCallback(const QMDisplayString::GetTextEx &fun
 
     if (d->str->p != TranslateAlwaysEx) {
         delete d->str;
-        d->str = new QMPrivate::CallbackExString(func, userdata, d);
+        d->str = new CallbackExString(func, d);
     } else {
-        auto *str = static_cast<QMPrivate::CallbackExString *>(d->str);
+        auto *str = static_cast<CallbackExString *>(d->str);
         str->func = func;
-        str->userdata = userdata;
     }
 }
 
+/*!
+    Assign plain string, the translation policy may be changed.
+*/
 void QMDisplayString::setPlainString(const QString &s) {
     if (d->str->p != TranslateIgnored) {
         delete d->str;
-        d->str = new QMPrivate::PlainString(s, d);
+        d->str = new PlainString(s, d);
     } else {
-        auto str = static_cast<QMPrivate::PlainString *>(d->str);
+        auto str = static_cast<PlainString *>(d->str);
         str->s = s;
     }
 }
 
+/*!
+    Get property.
+*/
 QVariant QMDisplayString::property(const QString &key) const {
     return d->properties.value(key);
 }
 
+/*!
+    Set property.
+*/
 void QMDisplayString::setProperty(const QString &key, const QVariant &value) {
     auto &properties = d->properties;
     auto it = properties.find(key);
@@ -220,6 +283,21 @@ void QMDisplayString::setProperty(const QString &key, const QVariant &value) {
     }
 }
 
+/*!
+    Get property hash map.
+*/
 QVariantHash QMDisplayString::propertyMap() const {
     return d->properties;
 }
+
+/*!
+    \fn QMDisplayString::operator QString() const
+
+    Implicity conversion to QString by calling text().
+*/
+
+/*!
+    \fn QMDisplayString(Func func)
+
+    Template constructor, \c func must be the type of QMDisplayString::GetText.
+*/

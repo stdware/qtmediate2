@@ -290,7 +290,7 @@ namespace QMOs {
     }
 
     /*!
-        Returns the translated file manager name on current system.
+        Returns the translated file manager name of current system.
 
         \li On Windows, returns \a Explorer
         \li On Mac, returns \a Finder

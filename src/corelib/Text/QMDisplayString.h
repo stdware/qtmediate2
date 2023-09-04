@@ -1,5 +1,5 @@
-#ifndef CHORUSKIT_QMDISPLAYSTRING_H
-#define CHORUSKIT_QMDISPLAYSTRING_H
+#ifndef QMDISPLAYSTRING_H
+#define QMDISPLAYSTRING_H
 
 #include <functional>
 
@@ -21,7 +21,7 @@ public:
     };
 
     using GetText = std::function<QString()>;
-    using GetTextEx = std::function<QString(const QMDisplayString &, void *)>;
+    using GetTextEx = std::function<QString(const QMDisplayString &)>;
 
     QMDisplayString() : QMDisplayString(QString()){};
     QMDisplayString(const QString &s);
@@ -40,16 +40,14 @@ public:
     TranslatePolicy translatePolicy() const;
 
     void setTranslateCallback(const GetText &func);
-    void setTranslateCallback(const GetTextEx &func, void *userdata = nullptr);
+    void setTranslateCallback(const GetTextEx &func);
     void setPlainString(const QString &s);
 
     QVariant property(const QString &key) const;
     void setProperty(const QString &key, const QVariant &value);
     QVariantHash propertyMap() const;
 
-    inline operator QString() const {
-        return text();
-    }
+    inline operator QString() const;
 
     template <class Func>
     inline QMDisplayString(Func func) : QMDisplayString(GetText(func)){};
@@ -60,6 +58,10 @@ private:
     friend class QMDisplayStringData;
 };
 
+inline QMDisplayString::operator QString() const {
+    return text();
+}
+
 Q_DECLARE_METATYPE(QMDisplayString)
 
-#endif // CHORUSKIT_QMDISPLAYSTRING_H
+#endif // QMDISPLAYSTRING_H

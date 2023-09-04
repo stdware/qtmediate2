@@ -10,15 +10,32 @@ static const char Slash = '/';
 
 static const char DefaultPattern[] = R"(\$\{(\w+)\})";
 
+/*!
+    \class QMSimpleVarExp
+    \brief Variable expression parsing class.
+*/
+
+/*!
+    Construct an instance with the default escaping pattern <tt>${XXX}</tt>.
+*/
 QMSimpleVarExp::QMSimpleVarExp() : QMSimpleVarExp(DefaultPattern) {
 }
 
+/*!
+    Construct an instance with the given escaping pattern, should be a regular expression.
+*/
 QMSimpleVarExp::QMSimpleVarExp(const QString &pattern) : Pattern(pattern) {
 }
 
+/*!
+    Destructor.
+*/
 QMSimpleVarExp::~QMSimpleVarExp() {
 }
 
+/*!
+    Add  json object to the searching map, only string values will be included.
+*/
 void QMSimpleVarExp::addJsonObject(const QJsonObject &obj) {
     for (auto it = obj.begin(); it != obj.end(); ++it) {
         if (it->isString()) {
@@ -27,6 +44,9 @@ void QMSimpleVarExp::addJsonObject(const QJsonObject &obj) {
     }
 }
 
+/*!
+    Add variant map to the searching map, only string values will be included.
+*/
 void QMSimpleVarExp::addVariantMap(const QVariantMap &map) {
     for (auto it = map.begin(); it != map.end(); ++it) {
         if (it->type() == QVariant::String) {
@@ -35,6 +55,9 @@ void QMSimpleVarExp::addVariantMap(const QVariantMap &map) {
     }
 }
 
+/*!
+    Add variant hash to the searching map, only string values will be included.
+*/
 void QMSimpleVarExp::addVariantHash(const QVariantHash &hash) {
     for (auto it = hash.begin(); it != hash.end(); ++it) {
         if (it->type() == QVariant::String) {
@@ -43,26 +66,41 @@ void QMSimpleVarExp::addVariantHash(const QVariantHash &hash) {
     }
 }
 
+/*!
+    Add string map to the searching map.
+*/
 void QMSimpleVarExp::addMap(const QMap<QString, QString> &map) {
     for (auto it = map.begin(); it != map.end(); ++it) {
         Variables.insert(it.key(), it.value());
     }
 }
 
+/*!
+    Add string hash to the searching map.
+*/
 void QMSimpleVarExp::addHash(const QHash<QString, QString> &hash) {
     for (auto it = hash.begin(); it != hash.end(); ++it) {
         Variables.insert(it.key(), it.value());
     }
 }
 
+/*!
+    Add key-value pair to the searching map.
+*/
 void QMSimpleVarExp::add(const QString &key, const QString &value) {
     Variables.insert(key, value);
 }
 
+/*!
+    Clear the searching map.
+*/
 void QMSimpleVarExp::clear() {
     Variables.clear();
 }
 
+/*!
+    \internal
+*/
 static QString dfs(QString s, const QRegularExpression &reg, const QHash<QString, QString> &vars,
                    bool recursive = true) {
     QRegularExpressionMatch match;
@@ -88,10 +126,26 @@ static QString dfs(QString s, const QRegularExpression &reg, const QHash<QString
     return dfs(s, reg, vars);
 }
 
+/*!
+    Parse the given expression.
+*/
 QString QMSimpleVarExp::parse(const QString &exp) const {
     return dfs(exp, QRegularExpression(Pattern), Variables);
 }
 
+/*!
+    Return a string hash containing common system environment variables.
+
+    \li DESKTOP: Desktop location
+    \li DOCUMENTS: Documents location
+    \li APPLICATIONS: Applications location
+    \li HOME: Home location
+    \li APPDATA: Application data location
+    \li TEMP: Temporary location
+    \li ROOT: Filesystem root
+    \li APPPATH: Application directory path
+    \li APPNAME: Application name
+*/
 QHash<QString, QString> QMSimpleVarExp::systemValues() {
     return {
         {"DESKTOP",      QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)     },
@@ -106,7 +160,9 @@ QHash<QString, QString> QMSimpleVarExp::systemValues() {
     };
 }
 
-QString QMSimpleVarExp::evaluate(const QString &s, const QHash<QString, QString> &dict, const QString &pattern,
-                                          bool recursive) {
-    return dfs(s, QRegularExpression(pattern.isEmpty() ? DefaultPattern : pattern), dict, recursive);
+/*!
+    Static member function for parsing a variable expression.
+*/
+QString QMSimpleVarExp::evaluate(const QString &s, const QHash<QString, QString> &dict, const QString &pattern) {
+    return dfs(s, QRegularExpression(pattern.isEmpty() ? DefaultPattern : pattern), dict);
 }
