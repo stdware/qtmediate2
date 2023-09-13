@@ -5,7 +5,6 @@
 #include <QSharedData>
 
 #include <QMCore/QMNamespace.h>
-
 #include <QMGui/QMGuiGlobal.h>
 
 class QRectInfoData;

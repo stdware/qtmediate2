@@ -1,6 +1,15 @@
 #ifndef ANATIVETITLEBARPRIVATE_H
 #define ANATIVETITLEBARPRIVATE_H
 
+//
+//  W A R N I N G !!!
+//  -----------------
+//
+// This file is not part of the QtMediate API. It is used purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or may even be removed.
+//
+
 #include <QHBoxLayout>
 
 #include "../ANativeTitleBar.h"

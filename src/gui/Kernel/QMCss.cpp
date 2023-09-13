@@ -143,7 +143,7 @@ namespace QMCss {
     }
 
     /*!
-        Parse boolean value from text, case insensitive.
+        Parse boolean value from string, case insensitive.
 
         The valid string can be \c true or \c false.
      */
@@ -168,7 +168,7 @@ namespace QMCss {
     }
 
     /*!
-        Parse color value from text in CSS format.
+        Parse color value from string in CSS format.
      */
     QColor parseColor(const QString &s) {
         if (s.isEmpty()) {
@@ -208,7 +208,7 @@ namespace QMCss {
     }
 
     /*!
-        Returns the index of equal sign if the text is a assign expression matching <tt>key=value</tt>
+        Returns the index of equal sign if the string is an assign expression matching <tt>key=value</tt>
 
         The key must consist of letters, numbers, <tt>_</tt> or <tt>-</tt>
      */
@@ -235,9 +235,9 @@ namespace QMCss {
     */
 
     /*!
-        Returns a mapping table from names to arguments parsed from the text.
+        Returns a mapping table from names to arguments parsed from the string.
 
-        \param s                Text that is a list of expressions separated by comma
+        \param s                String that is a list of expressions separated by comma
         \param expectedKeys     Expected argument name in order of positional argument
         \param fallbacks        The fallback of arguments if not found
     */
@@ -341,15 +341,32 @@ namespace QMCss {
 
 /*!
     \class QMCssType
-    \brief Static class managing the bidirectional mapping of type id and name for parsing QVariant value from string.
-*/
+    \brief Static class managing the bidirectional mapping of type id and name for converting QString to a
+    user-defined type.
 
-static const char *colorFuncNames[] = {
-    "rgb",
-    "rgba",
-    "hsv",
-    "hsvl",
-};
+    The QMetaType system supports setting a widget's property from the string value in Qt StyleSheet,
+    however, there are significant limitations to user-defined types.
+
+    If the receiver type is not a built-in type, the value must be in one of the following formats.
+
+    \li String without white spaces
+    \li String represented as a function call, format: <tt>func(...)</tt>
+
+    For the first format, a converter function from QString to the user type must be registered into QMetaType
+    system at the beginning. When a Qt StyleSheet is applied, Qt will try to convert the string specified in
+    stylesheet into the user-defined receiver type using the pre-registered converter.
+
+    For the second format, a converter function from QStringList to the user type must be registered into QMetaType
+    system at the beginning. When a Qt StyleSheet is applied, the string of the form <tt>func(...)</tt> will be
+    parsed as a QStringList as <tt>["func", "..."]</tt>, the first element is the function name and the second one
+    is the content in parentheses, and then Qt will try to convert the string list into the user-defined receiver
+    type using the pre-registered converter.
+
+    There are many non-built-in types in QtMediate library to support support setting the appearance of custom
+    controls in stylesheets, and each one has its own converter function from QStringList.
+
+    \sa QMarginsImpl::fromStringList
+*/
 
 using MetaTypeHash1 = QHash<int, std::string>;
 using MetaTypeHash2 = QHash<std::string, int>;
@@ -412,8 +429,23 @@ int QMCssType::metaTypeId(const std::string &name) {
     return it.value();
 }
 
+static const char *colorFuncNames[] = {
+    "rgb",
+    "rgba",
+    "hsv",
+    "hsvl",
+};
+
 /*!
-    Parse variant from text, support QtMediate style variants.
+    Parse variant from string, support QtMediate style variants.
+
+    The given string can be the following form.
+    \li Number string
+    \li Pixel size string: such as <tt>2px</tt>
+    \li Hex color value: such as <tt>#FFFFFF</tt>, converts to QColor
+    \li Functional color value: the function name can be \c rgb \c rgba \c hsv and \c hsvl
+    \li QSize string: such as <tt>1px 2px</tt>
+    \li Functional user type: such as <tt>qmargins(1px, 2px)</tt>, the function name must have been registered
  */
 QVariant QMCssType::parse(const QString &s) {
     bool ok;

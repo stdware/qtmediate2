@@ -2,46 +2,89 @@
 
 #include <QDebug>
 
+/*!
+    \class QPixelSize
+    \brief QPixelSize is a wrapper of a number, mainly used to receive a size value from QMetaType system.
+*/
+
+/*!
+    Constructor, the default avalue is 0.
+*/
 QPixelSize::QPixelSize() : m_value(0) {
 }
 
+/*!
+    Constructs from \c int value.
+*/
 QPixelSize::QPixelSize(int pixel) : m_value(pixel) {
 }
 
+/*!
+    Constructs from \c double value.
+*/
 QPixelSize::QPixelSize(double pixel) : m_value(pixel) {
 }
 
+/*!
+    Destructor.
+*/
 QPixelSize::~QPixelSize() {
 }
 
+/*!
+    Returns the value as string.
+*/
 QString QPixelSize::toString() const {
     return QString("%1%2").arg(QString::number(m_value), "px");
 }
 
+/*!
+    Returns the wrapped value.
+*/
 int QPixelSize::value() const {
     return m_value;
 }
 
+/*!
+    Sets the wrapped value.
+*/
 void QPixelSize::setValue(int value) {
     m_value = value;
 }
 
+/*!
+    Returns the wrapped value in floating precision.
+*/
 double QPixelSize::valueF() const {
     return m_value;
 }
 
+/*!
+    Sets the wrapped value in floating precision.
+*/
 void QPixelSize::setValueF(double value) {
     m_value = value;
 }
 
+/*!
+    Implicit type converter to \c int value.
+*/
 QPixelSize::operator int() const {
     return m_value;
 }
 
+/*!
+    Implicit type converter to \c double value.
+*/
 QPixelSize::operator double() const {
     return m_value;
 }
 
+/*!
+    Converts a QString to QPixelSize.
+
+    The string can be suffixed with \c px unit.
+*/
 QPixelSize QPixelSize::fromString(const QString &string) {
     QString str;
     if (string.endsWith("px", Qt::CaseInsensitive)) {
