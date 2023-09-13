@@ -3,7 +3,7 @@
 
 #include <QIcon>
 
-#include "QMGuiGlobal.h"
+#include <QMGui/QMGuiGlobal.h>
 #include "QMNamespace.h"
 
 namespace QMSvg {

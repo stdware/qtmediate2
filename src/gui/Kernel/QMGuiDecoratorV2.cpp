@@ -1,5 +1,5 @@
 #include "QMGuiDecoratorV2.h"
-#include "private/QMGuiDecoratorV2_p.h"
+#include "QMGuiDecoratorV2_p.h"
 
 QMGuiDecoratorV2Private::QMGuiDecoratorV2Private() {
 }

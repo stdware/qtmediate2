@@ -1,9 +1,8 @@
 #ifndef QMGUIDECORATORV2_H
 #define QMGUIDECORATORV2_H
 
-#include <QMCoreDecoratorV2.h>
-
-#include "QMGuiGlobal.h"
+#include <QMCore/QMCoreDecoratorV2.h>
+#include <QMGui/QMGuiGlobal.h>
 
 class QMGuiDecoratorV2Private;
 

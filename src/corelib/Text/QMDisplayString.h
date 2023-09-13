@@ -8,7 +8,7 @@
 #include <QString>
 #include <QVariant>
 
-#include "QMGlobal.h"
+#include <QMCore/QMGlobal.h>
 
 class QMDisplayStringData;
 

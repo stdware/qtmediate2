@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "QMGlobal.h"
+#include <QMCore/QMGlobal.h>
 
 namespace QM {
 
@@ -21,17 +21,17 @@ namespace QM {
     };
     Q_ENUM_NS(Priority)
 
-    enum ClickState {
-        CS_Normal,
-        CS_Hover,
-        CS_Pressed,
-        CS_Disabled,
-        CS_Normal_Checked,
-        CS_Hover_Checked,
-        CS_Pressed_Checked,
-        CS_Disabled_Checked,
+    enum ButtonState {
+        ButtonNormal = 1,
+        ButtonHover,
+        ButtonPressed,
+        ButtonDisabled,
+        ButtonNormalChecked,
+        ButtonHoverChecked,
+        ButtonPressedChecked,
+        ButtonDisabledChecked,
     };
-    Q_ENUM_NS(ClickState)
+    Q_ENUM_NS(ButtonState)
 
 }
 

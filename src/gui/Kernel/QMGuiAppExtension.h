@@ -1,9 +1,8 @@
 #ifndef QMGUIAPPEXTENSION_H
 #define QMGUIAPPEXTENSION_H
 
-#include <QMCoreAppExtension.h>
-
-#include "QMGuiGlobal.h"
+#include <QMCore/QMCoreAppExtension.h>
+#include <QMGui/QMGuiGlobal.h>
 
 #ifdef qAppExt
 #    undef qAppExt

@@ -1,9 +1,9 @@
 #include "QRectInfo.h"
-#include "private/QMetaTypeUtils.h"
 
 #include <QColor>
 #include <QDebug>
 
+#include "QMButtonState_p.h"
 #include "QMCss.h"
 #include "QPixelSize.h"
 
@@ -12,19 +12,16 @@ public:
     QRectInfoData() {
         for (auto &item : nums)
             item = -1;
-        for (auto &item : color)
-            item = Qt::transparent;
         numSize = 0;
         radius = 0;
 
-        QMetaTypeUtils::InitClickStateIndexes(colorIndexes);
+        colors.setValueAll(Qt::transparent);
     }
 
     int nums[4];
     int numSize;
 
-    QColor color[8];
-    int colorIndexes[8];
+    QMButtonAttributes<QColor> colors;
 
     int radius;
 };
@@ -108,24 +105,16 @@ void QRectInfo::setMargins(const QMargins &margins) {
     d->numSize = 4;
 }
 
-QColor QRectInfo::color(QM::ClickState state) const {
-    return d->color[d->colorIndexes[state]];
+QColor QRectInfo::color(QM::ButtonState state) const {
+    return d->colors.value(state);
 }
 
-void QRectInfo::setColor(const QColor &color, QM::ClickState state) {
-    d->color[state] = color;
-    d->colorIndexes[state] = state;
-    QMetaTypeUtils::UpdateClickStateIndexes(d->colorIndexes);
+void QRectInfo::setColor(const QColor &color, QM::ButtonState state) {
+    d->colors.setValue(color, state);
 }
 
 void QRectInfo::setColors(const QList<QColor> &colors) {
-    int sz = qMin(colors.size(), 8);
-    for (int i = 0; i < sz; ++i) {
-        auto state = static_cast<QM::ClickState>(i);
-        d->color[state] = colors.at(state);
-        d->colorIndexes[state] = state;
-    }
-    QMetaTypeUtils::UpdateClickStateIndexes(d->colorIndexes);
+    d->colors.setValues(colors);
 }
 
 int QRectInfo::radius() const {
@@ -137,15 +126,18 @@ void QRectInfo::setRadius(int r) {
 }
 
 QRectInfo QRectInfo::fromStringList(const QStringList &stringList) {
-    QMETATYPE_CHECK_FUNC(stringList, strData);
+    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+        return {};
+    }
+    const auto &strData = stringList.at(1);
 
-    auto args = QMetaTypeUtils::ParseFuncArgList(strData.trimmed(),
-                                                 {
-                                                     "color",
-                                                     "numbers",
-                                                     "radius",
-                                                 },
-                                                 {}, true);
+    auto args = QMCss::parseArgList(strData.trimmed(),
+                                    {
+                                        "color",
+                                        "numbers",
+                                        "radius",
+                                    },
+                                    {});
 
     auto it = args.find("color");
     if (it == args.end())
@@ -153,16 +145,23 @@ QRectInfo QRectInfo::fromStringList(const QStringList &stringList) {
 
     QRectInfo res;
 
-    QString colors[8];
-    QMetaTypeUtils::ParseClickStateArgList(it.value().trimmed(), colors);
-    for (int i = 0; i < 8; ++i) {
-        res.d->color[i] = QMCss::CssStringToColor(colors[i]);
-        res.d->colorIndexes[i] = i;
+    QString colorStrings[8];
+    const auto &colorExpressions = it->trimmed();
+    if (colorExpressions.startsWith('(') && colorExpressions.endsWith(')')) {
+        QMCss::parseButtonStateList(colorExpressions.mid(1, colorExpressions.size() - 2), colorStrings, false);
+
+        for (int i = 0; i < 8; ++i) {
+            if (colorStrings[i].isEmpty())
+                continue;
+            res.setColor(QMCss::parseColor(colorStrings[i]), static_cast<QM::ButtonState>(i));
+        }
+    } else {
+        res.setColor(QMCss::parseColor(colorExpressions));
     }
 
     it = args.find("numbers");
     if (it != args.end()) {
-        auto list = QMetaTypeUtils::SplitStringToIntList(it.value());
+        auto list = QMCss::parseSizeValueList(it.value());
         auto sz = qMin(4, list.size());
         for (int i = 0; i < sz; ++i) {
             res.d->nums[i] = list.at(i);

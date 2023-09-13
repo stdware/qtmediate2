@@ -1,23 +1,27 @@
 #include "QCssValueMap.h"
-#include "private/QMetaTypeUtils.h"
 
 #include <QDebug>
 
-#include "QMBatch.h"
+#include <QMCore/QMBatch.h>
+
+#include "QMCss.h"
 
 QCssValueMap QCssValueMap::fromStringList(const QStringList &stringList) {
-    QMETATYPE_CHECK_FUNC(stringList, strData);
+    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+        return {};
+    }
+    const auto &strData = stringList.at(1);
 
     QCssValueMap res;
-    QStringList valueList = QMetaTypeUtils::SplitStringByComma(strData);
+    QStringList valueList = QMCss::parseStringValueList(strData);
 
     for (auto item : qAsConst(valueList)) {
         item = item.trimmed();
-        auto eq = QMetaTypeUtils::FindFirstEqualSign(item);
+        auto eq = QMCss::indexOfEqSign(item);
         if (eq < 0)
             continue;
         res.get().insert(QMBatch::strRemoveSideQuote(item.left(eq).trimmed(), true),
-                         QMetaTypeUtils::StringToVariant(item.mid(eq + 1).trimmed()));
+                         QMCssType::parse(item.mid(eq + 1).trimmed()));
     }
     return res;
 }

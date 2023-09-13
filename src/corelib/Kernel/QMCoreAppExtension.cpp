@@ -1,5 +1,5 @@
 #include "QMCoreAppExtension.h"
-#include "private/QMCoreAppExtension_p.h"
+#include "QMCoreAppExtension_p.h"
 
 #include <QCoreApplication>
 #include <QIODevice>
@@ -318,12 +318,16 @@ QMCoreAppExtension *QMCoreAppExtension::instance() {
 
     \var QMCoreAppExtension::NoIcon
     \brief Normal level.
+
     \var QMCoreAppExtension::Information
     \brief Information level.
+
     \var QMCoreAppExtension::Question
     \brief Question level.
+
     \var QMCoreAppExtension::Warning
     \brief Warning level.
+    
     \var QMCoreAppExtension::Critical
     \brief Error level.
 */

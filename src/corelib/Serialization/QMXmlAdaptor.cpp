@@ -1,4 +1,4 @@
-#include "QMXmlAdaptor.h"
+#include "QMXmlAdaptor_p.h"
 
 #include <QDebug>
 #include <QFile>

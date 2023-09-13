@@ -1,11 +1,11 @@
-#ifndef CHORUSKIT_QPENINFO_H
-#define CHORUSKIT_QPENINFO_H
+#ifndef QPENINFO_H
+#define QPENINFO_H
 
 #include <QPen>
 #include <QSharedData>
 
-#include "QMGuiGlobal.h"
-#include "QMNamespace.h"
+#include <QMCore/QMNamespace.h>
+#include <QMGui/QMGuiGlobal.h>
 
 class QPenInfoData;
 
@@ -24,14 +24,11 @@ public:
     QPenInfo &operator=(const QPenInfo &other);
     QPenInfo &operator=(QPenInfo &&other) noexcept;
 
-    QPen toPen(QM::ClickState state = QM::CS_Normal) const;
+    QPen toPen(QM::ButtonState state = QM::ButtonNormal) const;
 
-    QBrush brush(QM::ClickState state = QM::CS_Normal) const;
-    void setBrush(const QBrush &brush, QM::ClickState state = QM::CS_Normal);
-
-    QColor color(QM::ClickState state = QM::CS_Normal) const;
-    void setColor(const QColor &color, QM::ClickState state = QM::CS_Normal);
-    void setColors(const QList<QColor> &colors);
+    QBrush brush(QM::ButtonState state = QM::ButtonNormal) const;
+    void setBrush(const QBrush &brush, QM::ButtonState state = QM::ButtonNormal);
+    void setBrushes(const QList<QBrush> &brushes);
 
 public:
     static QPenInfo fromStringList(const QStringList &stringList);
@@ -48,4 +45,4 @@ Q_DECLARE_TYPEINFO(QPenInfo, Q_MOVABLE_TYPE);
 
 Q_DECLARE_METATYPE(QPenInfo)
 
-#endif // CHORUSKIT_QPENINFO_H
+#endif // QPENINFO_H

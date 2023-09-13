@@ -8,7 +8,7 @@
 #include <QString>
 #include <QTextCodec>
 
-#include "QMGlobal.h"
+#include <QMCore/QMGlobal.h>
 
 namespace QMFs {
 
@@ -80,7 +80,7 @@ namespace QMFs {
 }
 
 namespace QMOs {
-    
+
     Q_DECL_CONSTEXPR inline int unitDpi() {
 #ifdef Q_OS_MACOS
         return 72;

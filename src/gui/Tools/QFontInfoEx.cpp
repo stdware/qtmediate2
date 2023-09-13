@@ -1,12 +1,13 @@
 #include "QFontInfoEx.h"
-#include "private/QMetaTypeUtils.h"
 
 #include <QColor>
 #include <QDebug>
 #include <QGuiApplication>
 
-#include <QMBatch.h>
-#include <QMCss.h>
+#include <QMCore/QMBatch.h>
+
+#include "QMButtonState_p.h"
+#include "QMCss.h"
 
 class QFontInfoExData : public QSharedData {
 public:
@@ -15,8 +16,6 @@ public:
         italic = -1;
         point = -1;
         pixel = -1;
-
-        QMetaTypeUtils::InitClickStateIndexes(colorIndexes);
     }
 
     int weight;
@@ -24,8 +23,7 @@ public:
     double point;
     int pixel;
     QStringList families;
-    QColor color[8];
-    int colorIndexes[8];
+    QMButtonAttributes<QColor> colors;
 
     void copyAttributes(QFont &font) const {
         if (weight >= 0) {
@@ -139,24 +137,16 @@ void QFontInfoEx::setFamilies(const QStringList &families) {
     d->families = families;
 }
 
-QColor QFontInfoEx::color(QM::ClickState state) const {
-    return d->color[d->colorIndexes[state]];
+QColor QFontInfoEx::color(QM::ButtonState state) const {
+    return d->colors.value(state);
 }
 
-void QFontInfoEx::setColor(const QColor &color, QM::ClickState state) {
-    d->color[state] = color;
-    d->colorIndexes[state] = state;
-    QMetaTypeUtils::UpdateClickStateIndexes(d->colorIndexes);
+void QFontInfoEx::setColor(const QColor &color, QM::ButtonState state) {
+    d->colors.setValue(color, state);
 }
 
 void QFontInfoEx::setColors(const QList<QColor> &colors) {
-    int sz = qMin(colors.size(), 8);
-    for (int i = 0; i < sz; ++i) {
-        auto state = static_cast<QM::ClickState>(i);
-        d->color[state] = colors.at(state);
-        d->colorIndexes[state] = state;
-    }
-    QMetaTypeUtils::UpdateClickStateIndexes(d->colorIndexes);
+    d->colors.setValues(colors);
 }
 
 static int StringToWeight(const QString &str, int defaultValue) {
@@ -184,17 +174,20 @@ static int StringToWeight(const QString &str, int defaultValue) {
 }
 
 QFontInfoEx QFontInfoEx::fromStringList(const QStringList &stringList) {
-    QMETATYPE_CHECK_FUNC(stringList, strData);
+    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+        return {};
+    }
+    const auto &strData = stringList.at(1);
 
-    auto args = QMetaTypeUtils::ParseFuncArgList(strData.trimmed(),
-                                                 {
-                                                     "color",
-                                                     "size",
-                                                     "weight",
-                                                     "italic",
-                                                     "family",
-                                                 },
-                                                 {}, true);
+    auto args = QMCss::parseArgList(strData.trimmed(),
+                                    {
+                                        "color",
+                                        "size",
+                                        "weight",
+                                        "italic",
+                                        "family",
+                                    },
+                                    {});
 
     auto it = args.find("color");
     if (it == args.end())
@@ -202,23 +195,28 @@ QFontInfoEx QFontInfoEx::fromStringList(const QStringList &stringList) {
 
     QFontInfoEx res;
 
-    QString colors[8];
-    QMetaTypeUtils::ParseClickStateArgList(it.value().trimmed(), colors);
-    for (int i = 0; i < 8; ++i) {
-        res.d->color[i] = QMCss::CssStringToColor(colors[i]);
-        res.d->colorIndexes[i] = i;
+    QString colorStrings[8];
+    const auto &colorExpressions = it->trimmed();
+    if (colorExpressions.startsWith('(') && colorExpressions.endsWith(')')) {
+        QMCss::parseButtonStateList(colorExpressions.mid(1, colorExpressions.size() - 2), colorStrings, false);
+
+        for (int i = 0; i < 8; ++i) {
+            if (colorStrings[i].isEmpty())
+                continue;
+            res.setColor(QMCss::parseColor(colorStrings[i]), static_cast<QM::ButtonState>(i));
+        }
+    } else {
+        res.setColor(QMCss::parseColor(colorExpressions));
     }
 
     it = args.find("size");
     if (it != args.end()) {
         const auto &val = it.value();
 
-        QLatin1String px(PixelSizeUnit);
-        QLatin1String pt(PointSizeUnit);
-        if (val.endsWith(pt)) {
+        if (val.endsWith("pt")) {
             // pt
             res.setPointSize(val.chopped(2).toDouble());
-        } else if (val.endsWith(px)) {
+        } else if (val.endsWith("px")) {
             // px
             res.setPixelSize(val.chopped(2).toInt());
         } else {
@@ -243,14 +241,14 @@ QFontInfoEx QFontInfoEx::fromStringList(const QStringList &stringList) {
 
     it = args.find("italic");
     if (it != args.end()) {
-        res.setItalic(QMetaTypeUtils::StringToBool(it.value()));
+        res.setItalic(QMCss::parseBoolean(it.value()));
     }
 
     it = args.find("family");
     if (it != args.end()) {
         const auto &val = it.value();
         QStringList list = (val.startsWith('(') && val.endsWith(')'))
-                               ? QMetaTypeUtils::SplitStringByComma(val.midRef(1, val.size() - 2))
+                               ? QMCss::parseStringValueList(val.mid(1, val.size() - 2))
                                : QStringList{val};
         for (auto &item : list)
             item = QMBatch::strRemoveSideQuote(item.trimmed());
@@ -270,9 +268,9 @@ QDebug operator<<(QDebug debug, const QFontInfoEx &info) {
     QStringList list;
     list << info.color().name();
     if (info.pointSize() > 0) {
-        list << QString::number(info.pointSize()) + PointSizeUnit;
+        list << QString::number(info.pointSize()) + "pt";
     } else if (info.pixelSize() > 0) {
-        list << QString::number(info.pixelSize()) + PixelSizeUnit;
+        list << QString::number(info.pixelSize()) + "px";
     }
     list << QString::number(info.weight());
     if (info.italic()) {

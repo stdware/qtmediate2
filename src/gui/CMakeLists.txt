@@ -27,15 +27,13 @@ qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
 )
 
 # Include
-qtmediate_include_directories(${PROJECT_NAME}
-    Global Kernel Tools .
-)
-
 qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
     Core Gui
 )
 
+target_include_directories(${PROJECT_NAME} PRIVATE
+    Global Kernel Painting Svgx Tools
+)
+
 # Extra
 qtmediate_dir_skip_automoc(Tools)
-
-qtmediate_install_headers(.)

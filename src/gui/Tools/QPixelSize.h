@@ -4,7 +4,7 @@
 #include <QMetaType>
 #include <QString>
 
-#include "QMGuiGlobal.h"
+#include <QMGui/QMGuiGlobal.h>
 
 class QMGUI_EXPORT QPixelSize {
 public:

@@ -4,6 +4,12 @@
 function(qtmediate_add_library _target _type)
     add_library(${_target} ${_type} ${ARGN})
 
+    set(_gen_include_dir ${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target})
+
+    if(NOT EXISTS ${_gen_include_dir})
+        qtmediate_gen_include(. ${_gen_include_dir})
+    endif()
+
     if(WIN32)
         set(RC_VERSION_STRING ${QTMEDIATE_INSTALL_NAME})
         include(${QTMEDIATE_MODULES_DIR}/winrc.cmake)
@@ -20,7 +26,21 @@ function(qtmediate_add_library _target _type)
         target_include_directories(${PROJECT_NAME} PUBLIC
             "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}>"
         )
+
+        install(CODE "
+            include(${QTMEDIATE_MODULES_DIR}/qtmediateMacros.cmake)
+            qtmediate_gen_include(
+                \"${CMAKE_CURRENT_SOURCE_DIR}\"
+                \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_target}\"
+                COPY CLEAN
+            )
+        "
+        )
     endif()
+
+    target_include_directories(${PROJECT_NAME} PUBLIC
+        "$<BUILD_INTERFACE:${QTMEDIATE_GENERATED_INCLUDE_DIR}>"
+    )
 
     set_property(GLOBAL APPEND PROPERTY QTMEDIATE_TRANSLATE_TARGETS ${_target})
 endfunction()
@@ -51,33 +71,13 @@ function(qtmediate_add_plugin _target _category)
     set_property(GLOBAL APPEND PROPERTY TRANSLATE_TARGETS ${_target})
 endfunction()
 
-function(qtmediate_include_directories _target)
-    foreach(_dir ${ARGN})
-        get_filename_component(_abs_dir ${_dir} ABSOLUTE)
-        file(RELATIVE_PATH _rel_path ${QTMEDIATE_SOURCE_DIR} ${_abs_dir})
-        target_include_directories(${_target} PUBLIC
-            "$<BUILD_INTERFACE:${_abs_dir}>"
-            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_rel_path}>"
-        )
-    endforeach()
-endfunction()
-
-macro(qtmediate_install_headers _dir)
-    if(QTMEDIATE_INSTALL)
-        get_filename_component(_abs_dir ${_dir} ABSOLUTE)
-        file(RELATIVE_PATH _rel_path ${QTMEDIATE_SOURCE_DIR} ${_abs_dir})
-        install(DIRECTORY ${_abs_dir}/
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_rel_path}
-            FILES_MATCHING PATTERN "*.h"
-        )
-    endif()
-endmacro()
-
 # ----------------------------------
 # Main Project
 # ----------------------------------
 set(RC_DESCRIPTION "Qt with custom implementations")
 set(RC_COPYRIGHT "Copyright 2019-2023 SineStriker")
+
+set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
 
 include(${QTMEDIATE_MODULES_DIR}/qtmediateMacros.cmake)
 

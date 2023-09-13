@@ -4,8 +4,8 @@
 #include <QScreen>
 #include <QTimer>
 
-#include "QMGuiDecoratorV2.h"
-#include "QMWidgetsGlobal.h"
+#include <QMGui/QMGuiDecoratorV2.h>
+#include <QMWidgets/QMWidgetsGlobal.h>
 
 #ifdef qIDec
 #    undef qIDec

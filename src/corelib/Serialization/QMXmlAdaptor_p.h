@@ -1,28 +1,19 @@
 #ifndef QMXMLADAPTOR_H
 #define QMXMLADAPTOR_H
 
+//
+//  W A R N I N G !!!
+//  -----------------
+//
+// This file is not part of the QtMediate API. It is used purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or may even be removed.
+//
+
 #include <QJsonObject>
 #include <QXmlStreamWriter>
 
-#include "QMGlobal.h"
-
-// Example
-
-/*
-
-    {
-        "name": "document",
-        "properties": {
-            "key1": "val1",
-            ...
-        },
-        "value": "...",
-        "children": [
-            ...
-        ]
-    }
-
-*/
+#include <QMCore/QMGlobal.h>
 
 class QMCORE_EXPORT QMXmlAdaptorElement {
 public:
@@ -53,5 +44,23 @@ public:
 
     QMXmlAdaptorElement root;
 };
+
+// Example
+
+/*
+
+    {
+        "name": "document",
+        "properties": {
+            "key1": "val1",
+            ...
+        },
+        "value": "...",
+        "children": [
+            ...
+        ]
+    }
+
+*/
 
 #endif // QMXMLADAPTOR_H

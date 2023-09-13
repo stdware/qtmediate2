@@ -1,10 +1,10 @@
 #ifndef QMCHRONSET_H
 #define QMCHRONSET_H
 
+#include <list>
+
 #include <QDebug>
 #include <QHash>
-
-#include <list>
 
 template <class K>
 class QMChronSet {

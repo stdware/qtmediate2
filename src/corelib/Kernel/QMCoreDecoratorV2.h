@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "QMGlobal.h"
+#include <QMCore/QMGlobal.h>
 
 #define qIDec QMCoreDecoratorV2::instance()
 

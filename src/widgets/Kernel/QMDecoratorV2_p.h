@@ -1,5 +1,5 @@
-#ifndef QMDECORATORV2PRIVATE_H
-#define QMDECORATORV2PRIVATE_H
+#ifndef QMDECORATORV2_P_H
+#define QMDECORATORV2_P_H
 
 #include <QHash>
 #include <QMap>
@@ -8,8 +8,8 @@
 #include <QTranslator>
 #include <QWidget>
 
-#include "../QMDecoratorV2.h"
-#include "private/QMGuiDecoratorV2_p.h"
+#include "QMDecoratorV2.h"
+#include "QMGuiDecoratorV2_p.h"
 
 class ThemeGuardV2 : public QObject {
     Q_OBJECT
@@ -67,4 +67,4 @@ private:
     void _q_themeSubscriberDestroyed();
 };
 
-#endif // QMDECORATORV2PRIVATE_H
+#endif // QMDECORATORV2_P_H

@@ -1,5 +1,4 @@
 #include "QPixelSize.h"
-#include "private/QMetaTypeUtils.h"
 
 #include <QDebug>
 
@@ -16,7 +15,7 @@ QPixelSize::~QPixelSize() {
 }
 
 QString QPixelSize::toString() const {
-    return QString("%1%2").arg(QString::number(m_value), QLatin1String(PixelSizeUnit));
+    return QString("%1%2").arg(QString::number(m_value), "px");
 }
 
 int QPixelSize::value() const {
@@ -45,9 +44,8 @@ QPixelSize::operator double() const {
 
 QPixelSize QPixelSize::fromString(const QString &string) {
     QString str;
-    QLatin1String px(PixelSizeUnit);
-    if (string.endsWith(px, Qt::CaseInsensitive)) {
-        str = string.chopped(px.size());
+    if (string.endsWith("px", Qt::CaseInsensitive)) {
+        str = string.chopped(2);
     } else {
         str = string;
     }

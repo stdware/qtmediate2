@@ -25,13 +25,10 @@ qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
 )
 
 # Include
-qtmediate_include_directories(${PROJECT_NAME}
-    Dialogs Global Tools Widgets Windows .
-)
-
 qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
     Core Gui Widgets
 )
 
-# Extra
-qtmediate_install_headers(.)
+target_include_directories(${PROJECT_NAME} PRIVATE
+    Dialogs Global Tools Widgets Windows
+)

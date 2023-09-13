@@ -1,5 +1,5 @@
 #include "QMCoreDecoratorV2.h"
-#include "private/QMCoreDecoratorV2_p.h"
+#include "QMCoreDecoratorV2_p.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -259,7 +259,7 @@ void QMCoreDecoratorV2::installLocale(QObject *o, const std::function<void()> &u
 
 /*!
     \fn void QMCoreDecoratorV2::localeChanged(const QString &locale)
-    
+
     This signal is emitted when the current locale changes.
 */
 

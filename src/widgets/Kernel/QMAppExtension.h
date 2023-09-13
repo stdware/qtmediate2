@@ -1,9 +1,9 @@
 #ifndef QMAPPEXTENSION_H
 #define QMAPPEXTENSION_H
 
-#include <QMGuiAppExtension.h>
+#include <QMGui/QMGuiAppExtension.h>
 
-#include "QMWidgetsGlobal.h"
+#include <QMWidgets/QMWidgetsGlobal.h>
 
 #ifdef qAppExt
 #    undef qAppExt

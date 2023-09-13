@@ -1,11 +1,12 @@
-#ifndef CHORUSKIT_QRECTINFO_H
-#define CHORUSKIT_QRECTINFO_H
+#ifndef QRECTINFO_H
+#define QRECTINFO_H
 
 #include <QPen>
 #include <QSharedData>
 
-#include "QMGuiGlobal.h"
-#include "QMNamespace.h"
+#include <QMCore/QMNamespace.h>
+
+#include <QMGui/QMGuiGlobal.h>
 
 class QRectInfoData;
 
@@ -27,8 +28,8 @@ public:
     QMargins margins() const;
     void setMargins(const QMargins &margins);
 
-    QColor color(QM::ClickState state = QM::CS_Normal) const;
-    void setColor(const QColor &color, QM::ClickState state = QM::CS_Normal);
+    QColor color(QM::ButtonState state = QM::ButtonNormal) const;
+    void setColor(const QColor &color, QM::ButtonState state = QM::ButtonNormal);
     void setColors(const QList<QColor> &colors);
 
     int radius() const;
@@ -49,4 +50,4 @@ Q_DECLARE_TYPEINFO(QRectInfo, Q_MOVABLE_TYPE);
 
 Q_DECLARE_METATYPE(QRectInfo)
 
-#endif // CHORUSKIT_QRECTINFO_H
+#endif // QRECTINFO_H

@@ -36,13 +36,10 @@ qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
 )
 
 # Include
-qtmediate_include_directories(${PROJECT_NAME}
-    Global Kernel Layout Widgets .
-)
-
 qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
     Core Gui Widgets
 )
 
-# Extra
-qtmediate_install_headers(.)
+target_include_directories(${PROJECT_NAME} PRIVATE
+    Global Kernel Layout Widgets
+)

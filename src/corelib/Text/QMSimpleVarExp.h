@@ -3,7 +3,7 @@
 
 #include <QJsonObject>
 
-#include "QMGlobal.h"
+#include <QMCore/QMGlobal.h>
 
 class QMCORE_EXPORT QMSimpleVarExp {
 public:

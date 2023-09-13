@@ -7,7 +7,7 @@
 
 #include "QMDecoratorV2.h"
 
-#include "private/QMAppExtension_p.h"
+#include "QMAppExtension_p.h"
 
 #ifdef _WIN32
 #    include <Windows.h>

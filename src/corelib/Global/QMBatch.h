@@ -5,7 +5,7 @@
 #include <QPoint>
 #include <QStringList>
 
-#include "QMGlobal.h"
+#include <QMCore/QMGlobal.h>
 
 namespace QMBatch {
 
@@ -89,7 +89,6 @@ namespace QMBatch {
         return res;
     }
 
-};
-
+}
 
 #endif // QMBATCH_H

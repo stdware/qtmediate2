@@ -1,12 +1,21 @@
-#ifndef QMCOREDECORATORV2PRIVATE_H
-#define QMCOREDECORATORV2PRIVATE_H
+#ifndef QMCOREDECORATORV2_P_H
+#define QMCOREDECORATORV2_P_H
 
-#include "../QMCoreDecoratorV2.h"
+//
+//  W A R N I N G !!!
+//  -----------------
+//
+// This file is not part of the QtMediate API. It is used purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or may even be removed.
+//
 
 #include <QHash>
 #include <QMap>
 #include <QSet>
 #include <QTranslator>
+
+#include <QMCore/QMCoreDecoratorV2.h>
 
 class QMCORE_EXPORT QMCoreDecoratorV2Private : public QObject {
     Q_OBJECT
@@ -35,4 +44,4 @@ private:
     void _q_localeSubscriberDestroyed();
 };
 
-#endif // QMCOREDECORATORV2PRIVATE_H
+#endif // QMCOREDECORATORV2_P_H

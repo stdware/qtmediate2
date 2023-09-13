@@ -1,8 +1,9 @@
 #ifndef QMAPPEXTENSION_P_H
 #define QMAPPEXTENSION_P_H
 
-#include "../QMAppExtension.h"
-#include "private/QMGuiAppExtension_p.h"
+#include <QMGuiAppExtension_p.h>
+
+#include "QMAppExtension.h"
 
 class QMAppExtensionPrivate : public QMGuiAppExtensionPrivate {
     Q_DECLARE_PUBLIC(QMAppExtension)

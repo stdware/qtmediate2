@@ -5,11 +5,86 @@
 #include <QGuiApplication>
 #include <QScreen>
 
-#include "QMGuiDecoratorV2.h"
-#include "QMSystem.h"
+#include <QMCore/QMSystem.h>
 
-#include "private/QMGuiAppExtension_p.h"
-#include "private/QMetaTypeImpl_p.h"
+#include "QMGuiDecoratorV2.h"
+
+#include "QMGuiAppExtension_p.h"
+
+// ======================================================================================
+// QMetaTypeImpl
+
+#include "QFontInfoEx.h"
+#include "QMarginsImpl.h"
+#include "QPenInfo.h"
+#include "QPixelSize.h"
+#include "QRectInfo.h"
+
+#include "QColorList.h"
+#include "QCssValueList.h"
+#include "QCssValueMap.h"
+
+#include "QMCss.h"
+
+namespace QMetaTypeImpl {
+
+    template <class T>
+    static void registerFromString() {
+        QMetaType::registerConverter<QString, T>(T::fromString);
+    }
+
+    template <class T>
+    static void registerFromStringList() {
+        QMetaType::registerConverter<QStringList, T>(T::fromStringList);
+    }
+
+    template <class T>
+    static void registerMetaTypeId() {
+        QMCssType::registerMetaTypeName(qMetaTypeId<T>(), T::metaFunctionName());
+    }
+
+    void Register() {
+        static bool m_registered = false;
+        if (m_registered) {
+            return;
+        }
+        m_registered = true;
+
+        // Register converters
+        QMetaType::registerConverter<QStringList, QMargins>(QMarginsImpl::fromStringList);
+        QMetaType::registerConverter<QString, QMargins>(QMarginsImpl::fromString);
+
+        QMetaType::registerConverter<QPixelSize, int>([](const QPixelSize &size) -> int {
+            return size.value(); //
+        });
+        QMetaType::registerConverter<QPixelSize, double>([](const QPixelSize &size) -> double {
+            return size.valueF(); //
+        });
+        registerFromString<QPixelSize>();
+
+        registerFromStringList<QPenInfo>();
+        registerFromStringList<QRectInfo>();
+        registerFromStringList<QFontInfoEx>();
+
+        registerFromStringList<QColorList>();
+        registerFromStringList<QCssValueList>();
+        registerFromStringList<QCssValueMap>();
+
+        // Register names
+        QMCssType::registerMetaTypeName(qMetaTypeId<QMargins>(), QMarginsImpl::metaFunctionName());
+
+        registerMetaTypeId<QPenInfo>();
+        registerMetaTypeId<QRectInfo>();
+        registerMetaTypeId<QFontInfoEx>();
+        registerMetaTypeId<QColorList>();
+        registerMetaTypeId<QCssValueList>();
+        registerMetaTypeId<QCssValueMap>();
+    }
+
+}
+
+// QMetaTypeImpl
+// ======================================================================================
 
 QMGuiAppExtensionPrivate::QMGuiAppExtensionPrivate() {
 }
@@ -79,12 +154,26 @@ QMCoreDecoratorV2 *QMGuiAppExtensionPrivate::createDecorator(QObject *parent) {
     return new QMGuiDecoratorV2(parent);
 }
 
+/*!
+    \class QMGuiAppExtension
+    \brief The QMGuiAppExtension class is the global resources manager for \c qtmediate framework.
+*/
+
+/*!
+    Constructor.
+*/
 QMGuiAppExtension::QMGuiAppExtension(QObject *parent) : QMGuiAppExtension(*new QMGuiAppExtensionPrivate(), parent) {
 }
 
+/*!
+    Destructor.
+*/
 QMGuiAppExtension::~QMGuiAppExtension() {
 }
 
+/*!
+    \internal
+*/
 QMGuiAppExtension::QMGuiAppExtension(QMGuiAppExtensionPrivate &d, QObject *parent) : QMCoreAppExtension(d, parent) {
     d.init();
 }

@@ -1,18 +1,21 @@
 #include "QColorList.h"
-#include "private/QMetaTypeUtils.h"
-
-#include "QMBatch.h"
-#include "QMCss.h"
 
 #include <QDebug>
 
+#include <QMCore/QMBatch.h>
+
+#include "QMCss.h"
+
 QColorList QColorList::fromStringList(const QStringList &stringList) {
-    QMETATYPE_CHECK_FUNC(stringList, strData);
+    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+        return {};
+    }
+    const auto &strData = stringList.at(1);
 
     QColorList res;
-    QStringList valueList = QMetaTypeUtils::SplitStringByComma(strData);
+    QStringList valueList = QMCss::parseStringValueList(strData);
     for (const auto &item : qAsConst(valueList)) {
-        res.get().append(QMCss::CssStringToColor(QMBatch::strRemoveSideQuote(item.simplified())));
+        res.get().append(QMCss::parseColor(QMBatch::strRemoveSideQuote(item.simplified())));
     }
 
     return res;

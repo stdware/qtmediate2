@@ -1,5 +1,5 @@
 #include "QMDecoratorV2.h"
-#include "private/QMDecoratorV2_p.h"
+#include "QMDecoratorV2_p.h"
 
 #include <QApplication>
 #include <QDir>
@@ -14,7 +14,9 @@
 #include <QMSimpleVarExp.h>
 #include <QMSystem.h>
 
-#include "private/QMGuiAppExtension_p.h"
+#include "QMGuiAppExtension_p.h"
+
+#define DEFAULT_THEME "Visual Studio Code - Dark"
 
 ThemeGuardV2::ThemeGuardV2(QWidget *w, QMDecoratorV2Private *parent)
     : QObject(parent), w(w), d(parent), winHandle(nullptr) {
@@ -62,8 +64,8 @@ void ThemeGuardV2::updateScreen() {
                     }
 
                     // Evaluate variables
-                    stylesheet = QMSimpleVarExp::evaluate(stylesheet, d->variables.value(curTheme, {}),
-                                                                   R"(\$\{([^\}]+)\})");
+                    stylesheet =
+                        QMSimpleVarExp::evaluate(stylesheet, d->variables.value(curTheme, {}), R"(\$\{([^\}]+)\})");
 
                     stylesheet = QMDecoratorV2Private::replaceSizes(
                         stylesheet, screen->logicalDotsPerInch() / QMOs::unitDpi(), true);
@@ -140,7 +142,7 @@ QMDecoratorV2Private::~QMDecoratorV2Private() {
 }
 
 void QMDecoratorV2Private::init() {
-    currentTheme = "Visual Studio Code - Dark";
+    currentTheme = DEFAULT_THEME;
 }
 
 struct QssItem {

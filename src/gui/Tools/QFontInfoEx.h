@@ -1,11 +1,11 @@
-#ifndef CHORUSKIT_QFONTINFOEX_H
-#define CHORUSKIT_QFONTINFOEX_H
+#ifndef QFONTINFOEX_H
+#define QFONTINFOEX_H
 
 #include <QFont>
 #include <QSharedData>
 
-#include "QMGuiGlobal.h"
-#include "QMNamespace.h"
+#include <QMCore/QMNamespace.h>
+#include <QMGui/QMGuiGlobal.h>
 
 class QFontInfoExData;
 
@@ -39,8 +39,8 @@ public:
     QStringList families() const;
     void setFamilies(const QStringList &families);
 
-    QColor color(QM::ClickState state = QM::CS_Normal) const;
-    void setColor(const QColor &color, QM::ClickState state = QM::CS_Normal);
+    QColor color(QM::ButtonState state = QM::ButtonNormal) const;
+    void setColor(const QColor &color, QM::ButtonState state = QM::ButtonNormal);
     void setColors(const QList<QColor> &colors);
 
 public:
@@ -58,4 +58,4 @@ Q_DECLARE_TYPEINFO(QFontInfoEx, Q_MOVABLE_TYPE);
 
 Q_DECLARE_METATYPE(QFontInfoEx)
 
-#endif // CHORUSKIT_QFONTINFOEX_H
+#endif // QFONTINFOEX_H

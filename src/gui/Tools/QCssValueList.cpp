@@ -1,15 +1,19 @@
 #include "QCssValueList.h"
-#include "private/QMetaTypeUtils.h"
 
 #include <QDebug>
 
+#include "QMCss.h"
+
 QCssValueList QCssValueList::fromStringList(const QStringList &stringList) {
-    QMETATYPE_CHECK_FUNC(stringList, strData);
+    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+        return {};
+    }
+    const auto &strData = stringList.at(1);
 
     QCssValueList res;
-    QStringList valueList = QMetaTypeUtils::SplitStringByComma(strData);
+    QStringList valueList = QMCss::parseStringValueList(strData);
     for (const auto &item : valueList) {
-        res.get().append(QMetaTypeUtils::StringToVariant(item.trimmed()));
+        res.get().append(QMCssType::parse(item.trimmed()));
     }
 
     return res;

@@ -4,7 +4,7 @@
 #include <QColor>
 #include <QMetaType>
 
-#include "QMGuiGlobal.h"
+#include <QMGui/QMGuiGlobal.h>
 
 class QMGUI_EXPORT QColorList {
 public:

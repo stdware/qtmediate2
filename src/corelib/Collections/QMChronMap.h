@@ -1,10 +1,10 @@
 #ifndef QMCHRONMAP_H
 #define QMCHRONMAP_H
 
+#include <list>
+
 #include <QDebug>
 #include <QHash>
-
-#include <list>
 
 template <class K, class T>
 class QMChronMap {

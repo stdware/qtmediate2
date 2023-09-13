@@ -3,19 +3,20 @@
 
 #include <QtGlobal>
 
-#include "QMGuiGlobal.h"
-#include "QMWidgetsMacros.h"
+// clang-format off
 
 #ifndef QMWIDGETS_EXPORT
-#    ifdef QMWIDGETS_STATIC
-#        define QMWIDGETS_EXPORT
+#  ifdef QMWIDGETS_STATIC
+#    define QMWIDGETS_EXPORT
+#  else
+#    ifdef QMWIDGETS_LIBRARY
+#      define QMWIDGETS_EXPORT Q_DECL_EXPORT
 #    else
-#        ifdef QMWIDGETS_LIBRARY
-#            define QMWIDGETS_EXPORT Q_DECL_EXPORT
-#        else
-#            define QMWIDGETS_EXPORT Q_DECL_IMPORT
-#        endif
+#      define QMWIDGETS_EXPORT Q_DECL_IMPORT
 #    endif
+#  endif
 #endif
+
+// clang-format on
 
 #endif // QMWIDGETSGLOBAL_H

@@ -4,7 +4,7 @@
 #include <QMargins>
 #include <QVariant>
 
-#include "QMGuiGlobal.h"
+#include <QMGui/QMGuiGlobal.h>
 
 namespace QMarginsImpl {
 

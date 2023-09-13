@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QSettings>
 
-#include "QMGlobal.h"
+#include <QMCore/QMGlobal.h>
 
 #define qAppExt QMCoreAppExtension::instance()
 

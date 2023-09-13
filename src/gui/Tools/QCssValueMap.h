@@ -4,7 +4,7 @@
 #include <QMap>
 #include <QVariant>
 
-#include "QMGuiGlobal.h"
+#include <QMGui/QMGuiGlobal.h>
 
 class QMGUI_EXPORT QCssValueMap {
 public:

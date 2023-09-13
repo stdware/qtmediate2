@@ -1,10 +1,11 @@
 #include "QPenInfo.h"
-#include "private/QMetaTypeUtils.h"
 
 #include <QDebug>
 
+#include "QMButtonState_p.h"
 #include "QMCss.h"
 #include "QPixelSize.h"
+
 
 static const char QCssCustomValue_Pen_Line_None[] = "none";
 static const char QCssCustomValue_Pen_Line_Solid[] = "solid";
@@ -63,12 +64,7 @@ static Qt::PenJoinStyle StringToJoinStyle(const QString &str, Qt::PenJoinStyle d
 
 class QPenInfoData : public QSharedData {
 public:
-    QBrush brush[8];
-    int brushIndexes[8];
-
-    QPenInfoData() {
-        QMetaTypeUtils::InitClickStateIndexes(brushIndexes);
-    }
+    QMButtonAttributes<QBrush> brushes;
 };
 
 QPenInfo::QPenInfo() : d(new QPenInfoData()) {
@@ -115,68 +111,48 @@ QPenInfo &QPenInfo::operator=(QPenInfo &&other) noexcept {
     return *this;
 }
 
-QPen QPenInfo::toPen(QM::ClickState state) const {
+QPen QPenInfo::toPen(QM::ButtonState state) const {
     QPen pen = *this;
-    if (state != QM::CS_Normal)
-        pen.setBrush(d->brush[state]);
+    if (state != QM::ButtonNormal)
+        pen.setBrush(d->brushes.value(state));
     return pen;
 }
 
-QBrush QPenInfo::brush(QM::ClickState state) const {
-    int idx = d->brushIndexes[state];
-    if (idx != QM::CS_Normal)
-        return d->brush[idx];
-    return QPen::brush();
+QBrush QPenInfo::brush(QM::ButtonState state) const {
+    return d->brushes.value(state);
 }
 
-void QPenInfo::setBrush(const QBrush &brush, QM::ClickState state) {
-    if (state != QM::CS_Normal) {
-        d->brush[state] = brush;
-        d->brushIndexes[state] = state;
-        QMetaTypeUtils::UpdateClickStateIndexes(d->brushIndexes);
-        return;
-    }
-    QPen::setBrush(brush);
+void QPenInfo::setBrush(const QBrush &brush, QM::ButtonState state) {
+    d->brushes.setValue(brush, state);
+    if (state == QM::ButtonNormal)
+        QPen::setBrush(brush);
 }
 
-QColor QPenInfo::color(QM::ClickState state) const {
-    return brush(state).color();
-}
-
-void QPenInfo::setColor(const QColor &color, QM::ClickState state) {
-    setBrush(color, state);
-}
-
-void QPenInfo::setColors(const QList<QColor> &colors) {
-    int sz = qMin(colors.size(), 8);
-    for (int i = 0; i < sz; ++i) {
-        auto state = static_cast<QM::ClickState>(i);
-        if (state != QM::CS_Normal) {
-            d->brush[state] = colors.at(state);
-            d->brushIndexes[state] = state;
-            continue;
-        }
-        QPen::setBrush(colors.at(state));
-    }
-    QMetaTypeUtils::UpdateClickStateIndexes(d->brushIndexes);
+void QPenInfo::setBrushes(const QList<QBrush> &brushes) {
+    d->brushes.setValues(brushes);
+    if (brushes.size() > 0)
+        QPen::setBrush(brushes.front());
 }
 
 QPenInfo QPenInfo::fromStringList(const QStringList &stringList) {
-    QMETATYPE_CHECK_FUNC(stringList, strData);
+    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+        return {};
+    }
+    const auto &strData = stringList.at(1);
 
-    auto args = QMetaTypeUtils::ParseFuncArgList(strData.trimmed(),
-                                                 {
-                                                     "color",
-                                                     "width",
-                                                     "style",
-                                                     "cap",
-                                                     "join",
-                                                     "dashPattern",
-                                                     "dashOffset",
-                                                     "miterLimit",
-                                                     "cosmetic",
-                                                 },
-                                                 {}, true);
+    auto args = QMCss::parseArgList(strData.trimmed(),
+                                    {
+                                        "color",
+                                        "width",
+                                        "style",
+                                        "cap",
+                                        "join",
+                                        "dashPattern",
+                                        "dashOffset",
+                                        "miterLimit",
+                                        "cosmetic",
+                                    },
+                                    {});
 
     auto it = args.find("color");
     if (it == args.end())
@@ -184,11 +160,18 @@ QPenInfo QPenInfo::fromStringList(const QStringList &stringList) {
 
     QPenInfo res;
 
-    QString colors[8];
-    QMetaTypeUtils::ParseClickStateArgList(it.value().trimmed(), colors);
-    for (int i = 0; i < 8; ++i) {
-        res.d->brush[i] = QBrush(QMCss::CssStringToColor(colors[i]));
-        res.d->brushIndexes[i] = i;
+    QString colorStrings[8];
+    const auto &colorExpressions = it->trimmed();
+    if (colorExpressions.startsWith('(') && colorExpressions.endsWith(')')) {
+        QMCss::parseButtonStateList(colorExpressions.mid(1, colorExpressions.size() - 2), colorStrings, false);
+
+        for (int i = 0; i < 8; ++i) {
+            if (colorStrings[i].isEmpty())
+                continue;
+            res.setBrush(QMCss::parseColor(colorStrings[i]), static_cast<QM::ButtonState>(i));
+        }
+    } else {
+        res.setColor(QMCss::parseColor(colorExpressions));
     }
 
     it = args.find("width");
@@ -213,7 +196,7 @@ QPenInfo QPenInfo::fromStringList(const QStringList &stringList) {
 
     it = args.find("dashPattern");
     if (it != args.end()) {
-        res.setDashPattern(QMetaTypeUtils::SplitStringToDoubleList(it.value()));
+        res.setDashPattern(QMCss::parseSizeFValueList(it.value()).toVector());
     }
 
     it = args.find("dashOffset");
@@ -228,7 +211,7 @@ QPenInfo QPenInfo::fromStringList(const QStringList &stringList) {
 
     it = args.find("cosmetic");
     if (it != args.end()) {
-        res.setCosmetic(QMetaTypeUtils::StringToBool(it.value()));
+        res.setCosmetic(QMCss::parseBoolean(it.value()));
     }
 
     return res;

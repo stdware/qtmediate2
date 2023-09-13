@@ -3,6 +3,8 @@
 
 #include <QtGlobal>
 
+// clang-format off
+
 #ifndef QMCORE_EXPORT
 #  ifdef QMCORE_STATIC
 #    define QMCORE_EXPORT
@@ -14,5 +16,7 @@
 #    endif
 #  endif
 #endif
+
+// clang-format on
 
 #endif // QMGLOBAL_H
