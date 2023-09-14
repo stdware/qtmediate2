@@ -163,6 +163,7 @@ QHash<QString, QString> QMSimpleVarExp::systemValues() {
 /*!
     Static member function for parsing a variable expression.
 */
-QString QMSimpleVarExp::evaluate(const QString &s, const QHash<QString, QString> &dict, const QString &pattern) {
+QString QMSimpleVarExp::evaluate(const QString &s, const QHash<QString, QString> &dict,
+                                 const QString &pattern) {
     return dfs(s, QRegularExpression(pattern.isEmpty() ? DefaultPattern : pattern), dict);
 }

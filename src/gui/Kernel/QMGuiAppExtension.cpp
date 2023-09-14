@@ -20,7 +20,6 @@
 #include "QPixelSize.h"
 #include "QRectInfo.h"
 
-#include "QColorList.h"
 #include "QCssValueList.h"
 #include "QCssValueMap.h"
 
@@ -39,7 +38,7 @@ namespace QMetaTypeImpl {
     }
 
     template <class T>
-    static void registerMetaTypeId() {
+    static void registerMetaTypeName() {
         QMCssType::registerMetaTypeName(qMetaTypeId<T>(), T::metaFunctionName());
     }
 
@@ -66,19 +65,17 @@ namespace QMetaTypeImpl {
         registerFromStringList<QRectInfo>();
         registerFromStringList<QFontInfoEx>();
 
-        registerFromStringList<QColorList>();
         registerFromStringList<QCssValueList>();
         registerFromStringList<QCssValueMap>();
 
         // Register names
         QMCssType::registerMetaTypeName(qMetaTypeId<QMargins>(), QMarginsImpl::metaFunctionName());
 
-        registerMetaTypeId<QPenInfo>();
-        registerMetaTypeId<QRectInfo>();
-        registerMetaTypeId<QFontInfoEx>();
-        registerMetaTypeId<QColorList>();
-        registerMetaTypeId<QCssValueList>();
-        registerMetaTypeId<QCssValueMap>();
+        registerMetaTypeName<QPenInfo>();
+        registerMetaTypeName<QRectInfo>();
+        registerMetaTypeName<QFontInfoEx>();
+        registerMetaTypeName<QCssValueList>();
+        registerMetaTypeName<QCssValueMap>();
     }
 
 }
@@ -157,12 +154,16 @@ QMCoreDecoratorV2 *QMGuiAppExtensionPrivate::createDecorator(QObject *parent) {
 /*!
     \class QMGuiAppExtension
     \brief The QMGuiAppExtension class is the global resources manager for \c qtmediate framework.
+
+    All QtMediate non-qt types will be registered to QMetaType system when QMGuiAppExtension
+    constructs.
 */
 
 /*!
     Constructor.
 */
-QMGuiAppExtension::QMGuiAppExtension(QObject *parent) : QMGuiAppExtension(*new QMGuiAppExtensionPrivate(), parent) {
+QMGuiAppExtension::QMGuiAppExtension(QObject *parent)
+    : QMGuiAppExtension(*new QMGuiAppExtensionPrivate(), parent) {
 }
 
 /*!
@@ -174,6 +175,7 @@ QMGuiAppExtension::~QMGuiAppExtension() {
 /*!
     \internal
 */
-QMGuiAppExtension::QMGuiAppExtension(QMGuiAppExtensionPrivate &d, QObject *parent) : QMCoreAppExtension(d, parent) {
+QMGuiAppExtension::QMGuiAppExtension(QMGuiAppExtensionPrivate &d, QObject *parent)
+    : QMCoreAppExtension(d, parent) {
     d.init();
 }

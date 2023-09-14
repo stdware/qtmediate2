@@ -29,9 +29,10 @@ namespace QMCss {
         FO_Value,
         FO_Reference,
     };
-    QMGUI_EXPORT QHash<QString, QString> parseArgList(const QString &s,                //
-                                                      const QStringList &expectedKeys, //
-                                                      const QHash<QString, QPair<QString, FallbackOption>> &fallbacks);
+    QMGUI_EXPORT QHash<QString, QString> parseArgList( //
+        const QString &s,                              //
+        const QStringList &expectedKeys,               //
+        const QHash<QString, QPair<QString, FallbackOption>> &fallbacks);
 
     QMGUI_EXPORT bool parseButtonStateList(const QString &s, QString arr[], bool resolveFallback);
 

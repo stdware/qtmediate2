@@ -75,7 +75,8 @@ void QMCoreDecoratorV2Private::scanTranslations() const {
     qmFilesDirty = false;
 }
 
-void QMCoreDecoratorV2Private::insertTranslationFiles_helper(const QMap<QString, QStringList> &map) const {
+void QMCoreDecoratorV2Private::insertTranslationFiles_helper(
+    const QMap<QString, QStringList> &map) const {
     for (auto it = map.begin(); it != map.end(); ++it) {
         if (it->isEmpty()) {
             continue;
@@ -98,7 +99,8 @@ void QMCoreDecoratorV2Private::_q_localeSubscriberDestroyed() {
 /*
     Constructor.
 */
-QMCoreDecoratorV2::QMCoreDecoratorV2(QObject *parent) : QMCoreDecoratorV2(*new QMCoreDecoratorV2Private(), parent) {
+QMCoreDecoratorV2::QMCoreDecoratorV2(QObject *parent)
+    : QMCoreDecoratorV2(*new QMCoreDecoratorV2Private(), parent) {
 }
 
 /*
@@ -266,7 +268,8 @@ void QMCoreDecoratorV2::installLocale(QObject *o, const std::function<void()> &u
 /*!
     \internal
 */
-QMCoreDecoratorV2::QMCoreDecoratorV2(QMCoreDecoratorV2Private &d, QObject *parent) : QObject(parent), d_ptr(&d) {
+QMCoreDecoratorV2::QMCoreDecoratorV2(QMCoreDecoratorV2Private &d, QObject *parent)
+    : QObject(parent), d_ptr(&d) {
     m_instance = this;
 
     d.q_ptr = this;

@@ -10,17 +10,18 @@
 
 namespace {
 
-#define _IMPL(FLAG)                                                                                                    \
-    override {                                                                                                         \
-        if (this->items & FLAG) {                                                                                      \
-            this->pen = painter()->pen();                                                                              \
-            this->brush = painter()->brush();                                                                          \
-        }                                                                                                              \
+#define _IMPL(FLAG)                                                                                \
+    override {                                                                                     \
+        if (this->items & FLAG) {                                                                  \
+            this->pen = painter()->pen();                                                          \
+            this->brush = painter()->brush();                                                      \
+        }                                                                                          \
     }
 
     class HackPaintEngine : public QRasterPaintEngine {
     public:
-        HackPaintEngine(QPaintDevice *device, QMRasterPaintAccessor::PaintItems items) : QRasterPaintEngine(device) {
+        HackPaintEngine(QPaintDevice *device, QMRasterPaintAccessor::PaintItems items)
+            : QRasterPaintEngine(device) {
         }
         ~HackPaintEngine() = default;
 
@@ -43,12 +44,15 @@ namespace {
 
         void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode)
             _IMPL(QMPaintAccessor::PI_Polygon);
-        void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode) _IMPL(QMPaintAccessor::PI_Polygon);
+        void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
+            _IMPL(QMPaintAccessor::PI_Polygon);
 
         void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) _IMPL(0);
-        void drawTextItem(const QPointF &p, const QTextItem &textItem) _IMPL(QMPaintAccessor::PI_Text);
+        void drawTextItem(const QPointF &p, const QTextItem &textItem)
+            _IMPL(QMPaintAccessor::PI_Text);
         void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s) _IMPL(0);
-        void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr, Qt::ImageConversionFlags flags) _IMPL(0);
+        void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
+                       Qt::ImageConversionFlags flags) _IMPL(0);
 
         QMPaintAccessor::PaintItems items;
         QPen pen;
@@ -77,8 +81,8 @@ public:
 /*!
     Constructor.
 
-    You should specify an image of a specific size and color mode, the query function will use this image
-    as a container.
+    You should specify an image of a specific size and color mode, the query function will use this
+    image as a container.
 */
 QMRasterPaintAccessor::QMRasterPaintAccessor(const QImage &image)
     : QMPaintAccessor(*new QMRasterPaintAccessorPrivate(image)) {

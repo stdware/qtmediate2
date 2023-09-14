@@ -4,7 +4,8 @@
 
 /*!
     \class QPixelSize
-    \brief QPixelSize is a wrapper of a number, mainly used to receive a size value from QMetaType system.
+    \brief QPixelSize is a wrapper of a number, mainly used to receive a size value from QMetaType
+           system.
 */
 
 /*!
@@ -66,16 +67,10 @@ void QPixelSize::setValueF(double value) {
     m_value = value;
 }
 
-/*!
-    Implicit type converter to \c int value.
-*/
 QPixelSize::operator int() const {
     return m_value;
 }
 
-/*!
-    Implicit type converter to \c double value.
-*/
 QPixelSize::operator double() const {
     return m_value;
 }
@@ -84,6 +79,8 @@ QPixelSize::operator double() const {
     Converts a QString to QPixelSize.
 
     The string can be suffixed with \c px unit.
+
+    \sa QMCssType::parse()
 */
 QPixelSize QPixelSize::fromString(const QString &string) {
     QString str;

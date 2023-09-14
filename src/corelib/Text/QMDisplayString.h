@@ -64,4 +64,6 @@ inline QMDisplayString::operator QString() const {
 
 Q_DECLARE_METATYPE(QMDisplayString)
 
+Q_DECLARE_TYPEINFO(QMDisplayString, Q_MOVABLE_TYPE);
+
 #endif // QMDISPLAYSTRING_H

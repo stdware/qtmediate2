@@ -47,7 +47,8 @@ public:
     }
 
     QMChronMap(std::initializer_list<std::pair<K, T>> list) {
-        for (typename std::initializer_list<std::pair<K, T>>::const_iterator it = list.begin(); it != list.end(); ++it)
+        for (typename std::initializer_list<std::pair<K, T>>::const_iterator it = list.begin();
+             it != list.end(); ++it)
             append(it->first, it->second);
     }
 
@@ -200,7 +201,8 @@ public:
         return {iterator(it), true};
     }
 
-    QPair<iterator, bool> insert(const const_iterator &it, const K &key, const T &val, bool replace = true) {
+    QPair<iterator, bool> insert(const const_iterator &it, const K &key, const T &val,
+                                 bool replace = true) {
         iterator tmp;
         if (tryReplace(key, val, &tmp, replace)) {
             return {tmp, false};
@@ -340,7 +342,8 @@ template <class Key, class T>
 inline QDebug operator<<(QDebug debug, const QMChronMap<Key, T> &map) {
     const bool oldSetting = debug.autoInsertSpaces();
     debug.nospace() << "QMChronMap(";
-    for (typename QMChronMap<Key, T>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it) {
+    for (typename QMChronMap<Key, T>::const_iterator it = map.constBegin(); it != map.constEnd();
+         ++it) {
         debug << '(' << it.key() << ", " << it.value() << ')';
     }
     debug << ')';

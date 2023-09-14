@@ -6,8 +6,44 @@
 
 #include "QMCss.h"
 
+/*!
+    \class QCssValueMap
+    \brief QCssValueMap is a wrapper of QVariantMap.
+*/
+
+/*!
+    \fn QCssValueMap::QCssValueMap()
+
+    Default constructor.
+*/
+
+/*!
+    \fn QCssValueMap::QCssValueMap(const QVariantMap &map)
+
+    Constructs from a QVariantMap.
+*/
+
+/*!
+    \fn QCssValueMap::QCssValueMap(std::initializer_list<std::pair<QString, QVariant>> list)
+
+    Constructs from an intializer list.
+*/
+
+/*!
+    \fn QCssValueMap::~QCssValueMap()
+
+    Destructor.
+*/
+
+/*!
+    Converts a string list to QCssValueMap, the string list should be the form as
+    <tt>["qmap", "..."]</tt>.
+
+    \sa QMCssType
+*/
 QCssValueMap QCssValueMap::fromStringList(const QStringList &stringList) {
-    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+    if (stringList.size() != 2 ||
+        stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
         return {};
     }
     const auto &strData = stringList.at(1);
@@ -26,6 +62,11 @@ QCssValueMap QCssValueMap::fromStringList(const QStringList &stringList) {
     return res;
 }
 
+/*!
+    QCssValueMap identifier when converting from a string representing as function call.
+
+    \sa QMCssType::parse()
+*/
 const char *QCssValueMap::metaFunctionName() {
     return "qmap";
 }

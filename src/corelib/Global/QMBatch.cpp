@@ -88,12 +88,12 @@ namespace QMBatch {
     /*!
         Convert a json array to a double list, the non-number elements will be skipped.
     */
-    QStringList jsonArrayToStrList(const QJsonArray &arr, bool considerNumber) {
+    QStringList jsonArrayToStrList(const QJsonArray &arr, bool considerNum) {
         QStringList res;
         for (const auto &item : arr)
             if (item.isString())
                 res.append(item.toString());
-            else if (item.isDouble() && considerNumber)
+            else if (item.isDouble() && considerNum)
                 res.append(QString::number(item.toDouble()));
         return res;
     }

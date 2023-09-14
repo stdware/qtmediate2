@@ -19,7 +19,8 @@ namespace QMCss {
             if (ok) {
                 *ok = true;
             }
-            res = QStringList({str.mid(0, leftParen), str.mid(leftParen + 1, rightParen - leftParen - 1)});
+            res = QStringList(
+                { str.mid(0, leftParen), str.mid(leftParen + 1, rightParen - leftParen - 1) });
         } else {
             if (ok) {
                 *ok = false;
@@ -105,7 +106,8 @@ namespace QMCss {
                 }
             }
 
-            // The comments may appear in the quoted text, parse after we know the char is not quote sign
+            // The comments may appear in the quoted text, parse after we know the char is not quote
+            // sign
             if (!isQuoted && !isSingleQuoted && i < s.size() - 1) {
                 QChar nxt = s.at(i + 1);
                 if (ch == '/' && nxt == '*') {
@@ -201,14 +203,15 @@ namespace QMCss {
             return color.name();
         }
         return QString("rgba(%1, %2, %3, %4)")
-            .arg(color.red())   //
-            .arg(color.green()) //
-            .arg(color.blue())  //
+            .arg(color.red())
+            .arg(color.green())
+            .arg(color.blue())
             .arg(color.alpha());
     }
 
     /*!
-        Returns the index of equal sign if the string is an assign expression matching <tt>key=value</tt>
+        Returns the index of equal sign if the string is an assign expression matching
+       <tt>key=value</tt>
 
         The key must consist of letters, numbers, <tt>_</tt> or <tt>-</tt>
      */
@@ -241,8 +244,9 @@ namespace QMCss {
         \param expectedKeys     Expected argument name in order of positional argument
         \param fallbacks        The fallback of arguments if not found
     */
-    QHash<QString, QString> parseArgList(const QString &s, const QStringList &expectedKeys,
-                                         const QHash<QString, QPair<QString, FallbackOption>> &fallbacks) {
+    QHash<QString, QString>
+        parseArgList(const QString &s, const QStringList &expectedKeys,
+                     const QHash<QString, QPair<QString, FallbackOption>> &fallbacks) {
         if (expectedKeys.isEmpty())
             return {};
 
@@ -264,7 +268,8 @@ namespace QMCss {
 
             // Keyword argument
             isKeywordArg = true;
-            res.insert(item.left(eq).trimmed(), QMBatch::strRemoveSideQuote(item.mid(eq + 1).trimmed()));
+            res.insert(item.left(eq).trimmed(),
+                       QMBatch::strRemoveSideQuote(item.mid(eq + 1).trimmed()));
         }
 
         if (!fallbacks.isEmpty()) {
@@ -300,13 +305,13 @@ namespace QMCss {
         QHash<QString, QPair<QString, FallbackOption>> fallbacks;
         if (resolveFallback) {
             fallbacks = {
-                {"over",      {"up", FO_Reference}   },
-                {"down",      {"over", FO_Reference} },
-                {"disabled",  {"up", FO_Reference}   },
-                {"up2",       {"up", FO_Reference}   },
-                {"over2",     {"up2", FO_Reference}  },
-                {"down2",     {"over2", FO_Reference}},
-                {"disabled2", {"up2", FO_Reference}  },
+                {"over",       { "up", FO_Reference }   },
+                { "down",      { "over", FO_Reference } },
+                { "disabled",  { "up", FO_Reference }   },
+                { "up2",       { "up", FO_Reference }   },
+                { "over2",     { "up2", FO_Reference }  },
+                { "down2",     { "over2", FO_Reference }},
+                { "disabled2", { "up2", FO_Reference }  },
             };
         }
 
@@ -341,31 +346,32 @@ namespace QMCss {
 
 /*!
     \class QMCssType
-    \brief Static class managing the bidirectional mapping of type id and name for converting QString to a
-    user-defined type.
+    \brief Static class managing the bidirectional mapping of type id and name for converting
+           QString to a user-defined type.
 
-    The QMetaType system supports setting a widget's property from the string value in Qt StyleSheet,
-    however, there are significant limitations to user-defined types.
+    The QMetaType system supports setting a widget's property from the string value in Qt
+    StyleSheet, however, there are significant limitations to user-defined types.
 
     If the receiver type is not a built-in type, the value must be in one of the following formats.
 
     \li String without white spaces
     \li String represented as a function call, format: <tt>func(...)</tt>
 
-    For the first format, a converter function from QString to the user type must be registered into QMetaType
-    system at the beginning. When a Qt StyleSheet is applied, Qt will try to convert the string specified in
-    stylesheet into the user-defined receiver type using the pre-registered converter.
+    For the first format, a converter function from QString to the user type must be registered into
+    QMetaType system at the beginning. When a Qt StyleSheet is applied, Qt will try to convert the
+    string specified in stylesheet into the user-defined receiver type using the pre-registered
+    converter.
 
-    For the second format, a converter function from QStringList to the user type must be registered into QMetaType
-    system at the beginning. When a Qt StyleSheet is applied, the string of the form <tt>func(...)</tt> will be
-    parsed as a QStringList as <tt>["func", "..."]</tt>, the first element is the function name and the second one
-    is the content in parentheses, and then Qt will try to convert the string list into the user-defined receiver
-    type using the pre-registered converter.
+    For the second format, a converter function from QStringList to the user type must be registered
+    into QMetaType system at the beginning. When a Qt StyleSheet is applied, the string of the form
+    <tt>func(...)</tt> will be parsed as a QStringList as <tt>["func", "..."]</tt>, the first element
+    is the function name and the second one is the content in parentheses, and then Qt will try to
+    convert the string list into the user-defined receiver type using the pre-registered converter.
 
-    There are many non-built-in types in QtMediate library to support support setting the appearance of custom
-    controls in stylesheets, and each one has its own converter function from QStringList.
+    There are many non-built-in types in QtMediate library to support support setting the appearance
+    of custom controls in stylesheets, and each one has its own converter function from QStringList.
 
-    \sa QMarginsImpl::fromStringList
+    \sa QMarginsImpl::fromStringList()
 */
 
 using MetaTypeHash1 = QHash<int, std::string>;
@@ -388,7 +394,8 @@ bool QMCssType::registerMetaTypeName(int id, const std::string &name) {
 }
 
 /*!
-    Unregister an id-name pair to the global map, searched by id, returns true if the operation succeeds.
+    Unregister an id-name pair to the global map, searched by id, returns true if the operation
+   succeeds.
 */
 bool QMCssType::unregisterMetaTypeName(int id) {
     auto it = m_types1->find(id);
@@ -399,7 +406,8 @@ bool QMCssType::unregisterMetaTypeName(int id) {
 }
 
 /*!
-    Unregister an id-name pair to the global map, searched by name, returns true if the operation succeeds.
+    Unregister an id-name pair to the global map, searched by name, returns true if the operation
+   succeeds.
 */
 bool QMCssType::unregisterMetaTypeName(const std::string &name) {
     auto it = m_types2->find(name);
@@ -445,7 +453,8 @@ static const char *colorFuncNames[] = {
     \li Hex color value: such as <tt>#FFFFFF</tt>, converts to QColor
     \li Functional color value: the function name can be \c rgb \c rgba \c hsv and \c hsvl
     \li QSize string: such as <tt>1px 2px</tt>
-    \li Functional user type: such as <tt>qmargins(1px, 2px)</tt>, the function name must have been registered
+    \li Functional user type: such as <tt>qmargins(1px, 2px)</tt>, the function name must have been
+        registered
  */
 QVariant QMCssType::parse(const QString &s) {
     bool ok;

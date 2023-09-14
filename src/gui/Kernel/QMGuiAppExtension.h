@@ -5,7 +5,7 @@
 #include <QMGui/QMGuiGlobal.h>
 
 #ifdef qAppExt
-#    undef qAppExt
+#  undef qAppExt
 #endif
 #define qAppExt qobject_cast<QMGuiAppExtension *>(QMCoreAppExtension::instance())
 

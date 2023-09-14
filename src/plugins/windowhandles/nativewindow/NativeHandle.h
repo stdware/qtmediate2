@@ -1,9 +1,9 @@
 #ifndef NATIVEHANDLE_H
 #define NATIVEHANDLE_H
 
-#include <widgetssharedhelper_p.h>
+#include <QMWidgetTools/QMWindowHandle.h>
 
-#include <QMWindowHandle.h>
+#include <widgetssharedhelper_p.h>
 
 class CWindowBarV2;
 

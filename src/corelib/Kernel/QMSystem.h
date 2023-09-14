@@ -65,7 +65,8 @@ namespace QMFs {
         return (!file.exists() || file.remove()) && QFile::copy(fileName, newName);
     }
 
-    QMCORE_EXPORT bool combine(const QString &fileName1, const QString &fileName2, const QString &newName);
+    QMCORE_EXPORT bool combine(const QString &fileName1, const QString &fileName2,
+                               const QString &newName);
 
     QMCORE_EXPORT void reveal(const QString &filename);
 

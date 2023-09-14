@@ -1,7 +1,7 @@
 #ifndef NATIVEWINDOWPLUGIN_H
 #define NATIVEWINDOWPLUGIN_H
 
-#include <QMWindowHandlePlugin.h>
+#include <QMWidgetTools/QMWindowHandlePlugin.h>
 
 class NativeWindowPlugin : public QMWindowHandlePlugin {
     Q_OBJECT

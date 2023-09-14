@@ -42,7 +42,9 @@ namespace QMLinq {
     }
 
 
-    template <template <class> class Array2, class V, template <class> class Array1, class T, class Mapper>
+    template <template <class> class Array2, class V,        //
+              template <class> class Array1, class T,        //
+              class Mapper>
     Array2<V> Select(const Array1<T> &list, Mapper mapper) { // Different collection
         Array2<V> res;
         res.reserve(list.size());

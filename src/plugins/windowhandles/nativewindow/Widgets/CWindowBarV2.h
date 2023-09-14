@@ -8,7 +8,8 @@
 #include <QPushButton>
 #include <QWidget>
 
-#include <CToolButton.h>
+#include <QMGui/QPixelSize.h>
+#include <QMWidgets/CToolButton.h>
 
 #include "ANativeTitleBar.h"
 

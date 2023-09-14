@@ -7,19 +7,22 @@
 
 /*!
     \namespace QMarginsImpl
-    \brief The namespace contains functions that extend QMargins type to support QMetaType conversion.
+    \brief The namespace contains functions that extend QMargins type to support QMetaType
+           conversion.
 */
 
 namespace QMarginsImpl {
 
     /*!
-        Converts a string list to QMargins, the string list should be the form as <tt>["qmargins", "..."]</tt>.
+        Converts a string list to QMargins, the string list should be the form as
+        <tt>["qmargins", "..."]</tt>.
 
-        \sa QCssType
+        \sa QMCssType
     */
     QMargins fromStringList(const QStringList &stringList) {
         QMargins res;
-        if (stringList.size() == 2 && stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) == 0) {
+        if (stringList.size() == 2 &&
+            stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) == 0) {
             auto x = QMCss::parseSizeValueList(stringList.back().simplified());
             if (x.size() == 4) {
                 // qmargins(left, top, right, bottom)
@@ -46,6 +49,8 @@ namespace QMarginsImpl {
 
     /*!
         QMargins identifier when converting from a string representing as function call.
+
+        \sa QMCssType::parse()
     */
     const char *metaFunctionName() {
         return "qmargins";

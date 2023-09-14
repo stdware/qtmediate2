@@ -16,8 +16,10 @@ public:
 
     explicit QMDisplayStringData(const QString &s, QMDisplayString *q);
     explicit QMDisplayStringData(QMDisplayString::GetText func, QMDisplayString *q);
-    explicit QMDisplayStringData(QMDisplayString::GetTextEx func, void *userdata, QMDisplayString *q);
-    explicit QMDisplayStringData(BaseString *str, const QVariantHash &properties, QMDisplayString *q);
+    explicit QMDisplayStringData(QMDisplayString::GetTextEx func, void *userdata,
+                                 QMDisplayString *q);
+    explicit QMDisplayStringData(BaseString *str, const QVariantHash &properties,
+                                 QMDisplayString *q);
     ~QMDisplayStringData();
 };
 
@@ -25,7 +27,8 @@ namespace {
 
     class BaseString {
     public:
-        explicit BaseString(QMDisplayString::TranslatePolicy policy, QMDisplayStringData *q) : p(policy), q(q){};
+        explicit BaseString(QMDisplayString::TranslatePolicy policy, QMDisplayStringData *q)
+            : p(policy), q(q){};
         virtual ~BaseString() = default;
 
         virtual QString text() const = 0;
@@ -83,20 +86,23 @@ namespace {
 
 }
 
-QMDisplayStringData::QMDisplayStringData(const QString &s, QMDisplayString *q) : q(q), str(new PlainString(s, this)) {
+QMDisplayStringData::QMDisplayStringData(const QString &s, QMDisplayString *q)
+    : q(q), str(new PlainString(s, this)) {
 }
 
 QMDisplayStringData::QMDisplayStringData(QMDisplayString::GetText func, QMDisplayString *q)
-    : q(q),
-      str(func ? decltype(str)(new CallbackString(std::move(func), this)) : decltype(str)(new PlainString({}, this))) {
+    : q(q), str(func ? decltype(str)(new CallbackString(std::move(func), this))
+                     : decltype(str)(new PlainString({}, this))) {
 }
 
-QMDisplayStringData::QMDisplayStringData(QMDisplayString::GetTextEx func, void *userdata, QMDisplayString *q)
+QMDisplayStringData::QMDisplayStringData(QMDisplayString::GetTextEx func, void *userdata,
+                                         QMDisplayString *q)
     : q(q), str(func ? decltype(str)(new CallbackExString(std::move(func), this))
                      : decltype(str)(new PlainString({}, this))) {
 }
 
-QMDisplayStringData::QMDisplayStringData(BaseString *str, const QVariantHash &properties, QMDisplayString *q)
+QMDisplayStringData::QMDisplayStringData(BaseString *str, const QVariantHash &properties,
+                                         QMDisplayString *q)
     : q(q), str(str->clone(this)), properties(properties) {
 }
 
@@ -128,7 +134,8 @@ QMDisplayString::QMDisplayString(const QString &s) : d(new QMDisplayStringData(s
 /*!
     Construct from a translation callback, you should call QCoreApplication::tr() in this callback.
 */
-QMDisplayString::QMDisplayString(const QMDisplayString::GetText &func) : d(new QMDisplayStringData(func, this)) {
+QMDisplayString::QMDisplayString(const QMDisplayString::GetText &func)
+    : d(new QMDisplayStringData(func, this)) {
 }
 
 /*!
@@ -289,12 +296,6 @@ void QMDisplayString::setProperty(const QString &key, const QVariant &value) {
 QVariantHash QMDisplayString::propertyMap() const {
     return d->properties;
 }
-
-/*!
-    \fn QMDisplayString::operator QString() const
-
-    Implicity conversion to QString by calling text().
-*/
 
 /*!
     \fn QMDisplayString(Func func)

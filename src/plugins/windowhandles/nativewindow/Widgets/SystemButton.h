@@ -1,7 +1,7 @@
 #ifndef SYSTEMBUTTON_H
 #define SYSTEMBUTTON_H
 
-#include <CToolButton.h>
+#include <QMWidgets/CToolButton.h>
 
 class SystemButton : public CToolButton {
     Q_OBJECT

@@ -28,7 +28,8 @@ public:
 public:
     static QHash<QString, QString> systemValues();
 
-    static QString evaluate(const QString &s, const QHash<QString, QString> &dict, const QString &pattern = {});
+    static QString evaluate(const QString &s, const QHash<QString, QString> &dict,
+                            const QString &pattern = {});
 };
 
 #endif // QMSIMPLEVAREXP_H

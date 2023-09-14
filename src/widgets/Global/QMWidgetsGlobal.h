@@ -3,8 +3,6 @@
 
 #include <QtGlobal>
 
-// clang-format off
-
 #ifndef QMWIDGETS_EXPORT
 #  ifdef QMWIDGETS_STATIC
 #    define QMWIDGETS_EXPORT
@@ -16,7 +14,5 @@
 #    endif
 #  endif
 #endif
-
-// clang-format on
 
 #endif // QMWIDGETSGLOBAL_H

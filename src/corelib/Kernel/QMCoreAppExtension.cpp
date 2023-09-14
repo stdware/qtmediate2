@@ -13,23 +13,23 @@
 #include "QMSystem.h"
 
 #ifdef Q_OS_WINDOWS
-#    include <Windows.h>
+#  include <Windows.h>
 #elif defined(Q_OS_MACOS)
-#    include <CoreFoundation/CoreFoundation.h>
+#  include <CoreFoundation/CoreFoundation.h>
 #endif
 
 Q_LOGGING_CATEGORY(qAppExtLog, "qtmediate")
 
 #ifdef Q_OS_MAC
-#    define QT_CONFIG_FILE_DIR  appUpperDir() + "/Resources"
-#    define QT_CONFIG_BASE_DIR  appUpperDir()
-#    define DEFAULT_LIBRARY_DIR "Frameworks"
-#    define DEFAULT_SHARE_DIR   "Resources"
+#  define QT_CONFIG_FILE_DIR  appUpperDir() + "/Resources"
+#  define QT_CONFIG_BASE_DIR  appUpperDir()
+#  define DEFAULT_LIBRARY_DIR "Frameworks"
+#  define DEFAULT_SHARE_DIR   "Resources"
 #else
-#    define QT_CONFIG_FILE_DIR  QCoreApplication::applicationDirPath()
-#    define QT_CONFIG_BASE_DIR  QCoreApplication::applicationDirPath()
-#    define DEFAULT_LIBRARY_DIR "lib"
-#    define DEFAULT_SHARE_DIR   "share"
+#  define QT_CONFIG_FILE_DIR  QCoreApplication::applicationDirPath()
+#  define QT_CONFIG_BASE_DIR  QCoreApplication::applicationDirPath()
+#  define DEFAULT_LIBRARY_DIR "lib"
+#  define DEFAULT_SHARE_DIR   "share"
 #endif
 
 static QMCoreAppExtension *m_instance = nullptr;
@@ -223,9 +223,11 @@ QMCoreDecoratorV2 *QMCoreAppExtensionPrivate::createDecorator(QObject *parent) {
 
 #if defined(Q_OS_WINDOWS) || defined(Q_OS_MAC)
 
-void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle, QMCoreAppExtension::MessageBoxFlag flag,
-                                                    const QString &title, const QString &text) const {
-#    ifdef Q_OS_WINDOWS
+void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle,
+                                                    QMCoreAppExtension::MessageBoxFlag flag,
+                                                    const QString &title,
+                                                    const QString &text) const {
+#  ifdef Q_OS_WINDOWS
     int winFlag;
     switch (flag) {
         case QMCoreAppExtension::NoIcon:
@@ -245,13 +247,14 @@ void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle, QMCoreAppEx
             break;
     };
 
-    ::MessageBoxW(static_cast<HWND>(winHandle), text.toStdWString().data(), title.toStdWString().data(),
+    ::MessageBoxW(static_cast<HWND>(winHandle), text.toStdWString().data(),
+                  title.toStdWString().data(),
                   MB_OK
-#        ifdef QTMEDIATE_WIN32_MSGBOX_TOPMOST
+#    ifdef QTMEDIATE_WIN32_MSGBOX_TOPMOST
                       | MB_TOPMOST
-#        endif
+#    endif
                       | MB_SETFOREGROUND | winFlag);
-#    else
+#  else
     // From
     // https://web.archive.org/web/20111127025605/http://jorgearimany.blogspot.com/2010/05/messagebox-from-windows-to-mac.html
     CFOptionFlags result;
@@ -270,19 +273,20 @@ void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle, QMCoreAppEx
             level = 0;
             break;
     };
-    CFUserNotificationDisplayAlert(0,     // no timeout
-                                   level, // change it depending message_type flags ( MB_ICONASTERISK.... etc.)
-                                   NULL,  // icon url, use default, you can change it depending message_type flags
-                                   NULL,  // not used
-                                   NULL,  // localization of strings
-                                   title.toCFString(), // header text
-                                   text.toCFString(),  // message text
-                                   NULL,               // default "ok" text in button
-                                   NULL,               // alternate button title
-                                   NULL,               // other button title, null--> no other button
-                                   &result             // response flags
+    CFUserNotificationDisplayAlert(
+        0,                  // no timeout
+        level,              // change it depending message_type flags ( MB_ICONASTERISK.... etc.)
+        NULL,               // icon url, use default, you can change it depending message_type flags
+        NULL,               // not used
+        NULL,               // localization of strings
+        title.toCFString(), // header text
+        text.toCFString(),  // message text
+        NULL,               // default "ok" text in button
+        NULL,               // alternate button title
+        NULL,               // other button title, null--> no other button
+        &result             // response flags
     );
-#    endif
+#  endif
 }
 
 #endif
@@ -295,7 +299,8 @@ void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle, QMCoreAppEx
 /*!
     Constructor.
 */
-QMCoreAppExtension::QMCoreAppExtension(QObject *parent) : QMCoreAppExtension(*new QMCoreAppExtensionPrivate(), parent) {
+QMCoreAppExtension::QMCoreAppExtension(QObject *parent)
+    : QMCoreAppExtension(*new QMCoreAppExtensionPrivate(), parent) {
 }
 
 /*!
@@ -327,7 +332,7 @@ QMCoreAppExtension *QMCoreAppExtension::instance() {
 
     \var QMCoreAppExtension::Warning
     \brief Warning level.
-    
+
     \var QMCoreAppExtension::Critical
     \brief Error level.
 */
@@ -482,10 +487,12 @@ void QMCoreAppExtension::setAppPluginsDir(const QString &dir) {
 */
 bool QMCoreAppExtension::createDataAndTempDirs() const {
     auto func = [this](const QString &path) {
-        qCDebug(qAppExtLog) << "qmcorehost:" << (QMFs::isDirExist(path) ? "find" : "create") << "directory" << path;
+        qCDebug(qAppExtLog) << "qmcorehost:" << (QMFs::isDirExist(path) ? "find" : "create")
+                            << "directory" << path;
         if (!QMFs::mkDir(path)) {
-            showMessage(nullptr, Critical, qApp->applicationName(),
-                        QString("Failed to create %1 directory!").arg(QMFs::PathFindFileName(path)));
+            showMessage(
+                nullptr, Critical, qApp->applicationName(),
+                QString("Failed to create %1 directory!").arg(QMFs::PathFindFileName(path)));
             return false;
         }
         return true;
@@ -506,11 +513,13 @@ bool QMCoreAppExtension::createDataAndTempDirs() const {
     Returns the \c qtmediate configuration file that will be read.
 */
 QString QMCoreAppExtension::configurationPath(QSettings::Scope scope) {
-    return QT_CONFIG_FILE_DIR + "/" + (scope == QSettings::SystemScope ? "qtmediate.json" : "qtmediate.user.json");
+    return QT_CONFIG_FILE_DIR + "/" +
+           (scope == QSettings::SystemScope ? "qtmediate.json" : "qtmediate.user.json");
 }
 
 /*!
-    Returns the \c qtmediate configuration file directory, it's the same as where <tt>qt.conf</tt> locates.
+    Returns the \c qtmediate configuration file directory, it's the same as where <tt>qt.conf</tt>
+   locates.
 
     \li On Mac, the default path is <tt>\%AppPath\%/../Resources</tt>
     \li On Windows/Linux, the default path is <tt>\%AppPath\%</tt>
@@ -522,7 +531,8 @@ QString QMCoreAppExtension::configurationBasePrefix() {
 /*!
     \internal
 */
-QMCoreAppExtension::QMCoreAppExtension(QMCoreAppExtensionPrivate &d, QObject *parent) : QObject(parent), d_ptr(&d) {
+QMCoreAppExtension::QMCoreAppExtension(QMCoreAppExtensionPrivate &d, QObject *parent)
+    : QObject(parent), d_ptr(&d) {
     m_instance = this;
 
     d.q_ptr = this;

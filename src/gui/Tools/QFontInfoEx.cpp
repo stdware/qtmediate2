@@ -49,16 +49,31 @@ public:
     }
 };
 
+/*!
+    \class QFontInfoEx
+    \brief QFontInfoEx is a wrapper of QFont.
+*/
+
+/*!
+    Constructs with the application's default font.
+*/
 QFontInfoEx::QFontInfoEx() : d(new QFontInfoExData()) {
 }
 
-QFontInfoEx::QFontInfoEx(const QString &family, int pixelSize, int weight, bool italic) : QFontInfoEx() {
+/*!
+    Constructs with the specified family, pointSize, weight and italic settings.
+*/
+QFontInfoEx::QFontInfoEx(const QString &family, int pixelSize, int weight, bool italic)
+    : QFontInfoEx() {
     d->families = QStringList{family};
     d->pixel = pixelSize;
     d->weight = weight;
     d->italic = italic;
 }
 
+/*!
+    Destructor.
+*/
 QFontInfoEx::~QFontInfoEx() {
 }
 
@@ -69,6 +84,12 @@ QFontInfoEx::QFontInfoEx(QFontInfoEx &&other) noexcept : d(other.d) {
     other.d = nullptr;
 }
 
+/*!
+    Copy the explicitly specified attributes to the base font and return the new font.
+
+    If the given QObject has a property named \c font , use it as the base font, otherwise, use the
+    application's default font.
+*/
 QFont QFontInfoEx::toFont(const QObject *obj) const {
     QFont font = QGuiApplication::font();
     if (obj) {
@@ -95,56 +116,95 @@ QFontInfoEx &QFontInfoEx::operator=(QFontInfoEx &&other) noexcept {
     return *this;
 }
 
+/*!
+    Sets the font weight.
+*/
 int QFontInfoEx::weight() const {
     return d->weight;
 }
 
+/*!
+    Returns the font weight
+*/
 void QFontInfoEx::setWeight(int weight) {
     d->weight = weight;
 }
 
+/*!
+    Returns the font italic property.
+*/
 bool QFontInfoEx::italic() const {
     return d->italic < 0 ? false : bool(d->italic);
 }
 
+/*!
+    Sets the font italic property.
+*/
 void QFontInfoEx::setItalic(bool italic) {
     d->italic = italic;
 }
 
+/*!
+    Returns the font point size.
+*/
 double QFontInfoEx::pointSize() const {
     return d->point;
 }
 
+/*!
+    Sets the font point size.
+*/
 void QFontInfoEx::setPointSize(double pointSize) {
     d->point = pointSize;
     d->pixel = -1;
 }
 
+/*!
+    Returns the font pixel size.
+*/
 int QFontInfoEx::pixelSize() const {
     return d->pixel;
 }
 
+/*!
+    Sets the font pixel size.
+*/
 void QFontInfoEx::setPixelSize(int pixelSize) {
     d->pixel = pixelSize;
     d->point = -1;
 }
 
+/*!
+    Returns the font families.
+*/
 QStringList QFontInfoEx::families() const {
     return d->families;
 }
 
+/*!
+    Sets the font families.
+*/
 void QFontInfoEx::setFamilies(const QStringList &families) {
     d->families = families;
 }
 
+/*!
+    Returns the color value of a button state.
+*/
 QColor QFontInfoEx::color(QM::ButtonState state) const {
     return d->colors.value(state);
 }
 
+/*!
+    Sets the color value of a button state.
+*/
 void QFontInfoEx::setColor(const QColor &color, QM::ButtonState state) {
     d->colors.setValue(color, state);
 }
 
+/*!
+    Sets the color value of multiple button states.
+*/
 void QFontInfoEx::setColors(const QList<QColor> &colors) {
     d->colors.setValues(colors);
 }
@@ -173,8 +233,15 @@ static int StringToWeight(const QString &str, int defaultValue) {
     return weight;
 }
 
+/*!
+    Converts a string list to QFontInfoEx, the string list should be the form as
+    <tt>["qfont", "..."]</tt>.
+
+    \sa QMCssType
+*/
 QFontInfoEx QFontInfoEx::fromStringList(const QStringList &stringList) {
-    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+    if (stringList.size() != 2 ||
+        stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
         return {};
     }
     const auto &strData = stringList.at(1);
@@ -198,7 +265,8 @@ QFontInfoEx QFontInfoEx::fromStringList(const QStringList &stringList) {
     QString colorStrings[8];
     const auto &colorExpressions = it->trimmed();
     if (colorExpressions.startsWith('(') && colorExpressions.endsWith(')')) {
-        QMCss::parseButtonStateList(colorExpressions.mid(1, colorExpressions.size() - 2), colorStrings, false);
+        QMCss::parseButtonStateList(colorExpressions.mid(1, colorExpressions.size() - 2),
+                                    colorStrings, false);
 
         for (int i = 0; i < 8; ++i) {
             if (colorStrings[i].isEmpty())
@@ -258,6 +326,11 @@ QFontInfoEx QFontInfoEx::fromStringList(const QStringList &stringList) {
     return res;
 }
 
+/*!
+    QFontInfoEx identifier when converting from a string representing as function call.
+
+    \sa QMCssType::parse()
+*/
 const char *QFontInfoEx::metaFunctionName() {
     return "qfont";
 }

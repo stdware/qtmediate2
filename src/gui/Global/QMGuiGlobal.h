@@ -3,8 +3,6 @@
 
 #include <QtGlobal>
 
-// clang-format off
-
 #ifndef QMGUI_EXPORT
 #  ifdef QMGUI_STATIC
 #    define QMGUI_EXPORT
@@ -16,7 +14,5 @@
 #    endif
 #  endif
 #endif
-
-// clang-format on
 
 #endif // QMGUIGLOBAL_H

@@ -3,8 +3,6 @@
 
 #include <QtGlobal>
 
-// clang-format off
-
 #ifndef QMWTOOLS_EXPORT
 #  ifdef QMWTOOLSSTATIC
 #    define QMWTOOLS_EXPORT
@@ -16,7 +14,5 @@
 #    endif
 #  endif
 #endif
-
-// clang-format on
 
 #endif // QMWIDGETTOOLSGLOBAL_H

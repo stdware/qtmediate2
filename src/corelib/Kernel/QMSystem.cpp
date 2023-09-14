@@ -6,23 +6,23 @@
 #include <QStandardPaths>
 
 #ifdef Q_OS_WINDOWS
-#    include <ShlObj.h>
+#  include <ShlObj.h>
 #else
-#    include <dlfcn.h>
-#    include <limits.h>
-#    include <unistd.h>
+#  include <dlfcn.h>
+#  include <limits.h>
+#  include <unistd.h>
 #endif
 
 static const char Slash = '/';
 
 
-#define Q_D_EXPLORE(str)                                                                                               \
-    QFileInfoList d;                                                                                                   \
-    {                                                                                                                  \
-        QDir dir;                                                                                                      \
-        dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot);                                              \
-        dir.setPath(str);                                                                                              \
-        d = dir.entryInfoList();                                                                                       \
+#define Q_D_EXPLORE(str)                                                                           \
+    QFileInfoList d;                                                                               \
+    {                                                                                              \
+        QDir dir;                                                                                  \
+        dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot);                          \
+        dir.setPath(str);                                                                          \
+        d = dir.entryInfoList();                                                                   \
     }
 
 /*!
@@ -34,43 +34,43 @@ namespace QMFs {
 
     /*!
         \fn bool isPathRelative(const QString &path)
-        
+
         Returns if the given path is a relative path.
     */
 
     /*!
         \fn bool isPathExist(const QString &path)
-        
+
         Returns true if the given path is absolute and exists.
     */
 
     /*!
         \fn bool isFileExist(const QString &path)
-        
+
         Returns true if the given path is absolute and is a file.
     */
 
     /*!
         \fn bool isDirExist(const QString &path)
-        
+
         Returns true if the given path is absolute and is a directory.
     */
 
     /*!
         \fn bool isSamePath(const QString &path)
-        
+
         Returns true if the canonical form of two given paths are identical.
     */
 
     /*!
         \fn QString PathFindSuffix(const QString &path)
-        
+
         Get the suffix of the given path.
     */
 
     /*!
         \fn QString PathFindDirPath(const QString &path)
-        
+
         Get the absolute directory path of the given path.
     */
 
@@ -111,7 +111,8 @@ namespace QMFs {
         QFile file2(fileName2);
         QFile file3(newName);
 
-        if (file1.open(QIODevice::ReadOnly) && file2.open(QIODevice::ReadOnly) && file3.open(QIODevice::WriteOnly)) {
+        if (file1.open(QIODevice::ReadOnly) && file2.open(QIODevice::ReadOnly) &&
+            file3.open(QIODevice::WriteOnly)) {
         } else {
             return false;
         }
@@ -156,10 +157,13 @@ namespace QMFs {
         } else if (info.isFile()) {
             QStringList scriptArgs;
             scriptArgs << QLatin1String("-e")
-                       << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(filename);
+                       << QString::fromLatin1(
+                              "tell application \"Finder\" to reveal POSIX file \"%1\"")
+                              .arg(filename);
             QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
             scriptArgs.clear();
-            scriptArgs << QLatin1String("-e") << QLatin1String("tell application \"Finder\" to activate");
+            scriptArgs << QLatin1String("-e")
+                       << QLatin1String("tell application \"Finder\" to activate");
             QProcess::execute("/usr/bin/osascript", scriptArgs);
         }
 #else
@@ -211,7 +215,8 @@ namespace QMFs {
             const auto &cur = *it;
             QString num = QString::number(prefix);
             QString filename = cur.fileName();
-            if (filename.startsWith(num) && (filename.size() == num.size() || !filename.at(num.size()).isNumber())) {
+            if (filename.startsWith(num) &&
+                (filename.size() == num.size() || !filename.at(num.size()).isNumber())) {
                 QFile file(cur.filePath());
                 if (file.remove()) {
                     cnt++;
@@ -329,7 +334,8 @@ namespace QMOs {
     }
 
     /*!
-        Returns the library file name based on the given name, mainly used to search a library in a directory.
+        Returns the library file name based on the given name, mainly used to search a library in a
+       directory.
     */
     QString toLibFile(const QString &dir, const QString &name) {
 #if defined(Q_OS_LINUX) || defined(__MINGW32__)

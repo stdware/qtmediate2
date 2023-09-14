@@ -17,7 +17,7 @@ namespace QMBatch {
 
     QMCORE_EXPORT QList<double> strListToDoubleList(const QStringList &list);
 
-    QMCORE_EXPORT QStringList jsonArrayToStrList(const QJsonArray &arr, bool considerNumber = false);
+    QMCORE_EXPORT QStringList jsonArrayToStrList(const QJsonArray &arr, bool considerNum = false);
 
     QMCORE_EXPORT bool strIsNumber(const QString &s, bool considerDot, bool considerNeg);
 

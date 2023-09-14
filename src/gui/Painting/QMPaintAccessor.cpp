@@ -12,7 +12,8 @@ void QMPaintAccessorPrivate::init() {
 
 /*!
     \class QMPaintAccessor
-    \brief QMPaintAccessor is a hacking utility to query for an attribute used in a painting procedure.
+    \brief QMPaintAccessor is a hacking utility to query for an attribute used in a painting
+           procedure.
 */
 
 /*!
@@ -50,7 +51,7 @@ QMPaintAccessor::~QMPaintAccessor() {
 
     \var QMPaintAccessor::PaintItem::PI_Text
     \brief Text item
-    
+
 */
 
 /*!

@@ -27,11 +27,12 @@ function(qtmediate_add_library _target _type)
             "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}>"
         )
 
+        string(REPLACE "\\" "/" _install_dir ${CMAKE_INSTALL_PREFIX})
         install(CODE "
             include(${QTMEDIATE_MODULES_DIR}/qtmediateMacros.cmake)
             qtmediate_gen_include(
                 \"${CMAKE_CURRENT_SOURCE_DIR}\"
-                \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_target}\"
+                \"${_install_dir}/${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_target}\"
                 COPY CLEAN
             )
         "

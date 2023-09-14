@@ -6,7 +6,6 @@
 #include "QMCss.h"
 #include "QPixelSize.h"
 
-
 static const char QCssCustomValue_Pen_Line_None[] = "none";
 static const char QCssCustomValue_Pen_Line_Solid[] = "solid";
 static const char QCssCustomValue_Pen_Line_Dash[] = "dash";
@@ -32,7 +31,8 @@ static Qt::PenStyle StringToLineStyle(const QString &str, Qt::PenStyle defaultVa
         style = Qt::DotLine;
     } else if (!str.compare(QLatin1String(QCssCustomValue_Pen_Line_DashDot), Qt::CaseInsensitive)) {
         style = Qt::DashDotLine;
-    } else if (!str.compare(QLatin1String(QCssCustomValue_Pen_Line_DashDotDot), Qt::CaseInsensitive)) {
+    } else if (!str.compare(QLatin1String(QCssCustomValue_Pen_Line_DashDotDot),
+                            Qt::CaseInsensitive)) {
         style = Qt::DashDotDotLine;
     }
     return style;
@@ -67,18 +67,39 @@ public:
     QMButtonAttributes<QBrush> brushes;
 };
 
+/*!
+    \class QPenInfo
+    \brief QPenInfo is a wrapper of QPen.
+
+    \warning This class is derived from a non-polymorphic class, don't use its super class pointer
+             to delete the derived instance!
+*/
+
+/*!
+    Constructs a default black solid line pen with 1 width.
+*/
 QPenInfo::QPenInfo() : d(new QPenInfoData()) {
 }
 
+/*!
+    Constructs a black pen with 1 width and the given style
+*/
 QPenInfo::QPenInfo(Qt::PenStyle style) : QPenInfo() {
     setStyle(style);
 }
 
+/*!
+    Constructs a solid line pen with 1 width and the given color.
+*/
 QPenInfo::QPenInfo(const QColor &color) : QPenInfo() {
     setBrush(color);
 }
 
-QPenInfo::QPenInfo(const QBrush &brush, qreal width, Qt::PenStyle s, Qt::PenCapStyle c, Qt::PenJoinStyle j)
+/*!
+    Constructs a pen with the specified brush, width, pen style, cap style and join style.
+*/
+QPenInfo::QPenInfo(const QBrush &brush, qreal width, Qt::PenStyle s, Qt::PenCapStyle c,
+                   Qt::PenJoinStyle j)
     : QPenInfo() {
     setBrush(brush);
     setWidthF(width);
@@ -87,6 +108,9 @@ QPenInfo::QPenInfo(const QBrush &brush, qreal width, Qt::PenStyle s, Qt::PenCapS
     setJoinStyle(j);
 }
 
+/*!
+    Destructor.
+*/
 QPenInfo::~QPenInfo() {
 }
 
@@ -111,6 +135,9 @@ QPenInfo &QPenInfo::operator=(QPenInfo &&other) noexcept {
     return *this;
 }
 
+/*!
+    Converts to QPen with the brush of a button state.
+*/
 QPen QPenInfo::toPen(QM::ButtonState state) const {
     QPen pen = *this;
     if (state != QM::ButtonNormal)
@@ -118,24 +145,40 @@ QPen QPenInfo::toPen(QM::ButtonState state) const {
     return pen;
 }
 
+/*!
+    Returns the brush value of a button state.
+*/
 QBrush QPenInfo::brush(QM::ButtonState state) const {
     return d->brushes.value(state);
 }
 
+/*!
+    Sets the brush value of a button state.
+*/
 void QPenInfo::setBrush(const QBrush &brush, QM::ButtonState state) {
     d->brushes.setValue(brush, state);
     if (state == QM::ButtonNormal)
         QPen::setBrush(brush);
 }
 
+/*!
+    Sets the brush value of multiple button states.
+*/
 void QPenInfo::setBrushes(const QList<QBrush> &brushes) {
     d->brushes.setValues(brushes);
     if (brushes.size() > 0)
         QPen::setBrush(brushes.front());
 }
 
+/*!
+    Converts a string list to QPenInfo, the string list should be the form as
+    <tt>["qpen", "..."]</tt>.
+
+    \sa QMCssType
+*/
 QPenInfo QPenInfo::fromStringList(const QStringList &stringList) {
-    if (stringList.size() != 2 || stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
+    if (stringList.size() != 2 ||
+        stringList.front().compare(metaFunctionName(), Qt::CaseInsensitive) != 0) {
         return {};
     }
     const auto &strData = stringList.at(1);
@@ -163,7 +206,8 @@ QPenInfo QPenInfo::fromStringList(const QStringList &stringList) {
     QString colorStrings[8];
     const auto &colorExpressions = it->trimmed();
     if (colorExpressions.startsWith('(') && colorExpressions.endsWith(')')) {
-        QMCss::parseButtonStateList(colorExpressions.mid(1, colorExpressions.size() - 2), colorStrings, false);
+        QMCss::parseButtonStateList(colorExpressions.mid(1, colorExpressions.size() - 2),
+                                    colorStrings, false);
 
         for (int i = 0; i < 8; ++i) {
             if (colorStrings[i].isEmpty())
@@ -217,6 +261,11 @@ QPenInfo QPenInfo::fromStringList(const QStringList &stringList) {
     return res;
 }
 
+/*!
+    QPenInfo identifier when converting from a string representing as function call.
+
+    \sa QMCssType::parse()
+*/
 const char *QPenInfo::metaFunctionName() {
     return "qpen";
 }
