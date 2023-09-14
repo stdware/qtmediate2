@@ -48,7 +48,6 @@ endif()
 # ----------------------------------
 # Project Variables
 # ----------------------------------
-set(QTMEDIATE_MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake CACHE PATH "qtmediate cmake modules directory" FORCE)
 set(QTMEDIATE_VERSION ${PROJECT_VERSION})
 set(QTMEDIATE_INSTALL_NAME ${PROJECT_NAME})
 set(QTMEDIATE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)

@@ -1,3 +1,14 @@
+
+if(NOT DEFINED QTMEDIATE_CMAKE_MODULES_DIR)
+    message(FATAL_ERROR "QTMEDIATE_CMAKE_MODULES_DIR not defined!")
+endif()
+
+include("${QTMEDIATE_CMAKE_MODULES_DIR}/QtMediateAPI.cmake")
+
+set(QTMEDIATE_PROJECT_DESCRIPTION "Qt with custom implementations")
+set(QTMEDIATE_PROJECT_COPYRIGHT "Copyright 2019-2023 SineStriker")
+set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
+
 # ----------------------------------
 # CMake API
 # ----------------------------------
@@ -6,13 +17,11 @@ function(qtmediate_add_library _target _type)
 
     set(_gen_include_dir ${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target})
 
-    if(NOT EXISTS ${_gen_include_dir})
-        qtmediate_gen_include(. ${_gen_include_dir})
-    endif()
-
     if(WIN32)
-        set(RC_VERSION_STRING ${QTMEDIATE_INSTALL_NAME})
-        include(${QTMEDIATE_MODULES_DIR}/winrc.cmake)
+        qtmediate_add_win_rc(${_target}
+            DESCRIPTION ${QTMEDIATE_PROJECT_DESCRIPTION}
+            COPYRIGHT ${QTMEDIATE_PROJECT_COPYRIGHT}
+        )
     endif()
 
     if(QTMEDIATE_INSTALL)
@@ -27,17 +36,12 @@ function(qtmediate_add_library _target _type)
             "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}>"
         )
 
-        string(REPLACE "\\" "/" _install_dir ${CMAKE_INSTALL_PREFIX})
-        install(CODE "
-            include(${QTMEDIATE_MODULES_DIR}/qtmediateMacros.cmake)
-            qtmediate_gen_include(
-                \"${CMAKE_CURRENT_SOURCE_DIR}\"
-                \"${_install_dir}/${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_target}\"
-                COPY CLEAN
-            )
-        "
-        )
+        set(_gen_include_options INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_target}")
+    else()
+        set(_gen_include_options)
     endif()
+
+    qtmediate_gen_include(. ${_gen_include_dir} ${_gen_include_options})
 
     target_include_directories(${PROJECT_NAME} PUBLIC
         "$<BUILD_INTERFACE:${QTMEDIATE_GENERATED_INCLUDE_DIR}>"
@@ -51,8 +55,10 @@ function(qtmediate_add_plugin _target _category)
     add_library(qtmediate::${_target} ALIAS ${_target})
 
     if(WIN32)
-        set(RC_VERSION_STRING ${QTMEDIATE_VERSION})
-        include(${QTMEDIATE_MODULES_DIR}/winrc.cmake)
+        qtmediate_add_win_rc(${_target}
+            DESCRIPTION ${QTMEDIATE_PROJECT_DESCRIPTION}
+            COPYRIGHT ${QTMEDIATE_PROJECT_COPYRIGHT}
+        )
     endif()
 
     set(_output_dir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${QTMEDIATE_INSTALL_NAME}/plugins/${_category})
@@ -75,13 +81,6 @@ endfunction()
 # ----------------------------------
 # Main Project
 # ----------------------------------
-set(RC_DESCRIPTION "Qt with custom implementations")
-set(RC_COPYRIGHT "Copyright 2019-2023 SineStriker")
-
-set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
-
-include(${QTMEDIATE_MODULES_DIR}/qtmediateMacros.cmake)
-
 add_subdirectory(corelib)
 
 add_subdirectory(gui)
@@ -92,12 +91,11 @@ add_subdirectory(widgettools)
 
 add_subdirectory(plugins)
 
+# Documentation
 if(QTMEDIATE_BUILD_DOCUMENTATIONS)
     if(NOT DOXYGEN_EXECUTABLE)
         find_package(Doxygen REQUIRED)
     endif()
-
-    include(${QTMEDIATE_MODULES_DIR}/doxygen/doxygen.cmake)
 
     set(_install_options)
 
@@ -111,7 +109,7 @@ if(QTMEDIATE_BUILD_DOCUMENTATIONS)
         CACHE FILEPATH "qtmediate doxygen tag file path" FORCE
     )
 
-    setup_doxygen_command(qtmediate_RunDoxygen
+    qtmediate_setup_doxygen(qtmediate_RunDoxygen
         NAME "Qt Mediate"
         DESCRIPTION "${RC_DESCRIPTION}"
         MDFILE ../README.md
