@@ -1,6 +1,7 @@
 #include "QMCss.h"
 
 #include <QRegularExpression>
+#include <QIcon>
 
 #include <private/qcssparser_p.h>
 
@@ -20,7 +21,7 @@ namespace QMCss {
                 *ok = true;
             }
             res = QStringList(
-                { str.mid(0, leftParen), str.mid(leftParen + 1, rightParen - leftParen - 1) });
+                {str.mid(0, leftParen), str.mid(leftParen + 1, rightParen - leftParen - 1)});
         } else {
             if (ok) {
                 *ok = false;
@@ -301,17 +302,16 @@ namespace QMCss {
         Format: <tt>up=A, over=B, down=C, disabled=D, up2=E, over2=F, down2=G, disabled2=H</tt>.
     */
     bool parseButtonStateList(const QString &s, QString arr[], bool resolveFallback) {
-
         QHash<QString, QPair<QString, FallbackOption>> fallbacks;
         if (resolveFallback) {
             fallbacks = {
-                {"over",       { "up", FO_Reference }   },
-                { "down",      { "over", FO_Reference } },
-                { "disabled",  { "up", FO_Reference }   },
-                { "up2",       { "up", FO_Reference }   },
-                { "over2",     { "up2", FO_Reference }  },
-                { "down2",     { "over2", FO_Reference }},
-                { "disabled2", { "up2", FO_Reference }  },
+                {"over",      {"up", FO_Reference}   },
+                {"down",      {"over", FO_Reference} },
+                {"disabled",  {"up", FO_Reference}   },
+                {"up2",       {"up", FO_Reference}   },
+                {"over2",     {"up2", FO_Reference}  },
+                {"down2",     {"over2", FO_Reference}},
+                {"disabled2", {"up2", FO_Reference}  },
             };
         }
 
@@ -364,9 +364,10 @@ namespace QMCss {
 
     For the second format, a converter function from QStringList to the user type must be registered
     into QMetaType system at the beginning. When a Qt StyleSheet is applied, the string of the form
-    <tt>func(...)</tt> will be parsed as a QStringList as <tt>["func", "..."]</tt>, the first element
-    is the function name and the second one is the content in parentheses, and then Qt will try to
-    convert the string list into the user-defined receiver type using the pre-registered converter.
+    <tt>func(...)</tt> will be parsed as a QStringList as <tt>["func", "..."]</tt>, the first
+   element is the function name and the second one is the content in parentheses, and then Qt will
+   try to convert the string list into the user-defined receiver type using the pre-registered
+   converter.
 
     There are many non-built-in types in QtMediate library to support support setting the appearance
     of custom controls in stylesheets, and each one has its own converter function from QStringList.
@@ -374,8 +375,8 @@ namespace QMCss {
     \sa QMarginsImpl::fromStringList()
 */
 
-using MetaTypeHash1 = QHash<int, std::string>;
-using MetaTypeHash2 = QHash<std::string, int>;
+using MetaTypeHash1 = QHash<int, QByteArray>;
+using MetaTypeHash2 = QHash<QByteArray, int>;
 
 Q_GLOBAL_STATIC(MetaTypeHash1, m_types1); // Index: id   -> name
 Q_GLOBAL_STATIC(MetaTypeHash2, m_types2); // Index: name -> id
@@ -385,7 +386,7 @@ Q_GLOBAL_STATIC(MetaTypeHash2, m_types2); // Index: name -> id
 
     The \c id and \c name is cannot be the same as any of the previously registered types.
 */
-bool QMCssType::registerMetaTypeName(int id, const std::string &name) {
+bool QMCssType::registerMetaTypeName(int id, const QByteArray &name) {
     if (m_types1->contains(id) || m_types2->contains(name))
         return false;
     m_types1->insert(id, name);
@@ -409,7 +410,7 @@ bool QMCssType::unregisterMetaTypeName(int id) {
     Unregister an id-name pair to the global map, searched by name, returns true if the operation
    succeeds.
 */
-bool QMCssType::unregisterMetaTypeName(const std::string &name) {
+bool QMCssType::unregisterMetaTypeName(const QByteArray &name) {
     auto it = m_types2->find(name);
     if (it == m_types2->end())
         return false;
@@ -420,7 +421,7 @@ bool QMCssType::unregisterMetaTypeName(const std::string &name) {
 /*!
     Returns the type name of a registered type id, null if not found.
 */
-std::string QMCssType::metaTypeName(int id) {
+QByteArray QMCssType::metaTypeName(int id) {
     auto it = m_types1->find(id);
     if (it == m_types1->end())
         return nullptr;
@@ -430,7 +431,7 @@ std::string QMCssType::metaTypeName(int id) {
 /*!
     Returns the type id of a registered type name, null if not found.
 */
-int QMCssType::metaTypeId(const std::string &name) {
+int QMCssType::metaTypeId(const QByteArray &name) {
     auto it = m_types2->find(name);
     if (it == m_types2->end())
         return -1;
@@ -462,6 +463,7 @@ QVariant QMCssType::parse(const QString &s) {
     if (ok) {
         // format: func(a, b, ...)
         const auto &func = valueList.front();
+
         int id = metaTypeId(func.toStdString().data());
         if (id >= 0) {
             QVariant var(valueList);
@@ -478,6 +480,11 @@ QVariant QMCssType::parse(const QString &s) {
             if (func == item) {
                 return QMCss::parseColor(s);
             }
+        }
+
+        // format: svg(xxx)
+        if (func == "svg") {
+            return QIcon(QString("[[%1]].svgx").arg(valueList.at(1)));
         }
         return s;
     }

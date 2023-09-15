@@ -2,11 +2,10 @@
 #define QMAPPEXTENSION_H
 
 #include <QMGui/QMGuiAppExtension.h>
-
 #include <QMWidgets/QMWidgetsGlobal.h>
 
 #ifdef qAppExt
-#    undef qAppExt
+#  undef qAppExt
 #endif
 #define qAppExt qobject_cast<QMAppExtension *>(QMGuiAppExtension::instance())
 
@@ -19,7 +18,8 @@ public:
     explicit QMAppExtension(QObject *parent = nullptr);
     ~QMAppExtension();
 
-    void showMessage(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const override;
+    void showMessage(QObject *parent, MessageBoxFlag flag, const QString &title,
+                     const QString &text) const override;
 
 protected:
     QMAppExtension(QMAppExtensionPrivate &d, QObject *parent = nullptr);

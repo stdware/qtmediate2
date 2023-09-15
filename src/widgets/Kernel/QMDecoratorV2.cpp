@@ -10,11 +10,11 @@
 #include <QRegularExpression>
 #include <QWindow>
 
-#include <QMChronSet.h>
-#include <QMSimpleVarExp.h>
-#include <QMSystem.h>
+#include <QMCore/QMChronSet.h>
+#include <QMCore/QMSimpleVarExp.h>
+#include <QMCore/QMSystem.h>
 
-#include "QMGuiAppExtension_p.h"
+#include <QMGui/private/QMGuiAppExtension_p.h>
 
 #define DEFAULT_THEME "Visual Studio Code - Dark"
 
@@ -64,8 +64,8 @@ void ThemeGuardV2::updateScreen() {
                     }
 
                     // Evaluate variables
-                    stylesheet =
-                        QMSimpleVarExp::evaluate(stylesheet, d->variables.value(curTheme, {}), R"(\$\{([^\}]+)\})");
+                    stylesheet = QMSimpleVarExp::evaluate(
+                        stylesheet, d->variables.value(curTheme, {}), R"(\$\{([^\}]+)\})");
 
                     stylesheet = QMDecoratorV2Private::replaceSizes(
                         stylesheet, screen->logicalDotsPerInch() / QMOs::unitDpi(), true);
@@ -102,7 +102,8 @@ void ThemeGuardV2::switchScreen(QScreen *screen) {
                    &ThemeGuardV2::_q_logicalRatioChanged);
     }
     this->screen = screen;
-    connect(screen, &QScreen::logicalDotsPerInchChanged, this, &ThemeGuardV2::_q_logicalRatioChanged);
+    connect(screen, &QScreen::logicalDotsPerInchChanged, this,
+            &ThemeGuardV2::_q_logicalRatioChanged);
 
     updateScreen();
 }
@@ -145,20 +146,25 @@ void QMDecoratorV2Private::init() {
     currentTheme = DEFAULT_THEME;
 }
 
-struct QssItem {
-    double ratio;
-    QString content;
-    QString fileName;
+namespace {
 
-    friend QDebug operator<<(QDebug debug, const QssItem &item) {
-        debug << "QssItem(" << item.ratio << ", " << (item.fileName.isEmpty() ? item.content : item.fileName) << ")";
-        return debug;
-    }
-};
+    struct QssItem {
+        double ratio;
+        QString content;
+        QString fileName;
+
+        friend QDebug operator<<(QDebug debug, const QssItem &item) {
+            debug << "QssItem(" << item.ratio << ", "
+                  << (item.fileName.isEmpty() ? item.content : item.fileName) << ")";
+            return debug;
+        }
+    };
+
+}
 
 template <class T>
-static T parsePlatform(const QJsonValue &val, bool(predicate)(const QJsonValue &), T(convert)(const QJsonValue &),
-                       const T &defaultValue = T{}) {
+static T parsePlatform(const QJsonValue &val, bool(predicate)(const QJsonValue &),
+                       T(convert)(const QJsonValue &), const T &defaultValue = T{}) {
     QStringList platformKeys{
 #ifdef Q_OS_WINDOWS
         "win", "win32", "windows"
@@ -187,14 +193,14 @@ static T parsePlatform(const QJsonValue &val, bool(predicate)(const QJsonValue &
 
 static double parsePlatformDouble(const QJsonValue &val, double defaultValue = 0) {
     return parsePlatform<double>(
-        val, [](const QJsonValue &val) { return val.isDouble(); }, [](const QJsonValue &val) { return val.toDouble(); },
-        defaultValue);
+        val, [](const QJsonValue &val) { return val.isDouble(); },
+        [](const QJsonValue &val) { return val.toDouble(); }, defaultValue);
 }
 
 static QString parsePlatformString(const QJsonValue &val, const QString &defaultValue = {}) {
     return parsePlatform<QString>(
-        val, [](const QJsonValue &val) { return val.isString(); }, [](const QJsonValue &val) { return val.toString(); },
-        defaultValue);
+        val, [](const QJsonValue &val) { return val.isString(); },
+        [](const QJsonValue &val) { return val.toString(); }, defaultValue);
 }
 
 void QMDecoratorV2Private::scanForThemes() const {
@@ -311,8 +317,8 @@ void QMDecoratorV2Private::scanForThemes() const {
             }
         }
 
-        auto parseStyleObject = [&](QMap<QString, QMap<double, QList<QssItem>>> &map, const QString &key,
-                                    const QJsonObject &obj) {
+        auto parseStyleObject = [&](QMap<QString, QMap<double, QList<QssItem>>> &map,
+                                    const QString &key, const QJsonObject &obj) {
             QssItem item{ratio, {}, {}};
             QJsonValue value;
 
@@ -488,7 +494,8 @@ QString QMDecoratorV2Private::replaceSizes(const QString &stylesheet, double rat
 
         double size = MatchString.midRef(0, MatchString.size() - 2).toDouble();
         size *= ratio;
-        QString ValueString = (rounding ? QString::number(int(size)) : QString::number(size)) + "px";
+        QString ValueString =
+            (rounding ? QString::number(int(size)) : QString::number(size)) + "px";
 
         Content.replace(index, MatchString.size(), ValueString);
         index += ValueString.size();
@@ -501,7 +508,8 @@ QString QMDecoratorV2Private::replaceCustomKeyWithQProperty(const QString &style
     // Replace "--key: value;" with "qproperty-key: value;"
     // Replace "---key: value;" with "key: value;"
     QRegularExpression re(R"((\{|;|^)\s*(--|---)\w(\w|-)*:)",
-                          QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption);
+                          QRegularExpression::MultilineOption |
+                              QRegularExpression::DotMatchesEverythingOption);
     QRegularExpressionMatch match;
     int index = 0;
 
@@ -527,7 +535,8 @@ QString QMDecoratorV2Private::replaceCssGrammars(const QString &stylesheet) {
     // Replace ":not(:xxx)" with ":!xxx"
     {
         QRegularExpression re(R"(:not\(\s*:([^)]+)\s*\))",
-                              QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption);
+                              QRegularExpression::MultilineOption |
+                                  QRegularExpression::DotMatchesEverythingOption);
         QRegularExpressionMatch match;
         int index = 0;
 
@@ -543,16 +552,17 @@ QString QMDecoratorV2Private::replaceCssGrammars(const QString &stylesheet) {
     // Replace "svg(...);" to "url(\"..., .svgx\");"
     {
         QRegularExpression re(R"(svg\((.*?)\)(;|\s*\}))",
-                              QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption);
-        Content.replace(re, R"(url("\1, .svgx")\2)");
+                              QRegularExpression::MultilineOption |
+                                  QRegularExpression::DotMatchesEverythingOption);
+        Content.replace(re, R"(url("[[\1]].svgx")\2)");
     }
 
     return Content;
 }
 
 QString QMDecoratorV2Private::removeAllComments(QString data) {
-    QRegularExpression reg(R"(\/\*(.*?)\*\/)",
-                           QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression reg(R"(\/\*(.*?)\*\/)", QRegularExpression::MultilineOption |
+                                                   QRegularExpression::DotMatchesEverythingOption);
     QRegularExpressionMatch match;
     int index = 0;
     while ((index = data.indexOf(reg, index, &match)) != -1) {
@@ -690,6 +700,7 @@ void QMDecoratorV2::installTheme(QWidget *w, const QString &id) {
     tg.updateScreen();
 }
 
-QMDecoratorV2::QMDecoratorV2(QMDecoratorV2Private &d, QObject *parent) : QMGuiDecoratorV2(d, parent) {
+QMDecoratorV2::QMDecoratorV2(QMDecoratorV2Private &d, QObject *parent)
+    : QMGuiDecoratorV2(d, parent) {
     d.init();
 }

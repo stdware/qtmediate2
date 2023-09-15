@@ -4,11 +4,11 @@
 
 QIconEngine *SvgxIconEnginePlugin::create(const QString &fileName) {
     auto engine = new SvgxIconEngine();
-    if (fileName == ".svgx") {
+
+    // Create empty engine
+    if (fileName.compare(".svgx", Qt::CaseInsensitive) == 0) {
         return engine;
     }
-
-    // TODO
-
+    engine->addFile(fileName, {}, {}, {});
     return engine;
 }

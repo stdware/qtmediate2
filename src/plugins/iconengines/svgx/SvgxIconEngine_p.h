@@ -1,46 +1,50 @@
 #ifndef SVGXICONENGINE_P_H
 #define SVGXICONENGINE_P_H
 
-//
-//  W A R N I N G !!!
-//  -----------------
-//
-// This file is not part of the QtMediate API. It is used purely as an
-// implementation detail. This header file may change from version to
-// version without notice, or may even be removed.
-//
-
-#include <QIcon>
 #include <QSvgRenderer>
+#include <QSharedData>
+#include <QIcon>
 
-#include "QMNamespace.h"
+#include <QMGui/private/QMButtonState_p.h>
 
-class SvgxIconEnginePrivate {
+class SvgxIconEnginePrivate : public QSharedData {
 public:
-    SvgxIconEnginePrivate();
-    ~SvgxIconEnginePrivate();
+    SvgxIconEnginePrivate() : currentState(QM::ButtonNormal) {
+    }
 
-public:
+    ~SvgxIconEnginePrivate() {
+    }
+
     QString pmcKey(const QSize &size, QIcon::Mode mode, QIcon::State state);
 
-    void stepSerialNum();
-    bool tryLoad(QSvgRenderer *renderer, QIcon::Mode mode, QIcon::State state);
-    QIcon::Mode loadDataForModeAndState(QSvgRenderer *renderer, QIcon::Mode mode, QIcon::State state);
+    void stepSerialNum() {
+        serialNum = lastSerialNum.fetchAndAddRelaxed(1);
+    }
 
-public:
+    QIcon::Mode loadDataForModeAndState(QSvgRenderer *renderer, QIcon::Mode mode,
+                                        QIcon::State state);
+
     int serialNum;
     static QAtomicInt lastSerialNum;
 
-    // Custom
-    QByteArray svgContents[8];
-    QString colors[8];
+    // Extensions
+    void setup(const QHash<QM::ButtonState, QString> &fileMap,
+               const QHash<QM::ButtonState, QString> &colorMap);
+    void syncData();
 
-    mutable int contentIndexes[8];
-    mutable QString realColors[8];
+    struct SvgScript {
+        QString fileName;
+        QString data;
+        bool hasCurrentColor;
 
-    QM::ClickState currentState;
+        SvgScript(const QString &fileName = {}) : fileName(fileName), hasCurrentColor(false) {
+        }
+    };
+    QMButtonAttributes<SvgScript> svgScripts;
+    QMButtonAttributes<QString> svgColors;
 
-    QString salt;
+    QM::ButtonState currentState;
+    QString colorHint;
 };
 
 #endif // SVGXICONENGINE_P_H

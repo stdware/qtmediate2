@@ -69,10 +69,32 @@ QM::ButtonState QMButtonStates::state(QM::ButtonState state) const {
     return static_cast<QM::ButtonState>(m_arr[state]);
 }
 
+QM::ButtonState QMButtonStates::operator[](QM::ButtonState state) const {
+    return static_cast<QM::ButtonState>(m_arr[state]);
+}
+
 void QMButtonStates::setState(QM::ButtonState state) {
     m_arr[state] = state;
 }
 
 void QMButtonStates::syncInternal() {
     UpdateClickStateIndexes(m_arr);
+}
+
+QDataStream &operator>>(QDataStream &in, QMButtonStates &bs) {
+    for (int i = 0; i < 8; ++i) {
+        in >> bs.m_arr[i];
+        if (in.status() != QDataStream::Ok) {
+            bs = {};
+            break;
+        }
+    }
+    return in;
+}
+
+QDataStream &operator<<(QDataStream &out, const QMButtonStates &bs) {
+    for (int i = 0; i < 8; ++i) {
+        out << bs.m_arr[i];
+    }
+    return out;
 }

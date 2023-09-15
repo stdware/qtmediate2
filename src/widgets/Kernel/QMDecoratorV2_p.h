@@ -17,8 +17,8 @@
 #include <QTranslator>
 #include <QWidget>
 
-#include "QMDecoratorV2.h"
-#include "QMGuiDecoratorV2_p.h"
+#include <QMGui/private/QMGuiDecoratorV2_p.h>
+#include <QMWidgets/QMDecoratorV2.h>
 
 class ThemeGuardV2 : public QObject {
     Q_OBJECT
@@ -63,9 +63,10 @@ public:
     QString currentTheme;
 
     mutable bool themeFilesDirty;
-    mutable QMap<QString, QMap<QString, QString>> stylesheetCaches; // themeKey - [ namespace - content ]
-    mutable QHash<QString, QStringList> nsMappings;                 // widgetKey - namespaces
-    mutable QHash<QString, QHash<QString, QString>> variables;      // themeKey - [ varKey - var ]
+    mutable QMap<QString, QMap<QString, QString>>
+        stylesheetCaches;                                      // themeKey - [ namespace - content ]
+    mutable QHash<QString, QStringList> nsMappings;            // widgetKey - namespaces
+    mutable QHash<QString, QHash<QString, QString>> variables; // themeKey - [ varKey - var ]
 
     static QString replaceSizes(const QString &stylesheet, double ratio, bool rounding);
     static QString replaceCustomKeyWithQProperty(const QString &stylesheet);

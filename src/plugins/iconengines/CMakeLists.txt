@@ -1,3 +1,3 @@
 _init_category(iconengines)
 
-add_subdirectory(svgx2)
+add_subdirectory(svgx)

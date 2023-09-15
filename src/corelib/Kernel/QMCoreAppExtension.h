@@ -29,7 +29,8 @@ public:
     };
     Q_ENUM(MessageBoxFlag)
 
-    virtual void showMessage(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const;
+    virtual void showMessage(QObject *parent, MessageBoxFlag flag, const QString &title,
+                             const QString &text) const;
 
 public:
     bool isAboutToQuit() const;

@@ -10,6 +10,8 @@
 // version without notice, or may even be removed.
 //
 
+#include <QDataStream>
+
 #include <QMCore/QMNamespace.h>
 #include <QMGui/QMGuiGlobal.h>
 
@@ -21,14 +23,24 @@ public:
     void syncStates(const QList<QM::ButtonState> &states);
 
     QM::ButtonState state(QM::ButtonState state) const;
+    QM::ButtonState operator[](QM::ButtonState state) const;
 
 public:
     void setState(QM::ButtonState state); // Without sync
     void syncInternal();
 
+    inline int *internalData();
+
 private:
     int m_arr[8];
+
+    QMGUI_EXPORT friend QDataStream &operator>>(QDataStream &in, QMButtonStates &bs);
+    QMGUI_EXPORT friend QDataStream &operator<<(QDataStream &out, const QMButtonStates &bs);
 };
+
+inline int *QMButtonStates::internalData() {
+    return m_arr;
+}
 
 template <class T>
 class QMButtonAttributes {
@@ -37,15 +49,23 @@ public:
 
 public:
     T value(QM::ButtonState state = QM::ButtonNormal) const;
+    const T &operator[](QM::ButtonState state) const;
+    T &operator[](QM::ButtonState state);
+
     void setValue(const T &value, QM::ButtonState state = QM::ButtonNormal);
     void setValues(const QList<T> &values);
     void setValues(const QList<QPair<QM::ButtonState, T>> &values);
-
     void setValueAll(const T &value);
 
 private:
     T m_values[8];
     QMButtonStates m_state;
+
+    template <class T1>
+    friend QDataStream &operator>>(QDataStream &in, QMButtonAttributes<T1> &ba);
+
+    template <class T1>
+    friend QDataStream &operator<<(QDataStream &out, const QMButtonAttributes<T1> &ba);
 };
 
 template <class T>
@@ -54,6 +74,16 @@ QMButtonAttributes<T>::QMButtonAttributes() {
 
 template <class T>
 T QMButtonAttributes<T>::value(QM::ButtonState state) const {
+    return m_values[m_state.state(state)];
+}
+
+template <class T>
+const T &QMButtonAttributes<T>::operator[](QM::ButtonState state) const {
+    return m_values[m_state.state(state)];
+}
+
+template <class T>
+T &QMButtonAttributes<T>::operator[](QM::ButtonState state) {
     return m_values[m_state.state(state)];
 }
 
@@ -88,6 +118,28 @@ void QMButtonAttributes<T>::setValueAll(const T &value) {
         m_values[i] = value;
     }
     m_state = {};
+}
+
+template <class T>
+QDataStream &operator>>(QDataStream &in, QMButtonAttributes<T> &ba) {
+    for (int i = 0; i < 8; ++i) {
+        in >> ba.m_values[i];
+        if (in.status() != QDataStream::Ok) {
+            ba = {};
+            break;
+        }
+    }
+    in >> ba.m_state;
+    return in;
+}
+
+template <class T>
+QDataStream &operator<<(QDataStream &out, const QMButtonAttributes<T> &ba) {
+    for (int i = 0; i < 8; ++i) {
+        out << ba.m_values[i];
+    }
+    out << ba.m_state;
+    return out;
 }
 
 #endif // QMBUTTONSTATE_P_H

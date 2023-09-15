@@ -2,8 +2,9 @@
 #define SVGXICONENGINE_H
 
 #include <QIconEngine>
+#include <QSharedData>
 
-#include "QMNamespace.h"
+#include <QMCore/QMNamespace.h>
 
 class SvgxIconEnginePrivate;
 
@@ -13,11 +14,14 @@ public:
     SvgxIconEngine(const SvgxIconEngine &other);
     ~SvgxIconEngine();
 
+public:
     void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
     QSize actualSize(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
     QPixmap pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
 
-    void addFile(const QString &fileName, const QSize &size, QIcon::Mode mode, QIcon::State state) override;
+    void addPixmap(const QPixmap &pixmap, QIcon::Mode mode, QIcon::State state) override;
+    void addFile(const QString &fileName, const QSize &size, QIcon::Mode mode,
+                 QIcon::State state) override;
 
     QString key() const override;
     QIconEngine *clone() const override;
@@ -26,21 +30,10 @@ public:
 
     void virtual_hook(int id, void *data) override;
 
-public:
-    QM::ClickState currentState() const;
-    void setCurrentState(QM::ClickState state);
-
-    QString stateColor(QM::ClickState state) const;
-    void setStateColor(QM::ClickState state, const QString &color);
-
-    QString salt() const;
-    void setSalt(const QString &salt);
-
-    void setValues(QByteArray *dataList, QString *colorList);
-
 private:
-    QScopedPointer<SvgxIconEnginePrivate> d;
-};
+    QSharedDataPointer<SvgxIconEnginePrivate> d;
 
+    friend class SvgxIconEnginePlugin;
+};
 
 #endif // SVGXICONENGINE_H

@@ -10,22 +10,23 @@
 #include "QMAppExtension_p.h"
 
 #ifdef _WIN32
-#    include <Windows.h>
-#    define OS_MAX_PATH MAX_PATH
+#  include <Windows.h>
+#  define OS_MAX_PATH MAX_PATH
 #else
-#    include <dlfcn.h>
-#    include <limits.h>
-#    include <stdio.h>
-#    include <string.h>
+#  include <dlfcn.h>
+#  include <limits.h>
+#  include <stdio.h>
+#  include <string.h>
 
-#    define OS_MAX_PATH PATH_MAX
+#  define OS_MAX_PATH PATH_MAX
 #endif
 
 static QString GetLibraryPath() {
 #ifdef _WIN32
     wchar_t buf[OS_MAX_PATH + 1] = {0};
     HMODULE hm = nullptr;
-    if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+    if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
                             (LPCWSTR) &GetLibraryPath, &hm) ||
         !GetModuleFileNameW(hm, buf, sizeof(buf))) {
         return {};
@@ -51,20 +52,23 @@ void QMAppExtensionPrivate::init() {
         qIDec->addThemePath(path);
 
     // Add plugin path
-    QApplication::addLibraryPath(QDir::cleanPath(GetLibraryPath() + "/../../lib/qtmediate/plugins"));
+    QApplication::addLibraryPath(
+        QDir::cleanPath(GetLibraryPath() + "/../../lib/qtmediate/plugins"));
 }
 
 QMCoreDecoratorV2 *QMAppExtensionPrivate::createDecorator(QObject *parent) {
     return new QMDecoratorV2(parent);
 }
 
-QMAppExtension::QMAppExtension(QObject *parent) : QMAppExtension(*new QMAppExtensionPrivate(), parent) {
+QMAppExtension::QMAppExtension(QObject *parent)
+    : QMAppExtension(*new QMAppExtensionPrivate(), parent) {
 }
 
 QMAppExtension::~QMAppExtension() {
 }
 
-void QMAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QString &title, const QString &text) const {
+void QMAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QString &title,
+                                 const QString &text) const {
     Q_D(const QMAppExtension);
 
     QWidget *w = nullptr;
@@ -94,6 +98,7 @@ void QMAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QSt
 #endif
 }
 
-QMAppExtension::QMAppExtension(QMAppExtensionPrivate &d, QObject *parent) : QMGuiAppExtension(d, parent) {
+QMAppExtension::QMAppExtension(QMAppExtensionPrivate &d, QObject *parent)
+    : QMGuiAppExtension(d, parent) {
     d.init();
 }

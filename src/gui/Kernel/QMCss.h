@@ -40,12 +40,12 @@ namespace QMCss {
 
 class QMGUI_EXPORT QMCssType {
 public:
-    static bool registerMetaTypeName(int id, const std::string &name);
+    static bool registerMetaTypeName(int id, const QByteArray &name);
     static bool unregisterMetaTypeName(int id);
-    static bool unregisterMetaTypeName(const std::string &name);
+    static bool unregisterMetaTypeName(const QByteArray &name);
 
-    static std::string metaTypeName(int id);
-    static int metaTypeId(const std::string &name);
+    static QByteArray metaTypeName(int id);
+    static int metaTypeId(const QByteArray &name);
 
     static QVariant parse(const QString &s);
 };

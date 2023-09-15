@@ -22,7 +22,7 @@ namespace QM {
     Q_ENUM_NS(Priority)
 
     enum ButtonState {
-        ButtonNormal = 1,
+        ButtonNormal,
         ButtonHover,
         ButtonPressed,
         ButtonDisabled,

@@ -5,7 +5,7 @@ endif()
 
 include("${QTMEDIATE_CMAKE_MODULES_DIR}/QtMediateAPI.cmake")
 
-set(QTMEDIATE_PROJECT_DESCRIPTION "Qt with custom implementations")
+set(QTMEDIATE_PROJECT_DESCRIPTION "Qt Intermediate Extension Framework")
 set(QTMEDIATE_PROJECT_COPYRIGHT "Copyright 2019-2023 SineStriker")
 set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
 
@@ -14,8 +14,6 @@ set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
 # ----------------------------------
 function(qtmediate_add_library _target _type)
     add_library(${_target} ${_type} ${ARGN})
-
-    set(_gen_include_dir ${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target})
 
     if(WIN32)
         qtmediate_add_win_rc(${_target}
@@ -41,12 +39,13 @@ function(qtmediate_add_library _target _type)
         set(_gen_include_options)
     endif()
 
-    qtmediate_gen_include(. ${_gen_include_dir} ${_gen_include_options})
-
+    # Generate a standard include directory in build directory
+    qtmediate_gen_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target}" ${_gen_include_options})
     target_include_directories(${PROJECT_NAME} PUBLIC
         "$<BUILD_INTERFACE:${QTMEDIATE_GENERATED_INCLUDE_DIR}>"
     )
 
+    # Add to translate targets
     set_property(GLOBAL APPEND PROPERTY QTMEDIATE_TRANSLATE_TARGETS ${_target})
 endfunction()
 
@@ -75,6 +74,7 @@ function(qtmediate_add_plugin _target _category)
         )
     endif()
 
+    # Add to translate targets
     set_property(GLOBAL APPEND PROPERTY TRANSLATE_TARGETS ${_target})
 endfunction()
 

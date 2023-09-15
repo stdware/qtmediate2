@@ -10,7 +10,7 @@
 // version without notice, or may even be removed.
 //
 
-#include <QMGuiAppExtension_p.h>
+#include <QMGui/private/QMGuiAppExtension_p.h>
 
 #include "QMAppExtension.h"
 
