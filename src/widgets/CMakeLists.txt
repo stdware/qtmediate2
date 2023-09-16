@@ -3,10 +3,6 @@ project(QMWidgets
     LANGUAGES CXX
 )
 
-set(CMAKE_AUTOUIC on)
-set(CMAKE_AUTOMOC on)
-set(CMAKE_AUTORCC on)
-
 # Platform libs
 set(_platform_libs)
 
@@ -19,27 +15,11 @@ endif()
 # Configure target
 file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 
-qtmediate_add_library(${PROJECT_NAME} SHARED ${_src})
-
-add_library(qtmediate::Widgets ALIAS ${PROJECT_NAME})
-set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME Widget)
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE QMWIDGETS_LIBRARY)
-
-# Link
-target_link_libraries(${PROJECT_NAME} PUBLIC QMGui)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE ${_platform_libs})
-
-qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
-    Core Gui Widgets Svg
-)
-
-# Include
-qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
-    Core Gui Widgets
-)
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    Global Kernel Layout Widgets
+qtmediate_add_library(${PROJECT_NAME}
+    SOURCES ${_src}
+    LINKS QMGui
+    LINKS_PRIVATE ${_platform_libs}
+    INCLUDE_PRIVATE Global Kernel Layout Widgets
+    QT_LINKS Core Gui Widgets Svg
+    QT_INCLUDE_PRIVATE Core Gui Widgets
 )

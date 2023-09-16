@@ -7,7 +7,7 @@ The name is taken from "intermediate" because it extends many features by using 
 ## Dependencies
 
 + Qt 5.15.2 (Maybe work with 5.15.X)
-+ [qtmediate-cmake-utils](https://github.com/SineStriker/qtmediate-cmake-modules)
++ [qtmediate-cmake-modules](https://github.com/SineStriker/qtmediate-cmake-modules)
 + [FramelessHelper](https://github.com/wangwenx190/framelesshelper)
 
 ## Extension to Qt5

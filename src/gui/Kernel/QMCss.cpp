@@ -10,6 +10,11 @@
 
 #include "QPixelSize.h"
 
+/*!
+    \namespace QMCss
+    \brief Namespace of CSS and CSS-like text utilities.
+*/
+
 namespace QMCss {
 
     static QStringList extractFunctionToStringList(const QString &str, bool *ok) {
@@ -365,9 +370,9 @@ namespace QMCss {
     For the second format, a converter function from QStringList to the user type must be registered
     into QMetaType system at the beginning. When a Qt StyleSheet is applied, the string of the form
     <tt>func(...)</tt> will be parsed as a QStringList as <tt>["func", "..."]</tt>, the first
-   element is the function name and the second one is the content in parentheses, and then Qt will
-   try to convert the string list into the user-defined receiver type using the pre-registered
-   converter.
+    element is the function name and the second one is the content in parentheses, and then Qt will
+    try to convert the string list into the user-defined receiver type using the pre-registered
+    converter.
 
     There are many non-built-in types in QtMediate library to support support setting the appearance
     of custom controls in stylesheets, and each one has its own converter function from QStringList.

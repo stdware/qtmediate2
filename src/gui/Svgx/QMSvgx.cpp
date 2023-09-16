@@ -96,8 +96,8 @@ namespace QMPrivate {
 }
 
 /*!
-    \namespace QMSvgx
-    \brief Namespace containing utilities to handle QtMediate svg extension.
+    \namespace QMCss
+    \brief Namespace of QtMediate svg extension utilities.
 */
 
 namespace QMSvgx {
@@ -216,4 +216,5 @@ namespace QMSvgx {
         engine->virtual_hook(QMPrivate::GetColor, a);
         return res;
     }
+    
 }

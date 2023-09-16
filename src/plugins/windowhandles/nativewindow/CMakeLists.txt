@@ -6,10 +6,7 @@ project(nativewindow
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_AUTOUIC on)
-set(CMAKE_AUTOMOC on)
-set(CMAKE_AUTORCC on)
-
+# Find FramelessHelper
 find_package(FramelessHelper QUIET COMPONENTS Core Widgets)
 
 if(NOT TARGET FramelessHelper::Widgets)
@@ -20,18 +17,11 @@ endif()
 # Configure target
 file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 
-qtmediate_add_plugin(${PROJECT_NAME} ${PLUGIN_CATEGORY} ${_src} Res/NativeWindow_res.qrc)
-
-# Link
-target_link_libraries(${PROJECT_NAME} PRIVATE QMWidgetTools FramelessHelper::Widgets)
-
-qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
-    Widgets
-)
-
-# Include
-target_include_directories(${PROJECT_NAME} PRIVATE .)
-
-qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
-    Core Gui
+qtmediate_add_plugin(${PROJECT_NAME} ${PLUGIN_CATEGORY}
+    SOURCES ${_src} Res/NativeWindow_res.qrc
+    LINKS QMWidgetTools
+    LINKS_PRIVATE FramelessHelper::Widgets
+    QT_LINKS Core Gui Widgets
+    INCLUDE_PRIVATE .
+    QT_INCLUDE_PRIVATE Core Gui
 )

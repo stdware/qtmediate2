@@ -8,7 +8,7 @@
 
 /*!
     \namespace QMBatch
-    \brief QtMediate batch process utility namespace.
+    \brief Namespace of batch process utilities.
 */
 
 namespace QMBatch {

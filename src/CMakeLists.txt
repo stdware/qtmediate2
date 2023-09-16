@@ -12,15 +12,50 @@ set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
 # ----------------------------------
 # CMake API
 # ----------------------------------
-function(qtmediate_add_library _target _type)
-    add_library(${_target} ${_type} ${ARGN})
+function(qtmediate_add_library _target)
+    set(options)
+    set(oneValueArgs PREFIX)
+    set(multiValueArgs)
+    cmake_parse_arguments(FUNC "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if(WIN32)
+    set(CMAKE_AUTOUIC on)
+    set(CMAKE_AUTOMOC on)
+    set(CMAKE_AUTORCC on)
+
+    if(QTMEDIATE_BUILD_STATIC)
+        set(_type STATIC)
+    else()
+        set(_type SHARED)
+    endif()
+
+    add_library(${_target} ${_type})
+
+    if(WIN32 AND NOT QTMEDIATE_BUILD_STATIC)
         qtmediate_add_win_rc(${_target}
             DESCRIPTION ${QTMEDIATE_PROJECT_DESCRIPTION}
             COPYRIGHT ${QTMEDIATE_PROJECT_COPYRIGHT}
         )
     endif()
+
+    if(FUNC_PREFIX)
+        set(_prefix_option PREFIX ${FUNC_PREFIX})
+    else()
+        set(_prefix_option)
+    endif()
+
+    # Set global definitions
+    qtmediate_export_defines(${_target} ${_prefix_option})
+
+    # Configure target
+    qtmediate_configure_target(${_target} ${FUNC_UNPARSED_ARGUMENTS})
+
+    # Library name
+    string(LENGTH "${_target}" _stringLength)
+    math(EXPR _startIndex "2")
+    math(EXPR _length "${_stringLength} - ${_startIndex}")
+    string(SUBSTRING "${_target}" ${_startIndex} ${_length} _name)
+    add_library(qtmediate::${_name} ALIAS ${_target})
+    set_target_properties(${_target} PROPERTIES EXPORT_NAME ${_name})
 
     if(QTMEDIATE_INSTALL)
         install(TARGETS ${_target}
@@ -50,7 +85,11 @@ function(qtmediate_add_library _target _type)
 endfunction()
 
 function(qtmediate_add_plugin _target _category)
-    add_library(${_target} SHARED ${ARGN})
+    set(CMAKE_AUTOUIC on)
+    set(CMAKE_AUTOMOC on)
+    set(CMAKE_AUTORCC on)
+
+    add_library(${_target} SHARED)
     add_library(qtmediate::${_target} ALIAS ${_target})
 
     if(WIN32)
@@ -60,6 +99,10 @@ function(qtmediate_add_plugin _target _category)
         )
     endif()
 
+    # Configure target
+    qtmediate_configure_target(${_target} ${ARGN})
+
+    # Set plugin output
     set(_output_dir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${QTMEDIATE_INSTALL_NAME}/plugins/${_category})
     set_target_properties(${_target} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${_output_dir}
@@ -91,7 +134,9 @@ add_subdirectory(widgettools)
 
 add_subdirectory(plugins)
 
+# ----------------------------------
 # Documentation
+# ----------------------------------
 if(QTMEDIATE_BUILD_DOCUMENTATIONS)
     if(NOT DOXYGEN_EXECUTABLE)
         find_package(Doxygen REQUIRED)
@@ -124,6 +169,9 @@ if(QTMEDIATE_BUILD_DOCUMENTATIONS)
     )
 endif()
 
+# ----------------------------------
+# Install
+# ----------------------------------
 if(QTMEDIATE_INSTALL)
     # Add install target
     set(_install_dir ${CMAKE_INSTALL_LIBDIR}/cmake/${QTMEDIATE_INSTALL_NAME})

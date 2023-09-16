@@ -3,37 +3,14 @@ project(QMGui
     LANGUAGES CXX
 )
 
-set(CMAKE_AUTOUIC on)
-set(CMAKE_AUTOMOC on)
-set(CMAKE_AUTORCC on)
-
 # Configure target
 file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 
-qtmediate_add_library(${PROJECT_NAME} SHARED ${_src})
-
-add_library(qtmediate::Gui ALIAS ${PROJECT_NAME})
-set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME Gui)
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE QMGUI_LIBRARY)
-
-# Link
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    QMCore
+qtmediate_add_library(${PROJECT_NAME}
+    SOURCES ${_src}
+    LINKS QMCore
+    INCLUDE_PRIVATE Global Kernel Painting Svgx Tools
+    QT_LINKS Core Gui
+    QT_INCLUDE_PRIVATE Core Gui
+    SKIP_AUTOMOC_DIRS Tools
 )
-
-qtmediate_link_qt_libraries(${PROJECT_NAME} PUBLIC
-    Core Gui
-)
-
-# Include
-qtmediate_include_qt_private(${PROJECT_NAME} PRIVATE
-    Core Gui
-)
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    Global Kernel Painting Svgx Tools
-)
-
-# Extra
-qtmediate_dir_skip_automoc(Tools)

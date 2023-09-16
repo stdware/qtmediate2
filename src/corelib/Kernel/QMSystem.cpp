@@ -27,7 +27,7 @@ static const char Slash = '/';
 
 /*!
     \namespace QMFs
-    \brief QtMediate filesystem utility namespace.
+    \brief Namespace of filesystem utilities.
 */
 
 namespace QMFs {
@@ -269,7 +269,7 @@ namespace QMFs {
 
 /*!
     \namespace QMOs
-    \brief QtMediate OS utility namespace.
+    \brief Namespace of OS utilities.
 */
 
 namespace QMOs {

@@ -39,13 +39,27 @@ public:
     }
 };
 
+/*!
+    \class CCheckBox
+    \brief CCheckBox is a combination of a label and a tool button and appears like a check box.
+*/
+
+/*!
+    Constructs with no text.
+*/
 CCheckBox::CCheckBox(QWidget *parent) : QAbstractButton(parent), d(new CCheckBoxPrivate(this)) {
 }
 
+/*!
+    Constructs with the given text.
+*/
 CCheckBox::CCheckBox(const QString &text, QWidget *parent) : CCheckBox(parent) {
     setText(text);
 }
 
+/*!
+    Destructor.
+*/
 CCheckBox::~CCheckBox() {
     delete d;
 }

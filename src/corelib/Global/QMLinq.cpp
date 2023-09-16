@@ -2,7 +2,7 @@
 
 /*!
     \namespace QMLinq
-    \brief QtMediate collection utility (C# style) namespace.
+    \brief Namespace of collection utilities (C# style).
 */
 
 namespace QMLinq {

@@ -5,7 +5,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-#include "QMWidgetsGlobal.h"
+#include <QMWidgets/QMWidgetsGlobal.h>
+#include <QMWidgets/QMWidgetsMacros.h>
 
 class CCheckBoxPrivate;
 

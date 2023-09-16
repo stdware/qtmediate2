@@ -5,6 +5,7 @@ project(qtmediate VERSION 0.2.18.1 LANGUAGES CXX)
 # ----------------------------------
 # Build Options
 # ----------------------------------
+option(QTMEDIATE_BUILD_STATIC "Build static libraries" OFF)
 option(QTMEDIATE_BUILD_TRANSLATIONS "Build translations" ON)
 option(QTMEDIATE_BUILD_TESTS "Build test cases" ON)
 option(QTMEDIATE_BUILD_DOCUMENTATIONS "Build documentations" OFF)
