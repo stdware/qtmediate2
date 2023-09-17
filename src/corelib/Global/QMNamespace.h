@@ -21,6 +21,18 @@ namespace QM {
     };
     Q_ENUM_NS(Priority)
 
+    enum DockCorner {
+        LeftTopCorner = 0x1,
+        LeftBottomCorner,
+        TopLeftCorner,
+        TopRightCorner,
+        RightTopCorner,
+        RightBottomCorner,
+        BottomLeftCorner,
+        BottomRightCorner,
+    };
+    Q_ENUM_NS(DockCorner)
+
     enum ButtonState {
         ButtonNormal,
         ButtonHover,

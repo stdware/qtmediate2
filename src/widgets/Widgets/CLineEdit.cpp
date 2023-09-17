@@ -8,12 +8,30 @@
 #include <QTimer>
 
 
+/*!
+    \class CLineEdit
+
+    QLineEdit has a bug that the placeholder color would be black (wrong color) if
+    a polish event is handled when the window is not active.
+
+    This override class is a temporary solution.
+*/
+
+/*!
+    Constructor.
+*/
 CLineEdit::CLineEdit(QWidget *parent) : QLineEdit(parent) {
 }
 
+/*!
+    Constructs with the given text.
+*/
 CLineEdit::CLineEdit(const QString &text, QWidget *parent) : QLineEdit(text, parent) {
 }
 
+/*!
+    Destructor.
+*/
 CLineEdit::~CLineEdit() {
 }
 
@@ -30,7 +48,8 @@ bool CLineEdit::event(QEvent *event) {
             auto palette = this->palette();
             if (isBlack(palette.brush(QPalette::Active, QPalette::PlaceholderText).color()) &&
                 !isBlack(palette.brush(QPalette::Active, QPalette::Text).color())) {
-                palette.setBrush(QPalette::Active, QPalette::PlaceholderText, {}); // Set colors twice
+                palette.setBrush(QPalette::Active, QPalette::PlaceholderText,
+                                 {}); // Set colors twice
                 setPalette(palette);
             }
             break;
@@ -71,3 +90,10 @@ void CLineEdit::contextMenuEvent(QContextMenuEvent *event) {
         menu->popup(event->globalPos());
     }
 }
+
+/*!
+    \fn void CLineEdit::specialKeyPressed(int key)
+
+    This signal is emitted when a special key is pressed. The special key can be \c Enter , \c tab
+    and \c Escape .
+*/

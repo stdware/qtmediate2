@@ -173,6 +173,13 @@ QMGuiAppExtension::~QMGuiAppExtension() {
 }
 
 /*!
+    Returns the default desktop available geometry.
+*/
+QRect QMGuiAppExtension::desktopRect() {
+    return QGuiApplication::primaryScreen()->availableGeometry();
+}
+
+/*!
     \internal
 */
 QMGuiAppExtension::QMGuiAppExtension(QMGuiAppExtensionPrivate &d, QObject *parent)

@@ -1,14 +1,9 @@
 #ifndef CHORUSKIT_CLINEEDIT_H
 #define CHORUSKIT_CLINEEDIT_H
 
-// QLineEdit has a bug that the placeholder color would be black (wrong color) if
-// a polish event is handled when the window is not active.
-
-// This override class is a temporary solution.
-
 #include <QLineEdit>
 
-#include "QMWidgetsGlobal.h"
+#include <QMWidgets/QMWidgetsGlobal.h>
 
 class QMWIDGETS_EXPORT CLineEdit : public QLineEdit {
     Q_OBJECT

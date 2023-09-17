@@ -18,6 +18,9 @@ public:
     explicit QMGuiAppExtension(QObject *parent = nullptr);
     ~QMGuiAppExtension();
 
+public:
+    static QRect desktopRect();
+
 protected:
     QMGuiAppExtension(QMGuiAppExtensionPrivate &d, QObject *parent = nullptr);
 };

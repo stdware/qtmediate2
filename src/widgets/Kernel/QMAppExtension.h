@@ -21,6 +21,14 @@ public:
     void showMessage(QObject *parent, MessageBoxFlag flag, const QString &title,
                      const QString &text) const override;
 
+public:
+    void installShortcutForwarder(QWidget *w, QWidget *target,
+                                  const std::function<bool()> &predicate = {});
+    void removeShortcutForwarder(QWidget *w);
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
+
 protected:
     QMAppExtension(QMAppExtensionPrivate &d, QObject *parent = nullptr);
 };

@@ -5,6 +5,9 @@
 #include <QDir>
 #include <QMessageBox>
 
+#include <private/qapplication_p.h>
+#include <private/qshortcutmap_p.h>
+
 #include "QMDecoratorV2.h"
 
 #include "QMAppExtension_p.h"
@@ -38,6 +41,59 @@ static QString GetLibraryPath() {
     auto buf = dl_info.dli_fname;
     return QString::fromStdString(buf);
 #endif
+}
+
+namespace {
+
+    class ShortcutFilter : public QObject {
+    public:
+        ShortcutFilter(QWidget *org) : m_org(org), m_handled(false) {
+        }
+
+        inline bool handled() const {
+            return m_handled;
+        }
+
+    protected:
+        bool eventFilter(QObject *watched, QEvent *event) override {
+            if (event->type() == QEvent::Shortcut) {
+                QApplicationPrivate::active_window = m_org;
+                m_handled = true;
+            }
+            return QObject::eventFilter(watched, event);
+        }
+
+    private:
+        QWidget *m_org;
+        bool m_handled;
+    };
+
+    // This function hacks the QApplication data structure and simply changes
+    // the `active_window` pointer temporarily to make the shortcut map transmit the
+    // event to the target window.
+    static void forwardShortcut(QKeyEvent *event, QWidget *window) {
+        event->accept();
+
+        // Hack `active_window` temporarily
+        auto org = QApplicationPrivate::active_window;
+        QApplicationPrivate::active_window = window;
+
+        // Make sure to restore `active_window` right away if shortcut matches
+        ShortcutFilter filter(org);
+        qApp->installEventFilter(&filter);
+
+        // Retransmit event
+        QKeyEvent keyEvent(QEvent::ShortcutOverride, event->key(), event->modifiers(),
+                           event->nativeScanCode(), event->nativeVirtualKey(),
+                           event->nativeModifiers(), event->text(), event->isAutoRepeat(),
+                           event->count());
+        QGuiApplicationPrivate::instance()->shortcutMap.tryShortcut(&keyEvent);
+
+        if (!filter.handled()) {
+            QApplicationPrivate::active_window = org;
+        }
+    }
+
 }
 
 QMAppExtensionPrivate::QMAppExtensionPrivate() {
@@ -96,6 +152,54 @@ void QMAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QSt
             break;
     };
 #endif
+}
+
+
+void QMAppExtension::installShortcutForwarder(QWidget *w, QWidget *target,
+                                              const std::function<bool()> &predicate) {
+    Q_D(QMAppExtension);
+    if (!w) {
+        return;
+    }
+
+    QMetaObject::Connection conn = connect(w, &QObject::destroyed, this, [this, w]() {
+        removeEventFilter(w); //
+    });
+    d->shortcutForwarders.insert(w, {w, target, predicate, conn});
+}
+
+void QMAppExtension::removeShortcutForwarder(QWidget *w) {
+    Q_D(QMAppExtension);
+    auto it = d->shortcutForwarders.find(w);
+    if (it == d->shortcutForwarders.end())
+        return;
+    disconnect(it->conn);
+    d->shortcutForwarders.erase(it);
+}
+
+bool QMAppExtension::eventFilter(QObject *obj, QEvent *event) {
+    Q_D(QMAppExtension);
+    switch (event->type()) {
+        case QEvent::KeyPress: {
+            if (!obj->isWidgetType())
+                break;
+
+            auto w = static_cast<QWidget *>(obj);
+            auto it = d->shortcutForwarders.find(w);
+            if (it == d->shortcutForwarders.end())
+                break;
+
+            const auto &r = it.value();
+            if (r.predicate && r.target && r.predicate()) {
+                forwardShortcut(static_cast<QKeyEvent *>(event), r.target);
+                return true;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    return QMGuiAppExtension::eventFilter(obj, event);
 }
 
 QMAppExtension::QMAppExtension(QMAppExtensionPrivate &d, QObject *parent)

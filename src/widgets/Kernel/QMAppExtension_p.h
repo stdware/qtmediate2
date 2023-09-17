@@ -21,8 +21,16 @@ public:
     ~QMAppExtensionPrivate();
 
     void init();
-    
+
     QMCoreDecoratorV2 *createDecorator(QObject *parent) override;
+
+    struct ShortcutForwardData {
+        QWidget *w;
+        QWidget *target;
+        std::function<bool()> predicate;
+        QMetaObject::Connection conn;
+    };
+    QHash<QWidget *, ShortcutForwardData> shortcutForwarders;
 };
 
 #endif // QMAPPEXTENSION_P_H

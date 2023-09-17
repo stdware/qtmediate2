@@ -181,6 +181,55 @@ public:
         friend class QMChronMap;
     };
 
+    class key_iterator {
+        const_iterator i;
+
+    public:
+        typedef typename const_iterator::iterator_category iterator_category;
+        typedef typename const_iterator::difference_type difference_type;
+        typedef K value_type;
+        typedef const K *pointer;
+        typedef const K &reference;
+
+        key_iterator() = default;
+        explicit key_iterator(const_iterator o) : i(o) {
+        }
+
+        const K &operator*() const {
+            return i.key();
+        }
+        const K *operator->() const {
+            return &i.key();
+        }
+        bool operator==(key_iterator o) const {
+            return i == o.i;
+        }
+        bool operator!=(key_iterator o) const {
+            return i != o.i;
+        }
+
+        inline key_iterator &operator++() {
+            ++i;
+            return *this;
+        }
+        inline key_iterator operator++(int) {
+            return key_iterator(i++);
+        }
+        inline key_iterator &operator--() {
+            --i;
+            return *this;
+        }
+        inline key_iterator operator--(int) {
+            return key_iterator(i--);
+        }
+        const_iterator base() const {
+            return i;
+        }
+    };
+
+    typedef QKeyValueIterator<const K &, const T &, const_iterator> const_key_value_iterator;
+    typedef QKeyValueIterator<const K &, T &, iterator> key_value_iterator;
+
     QPair<iterator, bool> append(const K &key, const T &val, bool replace = true) {
         iterator tmp;
         if (tryReplace(key, val, &tmp, replace)) {
@@ -288,6 +337,30 @@ public:
     }
     inline const_iterator constEnd() const {
         return const_iterator(m_list.cend());
+    }
+    inline key_iterator keyBegin() const {
+        return key_iterator(begin());
+    }
+    inline key_iterator keyEnd() const {
+        return key_iterator(end());
+    }
+    inline key_value_iterator keyValueBegin() {
+        return key_value_iterator(begin());
+    }
+    inline key_value_iterator keyValueEnd() {
+        return key_value_iterator(end());
+    }
+    inline const_key_value_iterator keyValueBegin() const {
+        return const_key_value_iterator(begin());
+    }
+    inline const_key_value_iterator constKeyValueBegin() const {
+        return const_key_value_iterator(begin());
+    }
+    inline const_key_value_iterator keyValueEnd() const {
+        return const_key_value_iterator(end());
+    }
+    inline const_key_value_iterator constKeyValueEnd() const {
+        return const_key_value_iterator(end());
     }
     bool contains(const K &key) const {
         return m_map.find(key) != m_map.end();
