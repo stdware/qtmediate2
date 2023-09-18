@@ -126,20 +126,20 @@ QMDisplayStringData::~QMDisplayStringData() {
 */
 
 /*!
-    Construct from a plain string.
+    Constructs from a plain string.
 */
 QMDisplayString::QMDisplayString(const QString &s) : d(new QMDisplayStringData(s, this)) {
 }
 
 /*!
-    Construct from a translation callback, you should call QCoreApplication::tr() in this callback.
+    Constructs from a translation callback, you should call QCoreApplication::tr() in this callback.
 */
 QMDisplayString::QMDisplayString(const QMDisplayString::GetText &func)
     : d(new QMDisplayStringData(func, this)) {
 }
 
 /*!
-    Construct from a translation callback that provides the QMDisplayString instance, you may use
+    Constructs from a translation callback that provides the QMDisplayString instance, you may use
     the property map in this callback.
 */
 QMDisplayString::QMDisplayString(const GetTextEx &func, void *userdata)
@@ -153,16 +153,10 @@ QMDisplayString::~QMDisplayString() {
     delete d;
 }
 
-/*!
-    Copy constructor.
-*/
 QMDisplayString::QMDisplayString(const QMDisplayString &other)
     : d(new QMDisplayStringData(other.d->str, other.d->properties, this)) {
 }
 
-/*!
-    Move constructor.
-*/
 QMDisplayString::QMDisplayString(QMDisplayString &&other) noexcept : d(other.d) {
     other.d = nullptr;
     d->q = this;
@@ -176,9 +170,6 @@ QMDisplayString &QMDisplayString::operator=(const QString &s) {
     return *this;
 }
 
-/*!
-    Copy assign.
-*/
 QMDisplayString &QMDisplayString::operator=(const QMDisplayString &other) {
     if (&other == this) {
         return *this;
@@ -188,9 +179,6 @@ QMDisplayString &QMDisplayString::operator=(const QMDisplayString &other) {
     return *this;
 }
 
-/*!
-    Move assign.
-*/
 QMDisplayString &QMDisplayString::operator=(QMDisplayString &&other) noexcept {
     if (&other == this) {
         return *this;
@@ -217,7 +205,7 @@ QMDisplayString::TranslatePolicy QMDisplayString::translatePolicy() const {
 }
 
 /*!
-    Assign translation callback, the translation policy may be changed.
+    Assigns translation callback, the translation policy may be changed.
 */
 void QMDisplayString::setTranslateCallback(const QMDisplayString::GetText &func) {
     if (!func) {
@@ -235,7 +223,7 @@ void QMDisplayString::setTranslateCallback(const QMDisplayString::GetText &func)
 }
 
 /*!
-    Assign translation callback, the translation policy may be changed.
+    Assigns translation callback, the translation policy may be changed.
 */
 void QMDisplayString::setTranslateCallback(const QMDisplayString::GetTextEx &func) {
     if (!func) {
@@ -253,7 +241,7 @@ void QMDisplayString::setTranslateCallback(const QMDisplayString::GetTextEx &fun
 }
 
 /*!
-    Assign plain string, the translation policy may be changed.
+    Assigns plain string, the translation policy may be changed.
 */
 void QMDisplayString::setPlainString(const QString &s) {
     if (d->str->p != TranslateIgnored) {
@@ -266,14 +254,14 @@ void QMDisplayString::setPlainString(const QString &s) {
 }
 
 /*!
-    Get property.
+    Gets the property of the given key.
 */
 QVariant QMDisplayString::property(const QString &key) const {
     return d->properties.value(key);
 }
 
 /*!
-    Set property.
+    Sets the property of the given key.
 */
 void QMDisplayString::setProperty(const QString &key, const QVariant &value) {
     auto &properties = d->properties;
@@ -291,7 +279,7 @@ void QMDisplayString::setProperty(const QString &key, const QVariant &value) {
 }
 
 /*!
-    Get property hash map.
+    Returns the property hash map.
 */
 QVariantHash QMDisplayString::propertyMap() const {
     return d->properties;

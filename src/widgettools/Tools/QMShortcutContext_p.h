@@ -13,9 +13,8 @@
 #include <QHash>
 #include <QSet>
 
-#include <QMChronSet.h>
-
-#include "QMShortcutContext.h"
+#include <QMCore/QMChronSet.h>
+#include <QMWidgetTools/QMShortcutContext.h>
 
 class QMShortcutContextPrivate : public QObject {
     Q_OBJECT

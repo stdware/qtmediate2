@@ -10,6 +10,11 @@
 #include <QWindow>
 #include <QElapsedTimer>
 
+#include <QMGui/QMGuiAppExtension.h>
+
+#include <private/qapplication_p.h>
+#include <private/qshortcutmap_p.h>
+
 #ifdef Q_OS_WINDOWS
 #  include <Windows.h>
 #endif
@@ -39,6 +44,34 @@ inline static bool waitForWindowExposed(QWindow *window, int timeout = 1000) {
     return window->isExposed();
 }
 
+
+namespace {
+
+    class ShortcutFilter : public QObject {
+    public:
+        ShortcutFilter(QWidget *org) : m_org(org), m_handled(false) {
+        }
+
+        inline bool handled() const {
+            return m_handled;
+        }
+
+    protected:
+        bool eventFilter(QObject *watched, QEvent *event) override {
+            if (event->type() == QEvent::Shortcut) {
+                QApplicationPrivate::active_window = m_org;
+                m_handled = true;
+            }
+            return QObject::eventFilter(watched, event);
+        }
+
+    private:
+        QWidget *m_org;
+        bool m_handled;
+    };
+
+}
+
 /*!
     \namespace QMView
     \brief Namespace of widgets and windows utilities.
@@ -46,20 +79,27 @@ inline static bool waitForWindowExposed(QWindow *window, int timeout = 1000) {
 
 namespace QMView {
 
-    void waitToShow(QWidget *w) {
-        if (w) {
-            if (!w->windowHandle())
-                w->createWinId();
-            waitForWindowExposed(w->windowHandle());
+    /*!
+        Wait until the widget shows.
+    */
+    void waitToShow(QWidget *window) {
+        if (window) {
+            if (!window->windowHandle())
+                window->createWinId();
+            waitForWindowExposed(window->windowHandle());
         }
     }
 
-    void centralizeWindow(QWidget *w, QSizeF ratio) {
+    /*!
+        Sets the size of the window using a percentage of the desktop size and makes the
+        window show in center.
+    */
+    void centralizeWindow(QWidget *window, QSizeF ratio) {
         QSize desktopSize;
-        if (w->parentWidget()) {
-            desktopSize = w->parentWidget()->size();
+        if (window->parentWidget()) {
+            desktopSize = window->parentWidget()->size();
         } else {
-            desktopSize = w->screen()->size();
+            desktopSize = window->screen()->size();
         }
 
         int dw = desktopSize.width();
@@ -68,7 +108,7 @@ namespace QMView {
         double rw = ratio.width();
         double rh = ratio.height();
 
-        QSize size = w->size();
+        QSize size = window->size();
         if (rw > 0 && rw <= 1) {
             size.setWidth(dw * rw);
         }
@@ -76,22 +116,28 @@ namespace QMView {
             size.setHeight(dh * rh);
         }
 
-        w->setGeometry((dw - size.width()) / 2, (dh - size.height()) / 2, size.width(),
-                       size.height());
+        window->setGeometry((dw - size.width()) / 2, (dh - size.height()) / 2, size.width(),
+                            size.height());
     }
 
-    void raiseWindow(QWidget *w) {
+    /*!
+        Bring the given window to the top.
+    */
+    void raiseWindow(QWidget *window) {
+        if (!window->isWindow())
+            return;
+
         // Make sure the window isn't minimized
         // TODO: this always puts it in the "normal" state but it might have been maximized
         // before minimized...so either a flag needs stored or find a Qt call to do it appropriately
-        if (w->isMinimized())
-            w->showNormal();
+        if (window->isMinimized())
+            window->showNormal();
 
 #ifdef Q_OS_WINDOWS
         // TODO: there doesn't seem to be a cross platform way to force the window
         // to the foreground. So this will need moved to a platform specific file
 
-        HWND hWnd = reinterpret_cast<HWND>(w->effectiveWinId());
+        HWND hWnd = reinterpret_cast<HWND>(window->effectiveWinId());
         if (hWnd) {
             // I have no idea what this does but it works mostly
             // https://www.codeproject.com/Articles/1724/Some-handy-dialog-box-tricks-tips-and-workarounds
@@ -108,31 +154,58 @@ namespace QMView {
 #endif
     }
 
-    void fixWindowPos(QWidget *w) {
-        QPoint target(w->pos());
+    /*!
+        Makes the window completely inside the screen if part of the window is outside.
+    */
+    void fixWindowPos(QWidget *window) {
+        QPoint target(window->pos());
         if (target.x() < 0) {
             target.setX(0);
         }
         if (target.y() < 0) {
             target.setY(0);
         }
-        int dw = qApp->desktop()->width();
-        int dh = qApp->desktop()->height();
-        if (target.x() + w->width() > dw) {
-            target.setX(dw - w->width());
+
+        const auto &desktopSize = window->screen()->size();
+        if (target.x() + window->width() > desktopSize.width()) {
+            target.setX(desktopSize.width() - window->width());
         }
-        if (target.y() + w->height() > dh) {
-            target.setY(dh - w->height());
+        if (target.y() + window->height() > desktopSize.height()) {
+            target.setY(desktopSize.height() - window->height());
         }
-        w->move(target);
+        window->move(target);
     }
 
-    QWidget *implicitMouseGrabber() {
-        return qt_button_down;
-    }
+    /*!
+        Redirect the key event as a shortcut to the given window.
+    */
+    void forwardShortcut(QKeyEvent *event, QWidget *window) {
+        // This function hacks the QApplication data structure and simply changes
+        // the `active_window` pointer temporarily to make the shortcut map transmit the
+        // event to the target window.
 
-    void setImplicitMouseGrabber(QWidget *w) {
-        qt_button_down = w;
+        if (!window || !window->isWindow()) {
+            return;
+        }
+
+        // Hack `active_window` temporarily
+        auto org = QApplicationPrivate::active_window;
+        QApplicationPrivate::active_window = window;
+
+        // Make sure to restore `active_window` right away if shortcut matches
+        ShortcutFilter filter(org);
+        qApp->installEventFilter(&filter);
+
+        // Retransmit event
+        QKeyEvent keyEvent(QEvent::ShortcutOverride, event->key(), event->modifiers(),
+                           event->nativeScanCode(), event->nativeVirtualKey(),
+                           event->nativeModifiers(), event->text(), event->isAutoRepeat(),
+                           event->count());
+        QGuiApplicationPrivate::instance()->shortcutMap.tryShortcut(&keyEvent);
+
+        if (!filter.handled()) {
+            QApplicationPrivate::active_window = org;
+        }
     }
 
 }

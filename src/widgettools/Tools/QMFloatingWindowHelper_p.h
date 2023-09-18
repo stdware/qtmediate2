@@ -1,5 +1,5 @@
-#ifndef CHORUSKIT_QMFLOATINGWINDOWHELPER_P_H
-#define CHORUSKIT_QMFLOATINGWINDOWHELPER_P_H
+#ifndef QMFLOATINGWINDOWHELPER_P_H
+#define QMFLOATINGWINDOWHELPER_P_H
 
 //
 //  W A R N I N G !!!
@@ -13,7 +13,7 @@
 #include <QRect>
 #include <QSet>
 
-#include "QMFloatingWindowHelper.h"
+#include <QMWidgetTools/QMFloatingWindowHelper.h>
 
 class QMFloatingWindowHelperPrivate : public QObject {
     Q_OBJECT
@@ -61,4 +61,4 @@ protected:
     friend class QMFloatingWindowHelper;
 };
 
-#endif // CHORUSKIT_QMFLOATINGWINDOWHELPER_P_H
+#endif // QMFLOATINGWINDOWHELPER_P_H

@@ -4,6 +4,17 @@
 #include <QEvent>
 #include <QWidget>
 
+/*!
+    \class QMAutoResizer
+    
+    A QWidget which isn't in a layout is not able to update its geometry. But a widget in a scroll
+    area is usually independent, this resizer is used to force the widget to adjust its size when
+    a layout request event comes.
+*/
+
+/*!
+    Constructs with the given parent widget.
+*/
 QMAutoResizer::QMAutoResizer(QWidget *parent) : QMAutoResizer(SizeHint, parent) {
 }
 
@@ -19,6 +30,9 @@ QMAutoResizer::QMAutoResizer(QMAutoResizer::SizeOption so, bool fixed, QMAutoRes
     w->installEventFilter(this);
 }
 
+/*!
+    Destructor.
+*/
 QMAutoResizer::~QMAutoResizer() {
 }
 

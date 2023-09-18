@@ -1,5 +1,5 @@
-#ifndef CHORUSKIT_ICONCOLORIMPL_H
-#define CHORUSKIT_ICONCOLORIMPL_H
+#ifndef ICONCOLORIMPL_H
+#define ICONCOLORIMPL_H
 
 #include <QPen>
 #include <QPushButton>
@@ -20,4 +20,4 @@ namespace IconColorImpl {
 
 };
 
-#endif // CHORUSKIT_ICONCOLORIMPL_H
+#endif // ICONCOLORIMPL_H

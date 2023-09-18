@@ -55,14 +55,14 @@ QMPaintAccessor::~QMPaintAccessor() {
 */
 
 /*!
-    Query for a pen attribute.
+    Queries for a pen attribute.
 */
 QPen QMPaintAccessor::queryPen(const PaintProc &proc, PaintItems items) {
     return {};
 }
 
 /*!
-    Query for a brush attribute.
+    Queries for a brush attribute.
 */
 QBrush QMPaintAccessor::queryBrush(const PaintProc &proc, PaintItems items) {
     return {};

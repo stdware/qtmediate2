@@ -1,5 +1,5 @@
-#ifndef CHORUSKIT_CDOCKCARD_P_H
-#define CHORUSKIT_CDOCKCARD_P_H
+#ifndef CDOCKCARD_P_H
+#define CDOCKCARD_P_H
 
 //
 //  W A R N I N G !!!
@@ -49,4 +49,4 @@ public:
     static QMenu *createViewModeMenu(CDockCard *card);
 };
 
-#endif // CHORUSKIT_CDOCKCARD_P_H
+#endif // CDOCKCARD_P_H

@@ -1,5 +1,5 @@
-#ifndef CHORUSKIT_QCSSVALUELIST_H
-#define CHORUSKIT_QCSSVALUELIST_H
+#ifndef QCSSVALUELIST_H
+#define QCSSVALUELIST_H
 
 #include <QVariant>
 
@@ -43,4 +43,4 @@ const QVariantList &QCssValueList::get() const {
     return m_list;
 }
 
-#endif // CHORUSKIT_QCSSVALUELIST_H
+#endif // QCSSVALUELIST_H

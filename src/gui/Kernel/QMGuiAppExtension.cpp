@@ -153,7 +153,8 @@ QMCoreDecoratorV2 *QMGuiAppExtensionPrivate::createDecorator(QObject *parent) {
 
 /*!
     \class QMGuiAppExtension
-    \brief The QMGuiAppExtension class is the global resources manager for \c qtmediate framework.
+
+    The QMGuiAppExtension class is the global resources manager for \c QtMediate framework.
 
     All QtMediate non-qt types will be registered to QMetaType system when QMGuiAppExtension
     constructs.

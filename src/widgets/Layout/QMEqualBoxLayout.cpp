@@ -58,23 +58,42 @@ QSize CLayoutEqualizerItem::realSizeHint() const {
     return QWidgetItemV2::sizeHint();
 }
 
-// Equalizer
+/*!
+    \class QMEqualBoxLayout
+
+    QMEqualBoxLayout is able to keep the same size for a group of items.
+*/
+
+/*!
+    Constructs with the given layout direction.
+*/
 QMEqualBoxLayout::QMEqualBoxLayout(Direction direction, QWidget *parent)
     : QBoxLayout(direction, parent), d_ptr(new QMEqualBoxLayoutPrivate(this)) {
 }
 
+/*!
+    Destructor.
+*/
 QMEqualBoxLayout::~QMEqualBoxLayout() {
 }
 
-void QMEqualBoxLayout::addWidgetE(QWidget *widget, int stretch, Qt::Alignment alignment) {
-    insertWidgetE(-1, widget, stretch, alignment);
+/*!
+    Adds a widget to the equal size group.
+*/
+void QMEqualBoxLayout::addWidget2(QWidget *widget, int stretch, Qt::Alignment alignment) {
+    insertWidget2(-1, widget, stretch, alignment);
 }
 
-void QMEqualBoxLayout::insertWidgetE(int index, QWidget *widget, int stretch, Qt::Alignment alignment) {
+/*!
+    Inserts a widget to the equal size group.
+*/
+void QMEqualBoxLayout::insertWidget2(int index, QWidget *widget, int stretch,
+                                    Qt::Alignment alignment) {
     auto org = QLayoutPrivate::widgetItemFactoryMethod;
 
     // Exchange method temporarily
-    QLayoutPrivate::widgetItemFactoryMethod = [](const QLayout *layout, QWidget *widget) -> QWidgetItem * {
+    QLayoutPrivate::widgetItemFactoryMethod = [](const QLayout *layout,
+                                                 QWidget *widget) -> QWidgetItem * {
         auto item = new CLayoutEqualizerItem(widget);
         item->le = reinterpret_cast<const QMEqualBoxLayout *>(layout)->d_ptr.data();
         item->le->items.insert(item);
@@ -88,6 +107,9 @@ void QMEqualBoxLayout::insertWidgetE(int index, QWidget *widget, int stretch, Qt
 
 void QMEqualBoxLayout::addItem(QLayoutItem *item) {
     Q_D(QMEqualBoxLayout);
+    if (!item)
+        return;
+
     if (typeid(*item) == typeid(CLayoutEqualizerItem)) {
         auto item2 = reinterpret_cast<CLayoutEqualizerItem *>(item);
         item2->le = d;
@@ -99,6 +121,9 @@ void QMEqualBoxLayout::addItem(QLayoutItem *item) {
 QLayoutItem *QMEqualBoxLayout::takeAt(int index) {
     Q_D(QMEqualBoxLayout);
     auto item = QBoxLayout::takeAt(index);
+    if (!item)
+        return nullptr;
+
     if (typeid(*item) == typeid(CLayoutEqualizerItem)) {
         auto item2 = reinterpret_cast<CLayoutEqualizerItem *>(item);
         item2->le = nullptr;

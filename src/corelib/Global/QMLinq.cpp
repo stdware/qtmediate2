@@ -46,7 +46,7 @@ namespace QMLinq {
     /*!
         \fn void ForEach(const Array<T> &list, Func func)
 
-        \brief Call \c func for each of the element.
+        \brief Calls \c func for each of the element.
     */
 
 }

@@ -14,8 +14,8 @@ public:
     QMEqualBoxLayout(Direction direction, QWidget *parent = nullptr);
     ~QMEqualBoxLayout();
 
-    void addWidgetE(QWidget *widget, int stretch = 0, Qt::Alignment alignment = Qt::Alignment());
-    void insertWidgetE(int index, QWidget *widget, int stretch = 0, Qt::Alignment alignment = Qt::Alignment());
+    void addWidget2(QWidget *widget, int stretch = 0, Qt::Alignment alignment = {});
+    void insertWidget2(int index, QWidget *widget, int stretch = 0, Qt::Alignment alignment = {});
 
     void addItem(QLayoutItem *item) override;
     QLayoutItem *takeAt(int index) override;

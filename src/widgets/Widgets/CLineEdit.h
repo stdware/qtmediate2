@@ -1,5 +1,5 @@
-#ifndef CHORUSKIT_CLINEEDIT_H
-#define CHORUSKIT_CLINEEDIT_H
+#ifndef CLINEEDIT_H
+#define CLINEEDIT_H
 
 #include <QLineEdit>
 
@@ -20,4 +20,4 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
-#endif // CHORUSKIT_CLINEEDIT_H
+#endif // CLINEEDIT_H

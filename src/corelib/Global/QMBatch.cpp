@@ -14,7 +14,7 @@
 namespace QMBatch {
 
     /*!
-        Unescape the given string.
+        Unescapes the given string.
     */
     QString strUnescape(const QString &s) {
         QString res;
@@ -37,7 +37,7 @@ namespace QMBatch {
     }
 
     /*!
-        Remove the first quote at the beginning and end of the string.
+        Removes the first quote at the beginning and end of the string.
 
         \param unescape Unescape the result if the string is enclosed in quotation marks.
     */
@@ -54,7 +54,7 @@ namespace QMBatch {
     }
 
     /*!
-        Convert a string list to a int list, the non-number elements will be skipped.
+        Converts a string list to a int list, the non-number elements will be skipped.
     */
     QList<int> strListToIntList(const QStringList &list) {
         QList<int> res;
@@ -70,7 +70,7 @@ namespace QMBatch {
     }
 
     /*!
-        Convert a string list to a double list, the non-number elements will be skipped.
+        Converts a string list to a double list, the non-number elements will be skipped.
     */
     QList<double> strListToDoubleList(const QStringList &list) {
         QList<double> res;
@@ -86,7 +86,7 @@ namespace QMBatch {
     }
 
     /*!
-        Convert a json array to a double list, the non-number elements will be skipped.
+        Converts a json array to a double list, the non-number elements will be skipped.
     */
     QStringList jsonArrayToStrList(const QJsonArray &arr, bool considerNum) {
         QStringList res;
@@ -99,7 +99,7 @@ namespace QMBatch {
     }
 
     /*!
-        Determine if a string can be converted to a number.
+        Returns true if a string can be converted to a number, otherwise returns false.
 
         \param considerDot If set, the dot will be considered as a number char
         \param considerNeg If set, the minus sign will be considered as a number char
@@ -109,7 +109,8 @@ namespace QMBatch {
 
         for (int i = 0; i < s.size(); ++i) {
             QChar ch = s.at(i);
-            if ((ch >= '0' && ch <= '9') || (considerDot && ch == '.') || (considerNeg && ch == '-')) {
+            if ((ch >= '0' && ch <= '9') || (considerDot && ch == '.') ||
+                (considerNeg && ch == '-')) {
                 // is Number
             } else {
                 flag = false;
@@ -123,11 +124,12 @@ namespace QMBatch {
     /*!
         \fn bool strPrefixedWith(const QString &A, const QString &B)
 
-        Returns true if \c A is strictly prefied with \c B.
+        Returns true if \c A is strictly prefied with \c B .
     */
 
     /*!
-        Returns the next available name in the given string collection even if there's a duplication.
+        Returns the next available name in the given string collection even if there's a
+        duplication.
     */
     QString adjustRepeatedName(const QSet<QString> &set, const QString &name) {
         if (!set.contains(name)) {
@@ -175,27 +177,27 @@ namespace QMBatch {
     }
 
     /*!
-        \fn void arrayMoveElements(Array<T> &arr, int index, int count, int dest) 
+        \fn void arrayMoveElements(Array<T> &arr, int index, int count, int dest)
 
-        Move elements in the given array, the \c dest should be the position after move.
+        Moves elements in the given array, the \c dest should be the position after move.
     */
 
     /*!
         \fn void arrayInsertSort(Array<T> &array)
 
-        Sort the array using insert sort algorithm.
+        Sorts the array using insert sort algorithm.
     */
 
     /*!
         \fn QHash<K, T> mapToHash(const QMap<K, T> &map)
 
-        Convert a QMap to QHash.
+        Converts a QMap to QHash.
     */
 
     /*!
         \fn QMap<K, T> hashToMap(const QHash<K, T> &map)
 
-        Convert a QHash to QMap
+        Converts a QHash to QMap
     */
 
 }

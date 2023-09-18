@@ -1,6 +1,5 @@
 #include "CGraphicsView.h"
 
-
 #include <QApplication>
 #include <QGraphicsSceneMoveEvent>
 #include <QGraphicsSceneResizeEvent>

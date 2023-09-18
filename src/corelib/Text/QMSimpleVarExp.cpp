@@ -16,13 +16,13 @@ static const char DefaultPattern[] = R"(\$\{(\w+)\})";
 */
 
 /*!
-    Construct an instance with the default escaping pattern <tt>${XXX}</tt>.
+    Constructs an instance with the default escaping pattern <tt>${XXX}</tt>.
 */
 QMSimpleVarExp::QMSimpleVarExp() : QMSimpleVarExp(DefaultPattern) {
 }
 
 /*!
-    Construct an instance with the given escaping pattern, should be a regular expression.
+    Constructs an instance with the given escaping pattern, should be a regular expression.
 */
 QMSimpleVarExp::QMSimpleVarExp(const QString &pattern) : Pattern(pattern) {
 }
@@ -34,7 +34,7 @@ QMSimpleVarExp::~QMSimpleVarExp() {
 }
 
 /*!
-    Add  json object to the searching map, only string values will be included.
+    Adds a json object to the searching map, only string values will be included.
 */
 void QMSimpleVarExp::addJsonObject(const QJsonObject &obj) {
     for (auto it = obj.begin(); it != obj.end(); ++it) {
@@ -45,7 +45,7 @@ void QMSimpleVarExp::addJsonObject(const QJsonObject &obj) {
 }
 
 /*!
-    Add variant map to the searching map, only string values will be included.
+    Adds a variant map to the searching map, only string values will be included.
 */
 void QMSimpleVarExp::addVariantMap(const QVariantMap &map) {
     for (auto it = map.begin(); it != map.end(); ++it) {
@@ -56,7 +56,7 @@ void QMSimpleVarExp::addVariantMap(const QVariantMap &map) {
 }
 
 /*!
-    Add variant hash to the searching map, only string values will be included.
+    Adds a variant hash to the searching map, only string values will be included.
 */
 void QMSimpleVarExp::addVariantHash(const QVariantHash &hash) {
     for (auto it = hash.begin(); it != hash.end(); ++it) {
@@ -67,7 +67,7 @@ void QMSimpleVarExp::addVariantHash(const QVariantHash &hash) {
 }
 
 /*!
-    Add string map to the searching map.
+    Adds a string map to the searching map.
 */
 void QMSimpleVarExp::addMap(const QMap<QString, QString> &map) {
     for (auto it = map.begin(); it != map.end(); ++it) {
@@ -76,7 +76,7 @@ void QMSimpleVarExp::addMap(const QMap<QString, QString> &map) {
 }
 
 /*!
-    Add string hash to the searching map.
+    Adds a string hash to the searching map.
 */
 void QMSimpleVarExp::addHash(const QHash<QString, QString> &hash) {
     for (auto it = hash.begin(); it != hash.end(); ++it) {
@@ -85,14 +85,14 @@ void QMSimpleVarExp::addHash(const QHash<QString, QString> &hash) {
 }
 
 /*!
-    Add key-value pair to the searching map.
+    Adds a key-value pair to the searching map.
 */
 void QMSimpleVarExp::add(const QString &key, const QString &value) {
     Variables.insert(key, value);
 }
 
 /*!
-    Clear the searching map.
+    Clears the searching map.
 */
 void QMSimpleVarExp::clear() {
     Variables.clear();
@@ -127,14 +127,14 @@ static QString dfs(QString s, const QRegularExpression &reg, const QHash<QString
 }
 
 /*!
-    Parse the given expression.
+    Parses the given expression.
 */
 QString QMSimpleVarExp::parse(const QString &exp) const {
     return dfs(exp, QRegularExpression(Pattern), Variables);
 }
 
 /*!
-    Return a string hash containing common system environment variables.
+    Returns a string hash containing common system environment variables.
 
     \li DESKTOP: Desktop location
     \li DOCUMENTS: Documents location
@@ -161,7 +161,7 @@ QHash<QString, QString> QMSimpleVarExp::systemValues() {
 }
 
 /*!
-    Static member function for parsing a variable expression.
+    Parses a variable expression using the given variable \c dict .
 */
 QString QMSimpleVarExp::evaluate(const QString &s, const QHash<QString, QString> &dict,
                                  const QString &pattern) {

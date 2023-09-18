@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "QMWidgetToolsGlobal.h"
+#include <QMWidgetTools/QMWidgetToolsGlobal.h>
 
 class QMShortcutContextPrivate;
 

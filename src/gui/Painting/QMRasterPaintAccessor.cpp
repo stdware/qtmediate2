@@ -95,7 +95,7 @@ QMRasterPaintAccessor::~QMRasterPaintAccessor() {
 }
 
 /*!
-    Query for a pen attribute during a painting procedure on a raster device.
+    Queries for a pen attribute during a painting procedure on a raster device.
 
     This function is especially useful to get the text color of a widget.
 */
@@ -114,7 +114,7 @@ QPen QMRasterPaintAccessor::queryPen(const PaintProc &proc, PaintItems items) {
 }
 
 /*!
-    Query for a brush attribute during a painting procedure on a raster device.
+    Queries for a brush attribute during a painting procedure on a raster device.
 
     This function is especially useful to get the text color of a widget.
 */

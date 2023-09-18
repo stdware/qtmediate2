@@ -75,7 +75,7 @@ function(qtmediate_add_library _target)
     endif()
 
     # Generate a standard include directory in build directory
-    qtmediate_gen_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target}" ${_gen_include_options})
+    qtmediate_gen_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target}" CLEAN ${_gen_include_options})
     target_include_directories(${PROJECT_NAME} PUBLIC
         "$<BUILD_INTERFACE:${QTMEDIATE_GENERATED_INCLUDE_DIR}>"
     )

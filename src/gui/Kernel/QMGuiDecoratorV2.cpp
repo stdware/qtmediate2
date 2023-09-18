@@ -13,7 +13,7 @@ void QMGuiDecoratorV2Private::init() {
 /*!
     \class QMGuiDecoratorV2
     \brief The QMGuiDecoratorV2 class is a derived class from QMCoreDecoratorV2 with nothing to
-   extend.
+    extend.
 */
 
 /*!

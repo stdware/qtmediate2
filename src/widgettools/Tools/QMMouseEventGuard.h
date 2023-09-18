@@ -3,15 +3,20 @@
 
 #include <QMouseEvent>
 
-#include "QMWidgetToolsGlobal.h"
+#include <QMWidgetTools/QMWidgetToolsGlobal.h>
 
 class QMMouseEventGuardPrivate;
 
 class QMWTOOLS_EXPORT QMMouseEventGuard : public QObject {
     Q_OBJECT
 public:
-    QMMouseEventGuard(Qt::MouseButton button, const char *slot, QWidget *parent = nullptr);
+    explicit QMMouseEventGuard(QWidget *parent = nullptr);
     ~QMMouseEventGuard();
+
+public:
+    void addButton(Qt::MouseButton button, const char *slot);
+    void addButton(Qt::MouseButton button, const std::function<void(QMouseEvent *)> &slot);
+    void removeButton(Qt::MouseButton button);
 
 private:
     QMMouseEventGuardPrivate *d;

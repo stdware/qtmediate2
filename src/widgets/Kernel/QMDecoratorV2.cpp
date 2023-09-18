@@ -580,12 +580,29 @@ void QMDecoratorV2Private::_q_themeSubscriberDestroyed() {
     themeSubscribers.erase(it);
 }
 
+/*!
+    \class QMDecoratorV2
+
+    The QMDecoratorV2 class provides a theme registry and style sheet manager. It is usually
+    created when QMAppExtension initializes, so you should not manually create it.
+*/
+
+/*!
+    Constructor.
+*/
 QMDecoratorV2::QMDecoratorV2(QObject *parent) : QMDecoratorV2(*new QMDecoratorV2Private(), parent) {
 }
 
+/*!
+    Destructor.
+*/
 QMDecoratorV2::~QMDecoratorV2() {
 }
 
+/*!
+    Expands all QtMediate extension syntax in the given string and returns the standard Qt
+    StyleSheet.
+*/
 QString QMDecoratorV2::evaluateStyleSheet(const QString &stylesheet, double ratio) {
     QString content = stylesheet;
 
@@ -605,6 +622,10 @@ QString QMDecoratorV2::evaluateStyleSheet(const QString &stylesheet, double rati
     return content;
 }
 
+/*!
+    Adds a directory to the searching paths, you may need to call refreshTheme() to reload
+    subscribers' states.
+*/
 void QMDecoratorV2::addThemePath(const QString &path) {
     Q_D(QMDecoratorV2);
 
@@ -622,6 +643,10 @@ void QMDecoratorV2::addThemePath(const QString &path) {
     d->themeFilesDirty = true;
 }
 
+/*!
+    Removes a directory from the searching paths, you may need to call refreshTheme() to reload
+    subscribers' states.
+*/
 void QMDecoratorV2::removeThemePath(const QString &path) {
     Q_D(QMDecoratorV2);
 
@@ -640,6 +665,9 @@ void QMDecoratorV2::removeThemePath(const QString &path) {
     d->themeFilesDirty = true;
 }
 
+/*!
+    Returns a list of theme names.
+*/
 QStringList QMDecoratorV2::themes() const {
     Q_D(const QMDecoratorV2);
     if (d->themeFilesDirty) {
@@ -650,11 +678,17 @@ QStringList QMDecoratorV2::themes() const {
     return res;
 }
 
+/*!
+    Returns the current theme name.
+*/
 QString QMDecoratorV2::theme() const {
     Q_D(const QMDecoratorV2);
     return d->currentTheme;
 }
 
+/*!
+    Sets the current theme.
+*/
 void QMDecoratorV2::setTheme(const QString &theme) {
     Q_D(QMDecoratorV2);
 
@@ -673,16 +707,26 @@ void QMDecoratorV2::setTheme(const QString &theme) {
     emit themeChanged(theme);
 }
 
+/*!
+    Reloads theme subscribers' states.
+*/
 void QMDecoratorV2::refreshTheme() {
     Q_D(QMDecoratorV2);
     setTheme(d->currentTheme);
 }
 
+/*!
+    Returns the value defined in current theme configuration that is the mapping of the key.
+*/
 QString QMDecoratorV2::themeVariable(const QString &key) const {
     Q_D(const QMDecoratorV2);
     return d->variables.value(d->currentTheme, {}).value(key);
 }
 
+/*!
+    Installs the style sheet corresponding to the id for the widget. The widget's high DPI
+    feature and theme will be automatically updated.
+*/
 void QMDecoratorV2::installTheme(QWidget *w, const QString &id) {
     Q_D(QMDecoratorV2);
 
@@ -700,6 +744,9 @@ void QMDecoratorV2::installTheme(QWidget *w, const QString &id) {
     tg.updateScreen();
 }
 
+/*!
+    \internal
+*/
 QMDecoratorV2::QMDecoratorV2(QMDecoratorV2Private &d, QObject *parent)
     : QMGuiDecoratorV2(d, parent) {
     d.init();

@@ -36,7 +36,7 @@ namespace QMCss {
     }
 
     /*!
-        Parse a list of size values separated by comma.
+        Parses a list of size values separated by comma.
      */
     QList<int> parseSizeValueList(const QString &s) {
         const auto &valueList = parseStringValueList(s);
@@ -61,7 +61,7 @@ namespace QMCss {
     }
 
     /*!
-        Parse a list of size values using floating point precision separated by comma.
+        Parses a list of size values using floating point precision separated by comma.
      */
     QList<double> parseSizeFValueList(const QString &s) {
         const auto &valueList = parseStringValueList(s);
@@ -86,9 +86,9 @@ namespace QMCss {
     }
 
     /*!
-        Parse a list of expressions separated by comma.
+        Parses a list of expressions separated by comma.
 
-        Support sublists, comments, and quotes in expressions.
+        Supports sublists, comments, and quotes in expressions.
      */
     QStringList parseStringValueList(const QString &s) {
         QStringList res;
@@ -151,7 +151,7 @@ namespace QMCss {
     }
 
     /*!
-        Parse boolean value from string, case insensitive.
+        Parses boolean value from string, case insensitive.
 
         The valid string can be \c true or \c false.
      */
@@ -176,7 +176,7 @@ namespace QMCss {
     }
 
     /*!
-        Parse color value from string in CSS format.
+        Parses color value from string in CSS format.
      */
     QColor parseColor(const QString &s) {
         if (s.isEmpty()) {
@@ -217,7 +217,7 @@ namespace QMCss {
 
     /*!
         Returns the index of equal sign if the string is an assign expression matching
-       <tt>key=value</tt>
+        <tt>key=value</tt>
 
         The key must consist of letters, numbers, <tt>_</tt> or <tt>-</tt>
      */
@@ -302,7 +302,7 @@ namespace QMCss {
     }
 
     /*!
-        Returns values parsed from the expression string which is in the following format.
+        Returns the values parsed from the expression string which is in the following format.
 
         Format: <tt>up=A, over=B, down=C, disabled=D, up2=E, over2=F, down2=G, disabled2=H</tt>.
     */
@@ -387,7 +387,7 @@ Q_GLOBAL_STATIC(MetaTypeHash1, m_types1); // Index: id   -> name
 Q_GLOBAL_STATIC(MetaTypeHash2, m_types2); // Index: name -> id
 
 /*!
-    Register an id-name pair to the global map, returns true if the operation succeeds.
+    Registers an id-name pair to the global map, returns true if the operation succeeds.
 
     The \c id and \c name is cannot be the same as any of the previously registered types.
 */
@@ -400,8 +400,8 @@ bool QMCssType::registerMetaTypeName(int id, const QByteArray &name) {
 }
 
 /*!
-    Unregister an id-name pair to the global map, searched by id, returns true if the operation
-   succeeds.
+    Unregisters an id-name pair to the global map, searched by id, returns true if the operation
+    succeeds.
 */
 bool QMCssType::unregisterMetaTypeName(int id) {
     auto it = m_types1->find(id);
@@ -412,8 +412,8 @@ bool QMCssType::unregisterMetaTypeName(int id) {
 }
 
 /*!
-    Unregister an id-name pair to the global map, searched by name, returns true if the operation
-   succeeds.
+    Unregisters an id-name pair to the global map, searched by name, returns true if the operation
+    succeeds.
 */
 bool QMCssType::unregisterMetaTypeName(const QByteArray &name) {
     auto it = m_types2->find(name);
@@ -451,7 +451,7 @@ static const char *colorFuncNames[] = {
 };
 
 /*!
-    Parse variant from string, support QtMediate style variants.
+    Parses variant from string, support QtMediate style variants.
 
     The given string can be the following form.
     \li Number string

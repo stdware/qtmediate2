@@ -1,5 +1,5 @@
-#ifndef CHORUSKIT_QCSSVALUEMAP_H
-#define CHORUSKIT_QCSSVALUEMAP_H
+#ifndef QCSSVALUEMAP_H
+#define QCSSVALUEMAP_H
 
 #include <QMap>
 #include <QVariant>
@@ -45,4 +45,4 @@ inline const QVariantMap &QCssValueMap::get() const {
     return m_map;
 }
 
-#endif // CHORUSKIT_QCSSVALUEMAP_H
+#endif // QCSSVALUEMAP_H

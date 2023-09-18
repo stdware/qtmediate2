@@ -1,5 +1,5 @@
-#ifndef CHORUSKIT_CTOOLBAR_H
-#define CHORUSKIT_CTOOLBAR_H
+#ifndef CTOOLBAR_H
+#define CTOOLBAR_H
 
 #include <QToolBar>
 
@@ -15,4 +15,4 @@ protected:
     void actionEvent(QActionEvent *event) override;
 };
 
-#endif // CHORUSKIT_CTOOLBAR_H
+#endif // CTOOLBAR_H

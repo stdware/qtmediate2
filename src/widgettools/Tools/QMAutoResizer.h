@@ -3,9 +3,9 @@
 
 #include <QWidget>
 
-#include "QMWidgetsGlobal.h"
+#include <QMWidgetTools/QMWidgetToolsGlobal.h>
 
-class QMWIDGETS_EXPORT QMAutoResizer : public QObject {
+class QMWTOOLS_EXPORT QMAutoResizer : public QObject {
     Q_OBJECT
 public:
     enum SizeOption {

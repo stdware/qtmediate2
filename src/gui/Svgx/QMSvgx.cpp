@@ -156,7 +156,7 @@ namespace QMSvgx {
     }
 
     /*!
-        Update an SVGX QIcon internal current state.
+        Updates an SVGX QIcon internal current state.
      */
     bool setCurrentState(QIcon *icon, QM::ButtonState state) {
         auto engine = get_engine(*icon);
@@ -171,7 +171,7 @@ namespace QMSvgx {
     }
 
     /*!
-        Get an SVGX QIcon internal current state.
+        Gets an SVGX QIcon internal current state.
      */
     QM::ButtonState getCurrentState(QIcon *icon) {
         auto engine = get_engine(*icon);
@@ -187,7 +187,7 @@ namespace QMSvgx {
     }
 
     /*!
-        Update an SVGX QIcon internal color in a given state.
+        Updates an SVGX QIcon internal color in a given state.
      */
     void setColor(QIcon *icon, const QString &color) {
         auto engine = get_engine(*icon);
@@ -201,7 +201,7 @@ namespace QMSvgx {
     }
 
     /*!
-        Get an SVGX QIcon internal color in a given state.
+        Gets an SVGX QIcon internal color in a given state.
      */
     QString queryColor(QIcon *icon, QM::ButtonState state) {
         auto engine = get_engine(*icon);

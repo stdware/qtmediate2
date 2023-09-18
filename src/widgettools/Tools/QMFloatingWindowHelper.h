@@ -1,10 +1,10 @@
-#ifndef CHORUSKIT_QMFLOATINGWINDOWHELPER_H
-#define CHORUSKIT_QMFLOATINGWINDOWHELPER_H
+#ifndef QMFLOATINGWINDOWHELPER_H
+#define QMFLOATINGWINDOWHELPER_H
 
 #include <QMargins>
 #include <QObject>
 
-#include "QMWidgetToolsGlobal.h"
+#include <QMWidgetTools/QMWidgetToolsGlobal.h>
 
 class QMFloatingWindowHelperPrivate;
 
@@ -32,4 +32,4 @@ private:
     QMFloatingWindowHelperPrivate *d;
 };
 
-#endif // CHORUSKIT_QMFLOATINGWINDOWHELPER_H
+#endif // QMFLOATINGWINDOWHELPER_H

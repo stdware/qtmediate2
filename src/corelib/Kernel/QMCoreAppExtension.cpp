@@ -293,7 +293,9 @@ void QMCoreAppExtensionPrivate::osMessageBox_helper(void *winHandle,
 
 /*!
     \class QMCoreAppExtension
-    \brief The QMCoreAppExtension class is the global resources manager for \c qtmediate framework.
+    
+    The QMCoreAppExtension class is the global resources manager for \c QtMediate framework in
+    a console application.
 */
 
 /*!
@@ -338,7 +340,7 @@ QMCoreAppExtension *QMCoreAppExtension::instance() {
 */
 
 /*!
-    Show system message box if supported.
+    Shows system message box if supported.
 */
 void QMCoreAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const QString &title,
                                      const QString &text) const {
@@ -510,7 +512,7 @@ bool QMCoreAppExtension::createDataAndTempDirs() const {
 }
 
 /*!
-    Returns the \c qtmediate configuration file that will be read.
+    Returns the \c QtMediate configuration file that will be read.
 */
 QString QMCoreAppExtension::configurationPath(QSettings::Scope scope) {
     return QT_CONFIG_FILE_DIR + "/" +
@@ -518,8 +520,8 @@ QString QMCoreAppExtension::configurationPath(QSettings::Scope scope) {
 }
 
 /*!
-    Returns the \c qtmediate configuration file directory, it's the same as where <tt>qt.conf</tt>
-   locates.
+    Returns the \c QtMediate configuration file directory, it's the same as where <tt>qt.conf</tt>
+    locates.
 
     \li On Mac, the default path is <tt>\%AppPath\%/../Resources</tt>
     \li On Windows/Linux, the default path is <tt>\%AppPath\%</tt>

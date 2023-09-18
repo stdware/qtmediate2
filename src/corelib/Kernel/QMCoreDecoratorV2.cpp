@@ -91,9 +91,9 @@ void QMCoreDecoratorV2Private::_q_localeSubscriberDestroyed() {
 
 /*!
     \class QMCoreDecoratorV2
-    \brief The QMCoreDecoratorV2 class provides a translation registry and a notification system.
-
-    Usually created when QMCoreAppExtension initializes, so you should not manually create it.
+    
+    The QMCoreDecoratorV2 class provides a translation registry and a language notification system.
+    It is usually created when QMCoreAppExtension initializes, so you should not manually create it.
 */
 
 /*

@@ -12,7 +12,7 @@
 namespace QMGraphs {
 
     /*!
-       Create a pixmap whose resolution and pixel ratio is suitable for rendering to screen.
+       Creates a pixmap whose resolution and pixel ratio is suitable for rendering to screen.
 
        \param logicalPixelSize Desired size of pixmap, in OS logical pixels
        \param window Pointer to QWindow whose DPR is taken. If it's nullptr, use qApp's DPR instead
@@ -36,7 +36,7 @@ namespace QMGraphs {
     }
 
     /*!
-        Draw border shadow refering to the given \c margin and \c size parameters.
+        Draws border shadow refering to the given \c margin and \c size parameters.
     */
     void drawBorderShadow(QPainter &painter, const QMargins &margin, const QSize &size,
                           const QColor &color) {
@@ -118,7 +118,7 @@ namespace QMGraphs {
     }
 
     /*!
-        Draw border lines refering to the given \c margin and \c size parameters.
+        Draws border lines refering to the given \c margin and \c size parameters.
     */
     void drawBorderLines(QPainter &painter, const QMargins &margin, const QSize &size,
                          const QPen &pen) {
