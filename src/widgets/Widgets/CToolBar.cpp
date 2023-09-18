@@ -16,7 +16,8 @@
 #include <private/qtoolbarlayout_p.h>
 #include <private/qwidgetaction_p.h>
 
-QToolBarItem::QToolBarItem(QWidget *widget) : QWidgetItem(widget), action(nullptr), customWidget(false) {
+QToolBarItem::QToolBarItem(QWidget *widget)
+    : QWidgetItem(widget), action(nullptr), customWidget(false) {
 }
 
 bool QToolBarItem::isEmpty() const {
@@ -84,7 +85,8 @@ QToolBarItem *HackToolBarLayout::createItem(QAction *action) {
         QObject::connect(tb, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)), button,
                          SLOT(setToolButtonStyle(Qt::ToolButtonStyle)));
         button->setDefaultAction(action);
-        QObject::connect(button, SIGNAL(triggered(QAction *)), tb, SIGNAL(actionTriggered(QAction *)));
+        QObject::connect(button, SIGNAL(triggered(QAction *)), tb,
+                         SIGNAL(actionTriggered(QAction *)));
         widget = button;
         standardButtonWidget = true;
 
@@ -111,12 +113,21 @@ public:
     }
 };
 
-CToolBar::CToolBar(const QString &title, QWidget *parent) : QToolBar(title, parent) {
-}
+/*!
+    \class CToolBar
+    \brief CToolBar is derived from QToolBar where the default action button is created as
+    CToolButton.
+*/
 
+/*!
+    Constructor.
+*/
 CToolBar::CToolBar(QWidget *parent) : QToolBar(parent) {
 }
 
+/*!
+    Destructor.
+*/
 CToolBar::~CToolBar() {
 }
 

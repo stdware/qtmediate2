@@ -3,7 +3,7 @@
 
 #include <QTreeWidget>
 
-#include "QMWidgetsGlobal.h"
+#include <QMWidgets/QMWidgetsGlobal.h>
 
 class QMWIDGETS_EXPORT CTreeWidget : public QTreeWidget {
     Q_OBJECT

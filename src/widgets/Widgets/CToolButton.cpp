@@ -6,54 +6,88 @@
 #include <QStyleOptionButton>
 #include <QStylePainter>
 
-#include "QMCss.h"
+#include <QMGui/QMCss.h>
+#include <QMGui/QMSvgx.h>
+#include <QMGui/QMGraphs.h>
+#include <QMGui/QMRasterPaintAccessor.h>
+
 #include "QMView.h"
 
-#include "private/IconColorImpl.h"
+/*!
+    \class CToolButton
+    \brief CToolButton complements the QtMediate features on the basis of QToolButton.
+*/
 
+/*!
+    Constructor.
+*/
 CToolButton::CToolButton(QWidget *parent) : QToolButton(parent) {
 }
 
+/*!
+    Constructs with the specified text.
+*/
 CToolButton::CToolButton(const QString &text, QWidget *parent) : QToolButton(parent) {
     setText(text);
 }
 
-CToolButton::CToolButton(const QIcon &icon, const QString &text, QWidget *parent) : QToolButton(parent) {
+/*!
+    Constructs with the specified icon and text.
+*/
+CToolButton::CToolButton(const QIcon &icon, const QString &text, QWidget *parent)
+    : QToolButton(parent) {
     setIcon(icon);
     setText(text);
 }
 
+/*!
+    Destructor.
+*/
 CToolButton::~CToolButton() {
 }
 
 void CToolButton::paintEvent(QPaintEvent *event) {
     QStylePainter p(this);
     QStyleOptionToolButton option;
-    initStyleOption(&option);
-
-    // Correct icon color
-    IconColorImpl::correctIconStateAndColor(option.icon, IconColorImpl::getButtonClickState(this),
-                                            IconColorImpl::defaultSalt(this), [this]() {
-                                                return QMCss::ColorToCssString(currentTextColor()); //
-                                            });
-
+    initStyleOptionEx(&option);
     p.drawComplexControl(QStyle::CC_ToolButton, option);
 }
 
-QColor CToolButton::currentTextColor(const QSize &hint) const {
-    auto size = hint.isEmpty() ? minimumSizeHint() : hint;
+/*!
+    Complement \c option after the initializagtion of QToolButton::initStyleOption.
+*/
+void CToolButton::initStyleOptionEx(QStyleOptionToolButton *opt) {
+    auto &option = *opt;
+    initStyleOption(&option);
 
-    QStyleOptionToolButton option2;
-    initStyleOption(&option2);
-    option2.rect.setSize(size);
-    option2.text = QChar(0x25A0);
-    option2.icon = {};
-    option2.iconSize = {};
+    // Try to correct icon color
+    QMSvgx::Icon svgx(&option.icon);
+    if (svgx.isValid()) {
+        QIcon icon = option.icon;
+        QM::ButtonState state = QMView::buttonState(this);
+        svgx.setCurrentState(state);
+        if (svgx.color(state) == "auto") {
+            QString text = option.text;
+            QSize iconSize = option.iconSize;
 
-    QPen pen;
-    IconColorImpl::getTextColor(pen, size, [&](QPainter *painter) {
-        style()->drawComplexControl(QStyle::CC_ToolButton, &option2, painter, this); //
-    });
+            // Change options
+            option.icon = {};
+            option.iconSize = {};
+            option.text = QChar(0x25A0);
 
-    return pen.color();
+            // Query for text color
+            QMRasterPaintAccessor acc(QImage(option.rect.size(), QImage::Format_ARGB32));
+            QPen pen = acc.queryPen(
+                [this, &option](QPainter *painter) {
+                    style()->drawComplexControl(QStyle::CC_ToolButton, &option, painter, this); //
+                },
+                QMPaintAccessor::PI_Text);
+            svgx.setColorHint(QMCss::colorName(pen.color()));
+
+            // Restore options
+            option.icon = icon;
+            option.iconSize = iconSize;
+            option.text = text;
+        }
+    }
 }

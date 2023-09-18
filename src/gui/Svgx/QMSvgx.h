@@ -10,19 +10,31 @@
 
 namespace QMSvgx {
 
-    QMGUI_EXPORT QIcon create(const QHash<QM::ButtonState, QString> &fileMap,
-                              const QHash<QM::ButtonState, QString> &colorMap);
+    class QMGUI_EXPORT Icon {
+    public:
+        Icon();
+        explicit Icon(QIcon *icon);
+        ~Icon();
 
-    QMGUI_EXPORT QIcon create(const QString &file, const QString &checkedFile,
-                              const QString &color = "auto");
+    public:
+        bool isValid() const;
 
-    QMGUI_EXPORT bool setCurrentState(QIcon *icon, QM::ButtonState state);
+        QM::ButtonState currentState() const;
+        void setCurrentState(QM::ButtonState state);
 
-    QMGUI_EXPORT QM::ButtonState getCurrentState(QIcon *icon);
+        QString color(QM::ButtonState state) const;
+        void setColorHint(const QString &color);
 
-    QMGUI_EXPORT void setColor(QIcon *icon, const QString &color);
+    public:
+        static QIcon create(const QHash<QM::ButtonState, QString> &fileMap,
+                            const QHash<QM::ButtonState, QString> &colorMap);
 
-    QMGUI_EXPORT QString queryColor(QIcon *icon, QM::ButtonState state);
+        static QIcon create(const QString &file, const QString &checkedFile,
+                            const QString &color = "auto");
+
+    private:
+        QIconEngine *m_engine;
+    };
 
 }
 

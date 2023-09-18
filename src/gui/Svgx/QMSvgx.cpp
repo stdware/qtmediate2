@@ -115,12 +115,81 @@ namespace QMSvgx {
         return engine;
     }
 
+    Icon::Icon() : m_engine(nullptr) {
+    }
+
+    Icon::Icon(QIcon *icon) : m_engine(icon ? get_engine(*icon) : nullptr) {
+    }
+
+    Icon::~Icon() {
+    }
+
+    bool Icon::isValid() const {
+        return m_engine != nullptr;
+    }
+
+    /*!
+        Gets the icon's internal state.
+     */
+    QM::ButtonState Icon::currentState() const {
+        if (!m_engine)
+            return {};
+
+        QM::ButtonState res;
+        void *a[] = {
+            &res,
+        };
+        m_engine->virtual_hook(QMPrivate::GetState, a);
+        return res;
+    }
+
+    /*!
+        Updates the icon's internal state.
+     */
+    void Icon::setCurrentState(QM::ButtonState state) {
+        if (!m_engine)
+            return;
+
+        void *a[] = {
+            &state,
+        };
+        m_engine->virtual_hook(QMPrivate::SetState, a);
+    }
+
+    /*!
+        Gets the icon's internal color of a given state.
+     */
+    QString Icon::color(QM::ButtonState state) const {
+        if (!m_engine)
+            return {};
+
+        QString res;
+        void *a[] = {
+            &state,
+            &res,
+        };
+        m_engine->virtual_hook(QMPrivate::GetColor, a);
+        return res;
+    }
+
+    /*!
+        Updates the icon's internal color of its current state.
+     */
+    void Icon::setColorHint(const QString &color) {
+        if (!m_engine)
+            return;
+
+        void *a[] = {
+            const_cast<QString *>(&color),
+        };
+        m_engine->virtual_hook(QMPrivate::SetColor, a);
+    }
 
     /*!
         Creates a QIcon with multiple images and colors in different button states.
      */
-    QIcon create(const QHash<QM::ButtonState, QString> &fileMap,
-                 const QHash<QM::ButtonState, QString> &colorMap) {
+    QIcon Icon::create(const QHash<QM::ButtonState, QString> &fileMap,
+                       const QHash<QM::ButtonState, QString> &colorMap) {
         QIcon icon(".svgx");
         auto engine = get_engine(icon);
         if (!engine)
@@ -137,7 +206,7 @@ namespace QMSvgx {
     /*!
         Creates a QIcon with images in normal and normal-checked states and a color.
      */
-    QIcon create(const QString &file, const QString &checkedFile, const QString &color) {
+    QIcon Icon::create(const QString &file, const QString &checkedFile, const QString &color) {
         if (checkedFile.isEmpty()) {
             return create(
                 {
@@ -155,66 +224,4 @@ namespace QMSvgx {
             {{QM::ButtonNormal, color}});
     }
 
-    /*!
-        Updates an SVGX QIcon internal current state.
-     */
-    bool setCurrentState(QIcon *icon, QM::ButtonState state) {
-        auto engine = get_engine(*icon);
-        if (!engine)
-            return false;
-
-        void *a[] = {
-            &state,
-        };
-        engine->virtual_hook(QMPrivate::SetState, a);
-        return true;
-    }
-
-    /*!
-        Gets an SVGX QIcon internal current state.
-     */
-    QM::ButtonState getCurrentState(QIcon *icon) {
-        auto engine = get_engine(*icon);
-        if (!engine)
-            return {};
-
-        QM::ButtonState res;
-        void *a[] = {
-            &res,
-        };
-        engine->virtual_hook(QMPrivate::GetState, a);
-        return res;
-    }
-
-    /*!
-        Updates an SVGX QIcon internal color in a given state.
-     */
-    void setColor(QIcon *icon, const QString &color) {
-        auto engine = get_engine(*icon);
-        if (!engine)
-            return;
-
-        void *a[] = {
-            const_cast<QString *>(&color),
-        };
-        engine->virtual_hook(QMPrivate::SetColor, a);
-    }
-
-    /*!
-        Gets an SVGX QIcon internal color in a given state.
-     */
-    QString queryColor(QIcon *icon, QM::ButtonState state) {
-        auto engine = get_engine(*icon);
-        if (!engine)
-            return {};
-
-        QString res;
-        void *a[] = {
-            &state,
-            &res,
-        };
-        engine->virtual_hook(QMPrivate::GetColor, a);
-        return res;
-    }
-    
 }

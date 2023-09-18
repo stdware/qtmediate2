@@ -3,11 +3,10 @@
 
 #include <QToolBar>
 
-#include "QMWidgetsGlobal.h"
+#include <QMWidgets/QMWidgetsGlobal.h>
 
 class QMWIDGETS_EXPORT CToolBar : public QToolBar {
 public:
-    explicit CToolBar(const QString &title, QWidget *parent = nullptr);
     explicit CToolBar(QWidget *parent = nullptr);
     ~CToolBar();
 

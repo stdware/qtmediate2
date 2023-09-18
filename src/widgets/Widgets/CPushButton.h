@@ -3,10 +3,13 @@
 
 #include <QPushButton>
 
-#include "QMWidgetsGlobal.h"
+#include <QMWidgets/QMWidgetsGlobal.h>
+
+class CPushButtonPrivate;
 
 class QMWIDGETS_EXPORT CPushButton : public QPushButton {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(CPushButton)
 public:
     explicit CPushButton(QWidget *parent = nullptr);
     explicit CPushButton(const QString &text, QWidget *parent = nullptr);
@@ -16,7 +19,12 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
 
-    QColor currentTextColor(const QSize &hint = {}) const;
+    virtual void initStyleOptionEx(QStyleOptionButton *opt);
+
+protected:
+    CPushButton(CPushButtonPrivate &d, QWidget *parent = nullptr);
+
+    QScopedPointer<CPushButtonPrivate> d_ptr;
 };
 
 #endif // CPUSHBUTTON_H

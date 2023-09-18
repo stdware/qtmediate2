@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QToolButton>
 
-#include "QMWidgetsGlobal.h"
+#include <QMWidgets/QMWidgetsGlobal.h>
 
 class QMWIDGETS_EXPORT CToolButton : public QToolButton {
     Q_OBJECT
@@ -17,7 +17,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
 
-    QColor currentTextColor(const QSize &hint = {}) const;
+    virtual void initStyleOptionEx(QStyleOptionToolButton *opt);
 };
 
 #endif // CTOOLBUTTON_H

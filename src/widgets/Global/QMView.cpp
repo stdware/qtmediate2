@@ -208,4 +208,33 @@ namespace QMView {
         }
     }
 
+    /*!
+        Returns the current state of a button.
+    */
+    QM::ButtonState buttonState(QAbstractButton *button) {
+        if (button->isChecked()) {
+            if (!button->isEnabled()) {
+                return QM::ButtonDisabledChecked;
+            }
+            if (button->isDown()) {
+                return QM::ButtonPressedChecked;
+            }
+            if (button->underMouse()) {
+                return QM::ButtonHoverChecked;
+            }
+            return QM::ButtonNormalChecked;
+        }
+
+        if (!button->isEnabled()) {
+            return QM::ButtonDisabled;
+        }
+        if (button->isDown()) {
+            return QM::ButtonPressed;
+        }
+        if (button->underMouse()) {
+            return QM::ButtonHover;
+        }
+        return QM::ButtonNormal;
+    }
+
 }

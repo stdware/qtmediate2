@@ -34,13 +34,13 @@ namespace QMLinq {
     /*!
         \fn bool Any(const Array<T> &list, Validator validator)
 
-        \brief Returns true if any of the element matches the predicate, otherwise returns false.
+        \brief Returns \c true if any of the element matches the predicate, otherwise returns false.
     */
 
     /*!
         \fn bool All(const Array<T> &list, Validator validator)
 
-        \brief Returns true if all of the elements match the predicate, otherwise returns false.
+        \brief Returns \c true if all of the elements match the predicate, otherwise returns false.
     */
 
     /*!

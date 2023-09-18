@@ -1,4 +1,5 @@
 #include "CPushButton.h"
+#include "CPushButton_p.h"
 
 #include <QDateTime>
 #include <QDebug>
@@ -7,51 +8,103 @@
 #include <QStyleOptionButton>
 #include <QStylePainter>
 
-#include "QMCss.h"
+#include <QMGui/QMCss.h>
+#include <QMGui/QMSvgx.h>
+#include <QMGui/QMRasterPaintAccessor.h>
+
 #include "QMView.h"
 
-#include "private/IconColorImpl.h"
+CPushButtonPrivate::CPushButtonPrivate() {
+}
 
+CPushButtonPrivate::~CPushButtonPrivate() {
+}
+
+void CPushButtonPrivate::init() {
+}
+
+/*!
+    \class CPushButton
+    \brief CPushButton complements the QtMediate features on the basis of QPushButton.
+*/
+
+/*!
+    Constructor.
+*/
 CPushButton::CPushButton(QWidget *parent) : QPushButton(parent) {
 }
 
+/*!
+    Constructs with the specified text.
+*/
 CPushButton::CPushButton(const QString &text, QWidget *parent) : QPushButton(text, parent) {
 }
 
-CPushButton::CPushButton(const QIcon &icon, const QString &text, QWidget *parent) : QPushButton(icon, text, parent) {
+/*!
+    Constructs with the specified icon and text.
+*/
+CPushButton::CPushButton(const QIcon &icon, const QString &text, QWidget *parent)
+    : QPushButton(icon, text, parent) {
 }
 
+/*!
+    Destructor.
+*/
 CPushButton::~CPushButton() {
 }
 
 void CPushButton::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event)
+
     QStylePainter p(this);
     QStyleOptionButton option;
-    initStyleOption(&option);
-
-    // Correct icon color
-    IconColorImpl::correctIconStateAndColor(option.icon, IconColorImpl::getButtonClickState(this),
-                                            IconColorImpl::defaultSalt(this), [this]() {
-                                                return QMCss::ColorToCssString(currentTextColor()); //
-                                            });
-
+    initStyleOptionEx(&option);
     p.drawControl(QStyle::CE_PushButton, option);
 }
 
-QColor CPushButton::currentTextColor(const QSize &hint) const {
-    auto size = hint.isEmpty() ? minimumSizeHint() : hint;
+/*!
+    Complement \c option after the initializagtion of CPushButton::initStyleOption.
+*/
+void CPushButton::initStyleOptionEx(QStyleOptionButton *opt) {
+    auto &option = *opt;
+    initStyleOption(&option);
 
-    QStyleOptionButton option2;
-    initStyleOption(&option2);
-    option2.rect.setSize(size);
-    option2.text = QChar(0x25A0);
-    option2.icon = {};
-    option2.iconSize = {};
+    // Try to correct icon color
+    QMSvgx::Icon svgx(&option.icon);
+    if (svgx.isValid()) {
+        QIcon icon = option.icon;
+        QM::ButtonState state = QMView::buttonState(this);
+        svgx.setCurrentState(state);
+        if (svgx.color(state) == "auto") {
+            QString text = option.text;
+            QSize iconSize = option.iconSize;
 
-    QPen pen;
-    IconColorImpl::getTextColor(pen, size, [&](QPainter *painter) {
-        style()->drawControl(QStyle::CE_PushButton, &option2, painter, this); //
-    });
+            // Change options
+            option.icon = {};
+            option.iconSize = {};
+            option.text = QChar(0x25A0);
 
-    return pen.color();
+            // Query for text color
+            QMRasterPaintAccessor acc(QImage(option.rect.size(), QImage::Format_ARGB32));
+            QPen pen = acc.queryPen(
+                [this, &option](QPainter *painter) {
+                    style()->drawControl(QStyle::CE_PushButton, &option, painter, this); //
+                },
+                QMPaintAccessor::PI_Text);
+            svgx.setColorHint(QMCss::colorName(pen.color()));
+
+            // Restore options
+            option.icon = icon;
+            option.iconSize = iconSize;
+            option.text = text;
+        }
+    }
+}
+
+/*!
+    \internal
+*/
+CPushButton::CPushButton(CPushButtonPrivate &d, QWidget *parent) : QPushButton(parent), d_ptr(&d) {
+    d.q_ptr = this;
+    d.init();
 }

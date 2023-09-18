@@ -4,7 +4,9 @@
 #include <QPen>
 #include <QPixmap>
 #include <QKeyEvent>
+#include <QAbstractButton>
 
+#include <QMCore/QMNamespace.h>
 #include <QMWidgets/QMWidgetsGlobal.h>
 
 namespace QMView {
@@ -18,6 +20,8 @@ namespace QMView {
     QMWIDGETS_EXPORT void fixWindowPos(QWidget *window);
 
     QMWIDGETS_EXPORT void forwardShortcut(QKeyEvent *event, QWidget *window);
+
+    QMWIDGETS_EXPORT QM::ButtonState buttonState(QAbstractButton *button);
 
 }
 

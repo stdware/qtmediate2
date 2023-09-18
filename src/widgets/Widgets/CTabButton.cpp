@@ -1,50 +1,87 @@
 #include "CTabButton.h"
+#include "CTabButton_p.h"
 
 #include <QDateTime>
 #include <QDebug>
 #include <QStyleOptionButton>
 #include <QStylePainter>
 
-#include "QMCss.h"
+#include <QMGui/QMCss.h>
+#include <QMGui/QMSvgx.h>
+#include <QMGui/QMGraphs.h>
+#include <QMGui/QMRasterPaintAccessor.h>
+
 #include "QMView.h"
 
-#include "private/IconColorImpl.h"
-
-CTabButton::CTabButton(QWidget *parent) : CPushButton(parent) {
-    init();
+CTabButtonPrivate::CTabButtonPrivate() {
+    spaceRatio = 0;
 }
 
-CTabButton::CTabButton(const QString &text, QWidget *parent) : CPushButton(text, parent) {
-    init();
+CTabButtonPrivate::~CTabButtonPrivate() {
 }
 
-CTabButton::CTabButton(const QIcon &icon, const QString &text, QWidget *parent) : CPushButton(icon, text, parent) {
-    init();
+void CTabButtonPrivate::init() {
 }
 
+/*!
+    \class CTabButton
+    \brief Push button with configurable spacing between icon and text.
+*/
+
+/*!
+    Constructor.
+*/
+CTabButton::CTabButton(QWidget *parent) : CTabButton(*new CTabButtonPrivate(), parent) {
+}
+
+/*!
+    Constructs with the specified text.
+*/
+CTabButton::CTabButton(const QString &text, QWidget *parent) : CPushButton(parent) {
+    setText(text);
+}
+
+/*!
+    Constructs with the specified icon and text.
+*/
+CTabButton::CTabButton(const QIcon &icon, const QString &text, QWidget *parent)
+    : CPushButton(parent) {
+    setIcon(icon);
+    setText(text);
+}
+
+/*!
+    Destructor.
+*/
 CTabButton::~CTabButton() {
 }
 
-void CTabButton::init() {
-    m_spaceRatio = 0;
-}
-
+/*!
+    Returns the ratio of the spacing to the icon width.
+*/
 double CTabButton::spaceRatio() const {
-    return m_spaceRatio;
+    Q_D(const CTabButton);
+    return d->spaceRatio;
 }
 
+/*!
+    Sets the ratio of the spacing to the icon width.
+*/
 void CTabButton::setSpaceRatio(double ratio) {
-    m_spaceRatio = ratio;
+    Q_D(CTabButton);
+    d->spaceRatio = ratio;
     emit spaceChanged();
 }
 
 QSize CTabButton::sizeHint() const {
+    Q_D(const CTabButton);
+
     QSize sz = QPushButton::sizeHint();
     QSize iconSz = iconSize();
     if (icon().isNull()) {
         iconSz = QSize(0, 0);
     }
-    int offset = iconSz.width() * m_spaceRatio;
+    int offset = iconSz.width() * d->spaceRatio;
     return {sz.width() + offset, sz.height()};
 }
 
@@ -52,32 +89,27 @@ QSize CTabButton::minimumSizeHint() const {
     return sizeHint();
 }
 
-void CTabButton::paintEvent(QPaintEvent *event) {
-    Q_UNUSED(event)
+void CTabButton::initStyleOptionEx(QStyleOptionButton *opt) {
+    CPushButton::initStyleOptionEx(opt);
 
-    QStylePainter p(this);
-    QStyleOptionButton option;
-    initStyleOption(&option);
+    Q_D(CTabButton);
+    auto &option = *opt;
 
-    // Correct icon color
-    IconColorImpl::correctIconStateAndColor(option.icon, IconColorImpl::getButtonClickState(this),
-                                            IconColorImpl::defaultSalt(this), [this]() {
-                                                return QMCss::ColorToCssString(currentTextColor()); //
-                                            });
+    QSize size = iconSize();
+    QPixmap originalPixmap = option.icon.pixmap(size); // Get the pixmap to apply with right size
 
-    QSize sz = iconSize();
-    QPixmap tmp = option.icon.pixmap(sz); // Get the pixmap to apply with right size
+    size.rwidth() *= 1 + d->spaceRatio;                // Multiply width
 
-    sz.rwidth() *= 1 + m_spaceRatio;      // Multiply width
+    QPixmap expendedPixmap = QMGraphs::createPixmap(size, window()->windowHandle()); // Expended
+    expendedPixmap.fill(Qt::transparent);
 
-    QPixmap exp = QMView::createDeviceRenderPixmap(window()->windowHandle(), sz); // Expended
-    exp.fill(Qt::transparent);
+    QPainter painter(&expendedPixmap);
+    painter.drawPixmap(QRect(QPoint(), iconSize()), originalPixmap);
 
-    QPainter painter(&exp);
-    painter.drawPixmap(QRect(QPoint(), iconSize()), tmp);
+    option.icon = QIcon(expendedPixmap);                            // Change to real icon
+    option.iconSize = originalPixmap.isNull() ? QSize(0, 0) : size; // Change to real size
+}
 
-    option.icon = QIcon(exp);                          // Change to real icon
-    option.iconSize = tmp.isNull() ? QSize(0, 0) : sz; // Change to real size
-
-    p.drawControl(QStyle::CE_PushButton, option);      // From Qt source
+CTabButton::CTabButton(CTabButtonPrivate &d, QWidget *parent) : CPushButton(d, parent) {
+    d.init();
 }

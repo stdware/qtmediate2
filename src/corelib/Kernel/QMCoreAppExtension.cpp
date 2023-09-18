@@ -363,7 +363,7 @@ void QMCoreAppExtension::showMessage(QObject *parent, MessageBoxFlag flag, const
 }
 
 /*!
-    Returns true if QCoreApplication::aboutToQuit() has emitted, otherwise returns false.
+    Returns \c true if QCoreApplication::aboutToQuit() has emitted, otherwise returns false.
 */
 bool QMCoreAppExtension::isAboutToQuit() const {
     Q_D(const QMCoreAppExtension);

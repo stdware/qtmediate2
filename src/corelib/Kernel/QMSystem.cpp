@@ -41,25 +41,25 @@ namespace QMFs {
     /*!
         \fn bool isPathExist(const QString &path)
 
-        Returns true if the given path is absolute and exists.
+        Returns \c true if the given path is absolute and exists.
     */
 
     /*!
         \fn bool isFileExist(const QString &path)
 
-        Returns true if the given path is absolute and is a file.
+        Returns \c true if the given path is absolute and is a file.
     */
 
     /*!
         \fn bool isDirExist(const QString &path)
 
-        Returns true if the given path is absolute and is a directory.
+        Returns \c true if the given path is absolute and is a directory.
     */
 
     /*!
         \fn bool isSamePath(const QString &path)
 
-        Returns true if the canonical form of two given paths are identical.
+        Returns \c true if the canonical form of two given paths are identical.
     */
 
     /*!
@@ -284,7 +284,7 @@ namespace QMOs {
     */
 
     /*!
-        Returns true if running with Administrator/Root privilege.
+        Returns \c true if running with Administrator/Root privilege.
     */
     bool isUserRoot() {
 #ifdef Q_OS_WINDOWS

@@ -3,9 +3,11 @@
 /*!
     \class CGraphicsScene
 
-    This class is extended from QGraphicsScene, provides view port event and enter leave event.
+    CGraphicsScene is extended from QGraphicsScene, provides view port event and enter leave event
+    handlers.
+
     You're supposed to set CGraphicsScene instances as the scenes of CGraphicsView so that
-    these events can be handled.
+    these events can be dispatched.
 */
 CGraphicsScene::CGraphicsScene(QObject *parent) : QGraphicsScene(parent) {
 }

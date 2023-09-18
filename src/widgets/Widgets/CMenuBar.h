@@ -3,12 +3,7 @@
 
 #include <QMenuBar>
 
-#include "QMWidgetsGlobal.h"
-
-class QToolButton;
-
-// Since the QMenu class doesn't inherit font from QApplication
-// This class is designed to change default menu bar's extension menu font
+#include <QMWidgets/QMWidgetsGlobal.h>
 
 class CMenuBarPrivate;
 

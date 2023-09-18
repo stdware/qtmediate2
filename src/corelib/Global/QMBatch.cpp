@@ -99,7 +99,7 @@ namespace QMBatch {
     }
 
     /*!
-        Returns true if a string can be converted to a number, otherwise returns false.
+        Returns \c true if a string can be converted to a number, otherwise returns false.
 
         \param considerDot If set, the dot will be considered as a number char
         \param considerNeg If set, the minus sign will be considered as a number char
@@ -124,7 +124,7 @@ namespace QMBatch {
     /*!
         \fn bool strPrefixedWith(const QString &A, const QString &B)
 
-        Returns true if \c A is strictly prefied with \c B .
+        Returns \c true if \c A is strictly prefied with \c B .
     */
 
     /*!
