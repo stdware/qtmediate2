@@ -1,20 +1,23 @@
-#ifndef CNAVFRAME_H
-#define CNAVFRAME_H
+#ifndef QMNAVWIDGET_H
+#define QMNAVWIDGET_H
 
 #include <QAbstractButton>
 #include <QFrame>
 #include <QSplitter>
 
-#include "QMWidgetToolsGlobal.h"
+#include <QMWidgetTools/QMWidgetToolsGlobal.h>
 
-class CNavFramePrivate;
+class QMNavWidgetPrivate;
 
-class QMWTOOLS_EXPORT CNavFrame : public QFrame {
+class QMWTOOLS_EXPORT QMNavWidget : public QFrame {
     Q_OBJECT
 public:
-    explicit CNavFrame(QWidget *parent = nullptr);
-    ~CNavFrame();
+    explicit QMNavWidget(QWidget *parent = nullptr);
+    ~QMNavWidget();
 
+    QSplitter *splitter() const;
+
+public:
     QWidget *topWidget() const;
     void setTopWidget(QWidget *w);
     QWidget *takeTopWidget();
@@ -23,12 +26,6 @@ public:
     void setBottomWidget(QWidget *w);
     QWidget *takeBottomWidget();
 
-    QSplitter *splitter() const;
-
-    /**
-     * @brief Button which will control the widget visibility, set text or icon after call
-     *
-     */
     QAbstractButton *addWidget(QWidget *w);
     QAbstractButton *insertWidget(int index, QWidget *w);
     void removeWidget(QWidget *w);
@@ -43,14 +40,17 @@ public:
     void setCurrentIndex(int index);
     void setCurrentWidget(QWidget *w);
 
-protected:
-    QScopedPointer<CNavFramePrivate> d_ptr;
+signals:
+    void currentIndexChanged(int index);
 
-    friend class CNavFramePrivate;
+protected:
+    QScopedPointer<QMNavWidgetPrivate> d_ptr;
+
+    friend class QMNavWidgetPrivate;
 
 private:
     void _q_currentChanged(int index);
     void _q_buttonClicked(int id);
 };
 
-#endif // CNAVFRAME_H
+#endif // QMNAVWIDGET_H

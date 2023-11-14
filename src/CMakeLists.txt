@@ -1,10 +1,3 @@
-
-if(NOT DEFINED QTMEDIATE_CMAKE_MODULES_DIR)
-    message(FATAL_ERROR "QTMEDIATE_CMAKE_MODULES_DIR not defined!")
-endif()
-
-include("${QTMEDIATE_CMAKE_MODULES_DIR}/QtMediateAPI.cmake")
-
 set(QTMEDIATE_PROJECT_DESCRIPTION "Qt Intermediate Extension Framework")
 set(QTMEDIATE_PROJECT_COPYRIGHT "Copyright 2019-2023 SineStriker")
 set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
@@ -75,7 +68,7 @@ function(qtmediate_add_library _target)
     endif()
 
     # Generate a standard include directory in build directory
-    qtmediate_gen_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target}" CLEAN ${_gen_include_options})
+    qtmediate_sync_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target}" CLEAN ${_gen_include_options})
     target_include_directories(${PROJECT_NAME} PUBLIC
         "$<BUILD_INTERFACE:${QTMEDIATE_GENERATED_INCLUDE_DIR}>"
     )
@@ -156,7 +149,7 @@ if(QTMEDIATE_BUILD_DOCUMENTATIONS)
 
     qtmediate_setup_doxygen(qtmediate_RunDoxygen
         NAME "Qt Mediate"
-        DESCRIPTION "${RC_DESCRIPTION}"
+        DESCRIPTION "${QTMEDIATE_PROJECT_DESCRIPTION}"
         MDFILE ../README.md
         OUTPUT_DIR ${CMAKE_BUILD_SHARE_DIR}/doc/${QTMEDIATE_INSTALL_NAME}
         INPUT corelib gui widgets widgettools
@@ -203,11 +196,5 @@ if(QTMEDIATE_INSTALL)
         FILE "${QTMEDIATE_INSTALL_NAME}Targets.cmake"
         NAMESPACE qtmediate::
         DESTINATION ${_install_dir}
-    )
-
-    # Install cmake modules
-    install(DIRECTORY ${QTMEDIATE_MODULES_DIR}/
-        DESTINATION ${_install_dir}/cmake
-        PATTERN "__pycache__" EXCLUDE
     )
 endif()

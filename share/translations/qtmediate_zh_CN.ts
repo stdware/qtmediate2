@@ -20,29 +20,6 @@
     </message>
 </context>
 <context>
-    <name>CDockCard</name>
-    <message>
-        <location filename="../../src/widgettools/Widgets/CDockCard.cpp" line="64"/>
-        <source>View Mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/widgettools/Widgets/CDockCard.cpp" line="66"/>
-        <source>Dock pinned</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/widgettools/Widgets/CDockCard.cpp" line="67"/>
-        <source>Float</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/widgettools/Widgets/CDockCard.cpp" line="68"/>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>CWorkflowPagePrivate</name>
     <message>
         <location filename="../../src/widgettools/Dialogs/CWorkflowPage.cpp" line="61"/>
@@ -78,27 +55,27 @@
 <context>
     <name>QMSystem</name>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="301"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="306"/>
         <source>Explorer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="303"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="308"/>
         <source>Finder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="305"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="310"/>
         <source>File Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="314"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="319"/>
         <source>Administrator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="316"/>
+        <location filename="../../src/corelib/Kernel/QMSystem.cpp" line="321"/>
         <source>Root User</source>
         <translation type="unfinished"></translation>
     </message>

@@ -1,23 +1,23 @@
-#ifndef QSCROLLABLETABWIDGET_H
-#define QSCROLLABLETABWIDGET_H
+#ifndef QMSCROLLABLETABWIDGET_H
+#define QMSCROLLABLETABWIDGET_H
 
 #include <QAbstractButton>
 #include <QFrame>
 #include <QMimeData>
 
-#include "QScrollableTabBar.h"
+#include <QMWidgetTools/QMScrollableTabBar.h>
 
-class QScrollableTabWidgetPrivate;
+class QMScrollableTabWidgetPrivate;
 
-class QMWTOOLS_EXPORT QScrollableTabWidget : public QFrame {
+class QMWTOOLS_EXPORT QMScrollableTabWidget : public QFrame {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QScrollableTabWidget)
+    Q_DECLARE_PRIVATE(QMScrollableTabWidget)
 public:
-    explicit QScrollableTabWidget(QWidget *parent = nullptr);
-    ~QScrollableTabWidget();
+    explicit QMScrollableTabWidget(QWidget *parent = nullptr);
+    ~QMScrollableTabWidget();
 
 public:
-    QScrollableTabBar *tabBar() const;
+    QMScrollableTabBar *tabBar() const;
 
     int addTab(QWidget *widget, const QString &label);
     int addTab(QWidget *widget, const QIcon &icon, const QString &label);
@@ -67,15 +67,15 @@ protected:
     virtual void tabSelected(int index, int orgIndex);
     virtual bool tabIncoming(const QMimeData *mime) const;
 
-    void setTabBar(QScrollableTabBar *tabBar);
+    void setTabBar(QMScrollableTabBar *tabBar);
 
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 
 protected:
-    QScrollableTabWidget(QScrollableTabWidgetPrivate &d, QWidget *parent = nullptr);
+    QMScrollableTabWidget(QMScrollableTabWidgetPrivate &d, QWidget *parent = nullptr);
 
-    QScopedPointer<QScrollableTabWidgetPrivate> d_ptr;
+    QScopedPointer<QMScrollableTabWidgetPrivate> d_ptr;
 
 public:
     QAbstractButton *closeButton(int index) const;
@@ -89,8 +89,6 @@ private:
     void _q_showTab(int index, int orgIndex);
     void _q_removeTab(int index);
     void _q_tabMoved(int from, int to);
-
-signals:
 };
 
-#endif // QSCROLLABLETABWIDGET_H
+#endif // QMSCROLLABLETABWIDGET_H

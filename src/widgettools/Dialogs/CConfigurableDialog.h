@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "QMWidgetToolsGlobal.h"
+#include <QMWidgetTools/QMWidgetToolsGlobal.h>
 
 class CConfigurableDialogPrivate;
 

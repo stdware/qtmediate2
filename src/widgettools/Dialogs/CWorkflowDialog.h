@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "CWorkflowPage.h"
+#include <QMWidgetTools/CWorkflowPage.h>
 
 class CWorkflowDialogPrivate;
 

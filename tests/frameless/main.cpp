@@ -1,8 +1,8 @@
 #include <QApplication>
 #include <QDebug>
 
-#include <QMCustomWindow.h>
-#include <QMAppExtension.h>
+#include <QMWidgetTools/QMCustomWindow.h>
+#include <QMWidgets/QMAppExtension.h>
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);

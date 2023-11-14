@@ -1,5 +1,5 @@
-#ifndef QSCROLLABLETABWIDGETPRIVATE_H
-#define QSCROLLABLETABWIDGETPRIVATE_H
+#ifndef QMSCROLLABLETABWIDGET_P_H
+#define QMSCROLLABLETABWIDGET_P_H
 
 //
 //  W A R N I N G !!!
@@ -15,27 +15,27 @@
 #include <QVBoxLayout>
 #include <QtGlobal>
 
-#include "QScrollableTabBar.h"
+#include <QMWidgetTools/QMScrollableTabWidget.h>
 
-class QScrollableTabWidget;
+class QMScrollableTabWidget;
 
-class QScrollableTabWidgetPrivate {
-    Q_DECLARE_PUBLIC(QScrollableTabWidget)
+class QMScrollableTabWidgetPrivate {
+    Q_DECLARE_PUBLIC(QMScrollableTabWidget)
 public:
-    QScrollableTabWidgetPrivate();
-    virtual ~QScrollableTabWidgetPrivate();
+    QMScrollableTabWidgetPrivate();
+    virtual ~QMScrollableTabWidgetPrivate();
 
     void init();
 
-    QScrollableTabWidget *q_ptr;
+    QMScrollableTabWidget *q_ptr;
 
     QHBoxLayout *barLayout;
     QWidget *tabBarWidget;
 
     QVBoxLayout *mainLayout;
 
-    QScrollableTabBar *tabBar;
+    QMScrollableTabBar *tabBar;
     QStackedWidget *stack;
 };
 
-#endif // QSCROLLABLETABWIDGETPRIVATE_H
+#endif // QMSCROLLABLETABWIDGET_P_H

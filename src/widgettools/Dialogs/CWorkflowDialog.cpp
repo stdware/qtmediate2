@@ -3,13 +3,14 @@
 
 #include <QResizeEvent>
 
-#include <QMView.h>
+#include <QMGui/QMGraphs.h>
 
 static int AnimationDuration = 250;
 
 class QMWorkflowDialogContainer : public QWidget {
 public:
-    explicit QMWorkflowDialogContainer(CWorkflowDialogPrivate *d, QWidget *parent = nullptr) : QWidget(parent), d(d) {
+    explicit QMWorkflowDialogContainer(CWorkflowDialogPrivate *d, QWidget *parent = nullptr)
+        : QWidget(parent), d(d) {
     }
 
     ~QMWorkflowDialogContainer() {
@@ -82,12 +83,12 @@ void CWorkflowDialogPrivate::init() {
 
     buttonsLayout = new QMEqualBoxLayout(QBoxLayout::LeftToRight);
     buttonsLayout->setAlignment(Qt::AlignRight);
-    buttonsLayout->addWidgetE(prevButton);
-    buttonsLayout->addWidgetE(nextButton);
-    buttonsLayout->addWidgetE(finishButton);
-    buttonsLayout->addWidgetE(okButton);
-    buttonsLayout->addWidgetE(cancelButton);
-    buttonsLayout->addWidgetE(helpButton);
+    buttonsLayout->addWidget2(prevButton);
+    buttonsLayout->addWidget2(nextButton);
+    buttonsLayout->addWidget2(finishButton);
+    buttonsLayout->addWidget2(okButton);
+    buttonsLayout->addWidget2(cancelButton);
+    buttonsLayout->addWidget2(helpButton);
 
     mainLayout = new QVBoxLayout();
     mainLayout->addWidget(container);
@@ -113,7 +114,7 @@ void CWorkflowDialogPrivate::prepareTransition() {
         return;
     }
 
-    auto pixmap = QMView::createDeviceRenderPixmap(q->window()->windowHandle(), widget->size());
+    auto pixmap = QMGraphs::createPixmap(widget->size(), q->window()->windowHandle());
     pixmap.fill(Qt::transparent);
     widget->render(&pixmap);
 
@@ -186,7 +187,8 @@ bool CWorkflowDialogPrivate::eventFilter(QObject *obj, QEvent *event) {
                 m_label->hide();
 
                 if (widget) {
-                    widget->setGeometry(QRect(QPoint(), static_cast<QResizeEvent *>(event)->size()));
+                    widget->setGeometry(
+                        QRect(QPoint(), static_cast<QResizeEvent *>(event)->size()));
                 }
                 break;
             }
@@ -290,7 +292,8 @@ void CWorkflowDialogPrivate::_q_buttonsChanged(CWorkflowPage::Buttons buttons) {
     }
 }
 
-void CWorkflowDialogPrivate::_q_buttonTextChanged(CWorkflowPage::Button which, const QString &text) {
+void CWorkflowDialogPrivate::_q_buttonTextChanged(CWorkflowPage::Button which,
+                                                  const QString &text) {
     buttons[which]->setText(text);
 }
 
@@ -298,7 +301,8 @@ void CWorkflowDialogPrivate::_q_buttonEnabledChanged(CWorkflowPage::Button which
     buttons[which]->setEnabled(enabled);
 }
 
-CWorkflowDialog::CWorkflowDialog(QWidget *parent) : CWorkflowDialog(*new CWorkflowDialogPrivate(), parent) {
+CWorkflowDialog::CWorkflowDialog(QWidget *parent)
+    : CWorkflowDialog(*new CWorkflowDialogPrivate(), parent) {
 }
 
 CWorkflowDialog::~CWorkflowDialog() {
@@ -316,9 +320,12 @@ CWorkflowPage *CWorkflowDialog::takePage() {
         d->m_animation->stop();
         d->m_animation2->stop();
 
-        disconnect(org, &CWorkflowPage::buttonsChanged, d, &CWorkflowDialogPrivate::_q_buttonsChanged);
-        disconnect(org, &CWorkflowPage::buttonTextChanged, d, &CWorkflowDialogPrivate::_q_buttonTextChanged);
-        disconnect(org, &CWorkflowPage::buttonEnabledChanged, d, &CWorkflowDialogPrivate::_q_buttonEnabledChanged);
+        disconnect(org, &CWorkflowPage::buttonsChanged, d,
+                   &CWorkflowDialogPrivate::_q_buttonsChanged);
+        disconnect(org, &CWorkflowPage::buttonTextChanged, d,
+                   &CWorkflowDialogPrivate::_q_buttonTextChanged);
+        disconnect(org, &CWorkflowPage::buttonEnabledChanged, d,
+                   &CWorkflowDialogPrivate::_q_buttonEnabledChanged);
 
         org->setParent(nullptr);
 
@@ -352,7 +359,8 @@ void CWorkflowDialog::setPage(CWorkflowPage *w) {
 
     connect(w, &CWorkflowPage::buttonsChanged, d, &CWorkflowDialogPrivate::_q_buttonsChanged);
     connect(w, &CWorkflowPage::buttonTextChanged, d, &CWorkflowDialogPrivate::_q_buttonTextChanged);
-    connect(w, &CWorkflowPage::buttonEnabledChanged, d, &CWorkflowDialogPrivate::_q_buttonEnabledChanged);
+    connect(w, &CWorkflowPage::buttonEnabledChanged, d,
+            &CWorkflowDialogPrivate::_q_buttonEnabledChanged);
 }
 
 bool CWorkflowDialog::prev() {
@@ -367,7 +375,8 @@ bool CWorkflowDialog::finish() {
     return true;
 }
 
-CWorkflowDialog::CWorkflowDialog(CWorkflowDialogPrivate &d, QWidget *parent) : QDialog(parent), d_ptr(&d) {
+CWorkflowDialog::CWorkflowDialog(CWorkflowDialogPrivate &d, QWidget *parent)
+    : QDialog(parent), d_ptr(&d) {
     d.q_ptr = this;
 
     d.init();

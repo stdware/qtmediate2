@@ -1,5 +1,5 @@
-#ifndef QSCROLLABLETABBAR_H
-#define QSCROLLABLETABBAR_H
+#ifndef QMSCROLLABLETABBAR_H
+#define QMSCROLLABLETABBAR_H
 
 #include <QAbstractButton>
 #include <QFrame>
@@ -8,21 +8,21 @@
 #include <QTabBar>
 #include <QVariant>
 
-#include "QMWidgetToolsGlobal.h"
+#include <QMWidgetTools/QMWidgetToolsGlobal.h>
 
-class QScrollableTabWidget;
-class QScrollableTabBarPrivate;
+class QMScrollableTabWidget;
+class QMScrollableTabBarPrivate;
 
-class QMWTOOLS_EXPORT QScrollableTabBar : public QFrame {
+class QMWTOOLS_EXPORT QMScrollableTabBar : public QFrame {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QScrollableTabBar)
+    Q_DECLARE_PRIVATE(QMScrollableTabBar)
 
     Q_PROPERTY(double scrollOpacity READ scrollOpacity WRITE setScrollOpacity NOTIFY styleChanged)
 public:
-    explicit QScrollableTabBar(QWidget *parent = nullptr);
-    ~QScrollableTabBar();
+    explicit QMScrollableTabBar(QWidget *parent = nullptr);
+    ~QMScrollableTabBar();
 
-    friend class QScrollableTabWidget;
+    friend class QMScrollableTabWidget;
 
 public:
     int addTab(const QString &text);
@@ -81,14 +81,9 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 
 protected:
-    QScrollableTabBar(QScrollableTabBarPrivate &d, QWidget *parent = nullptr);
+    QMScrollableTabBar(QMScrollableTabBarPrivate &d, QWidget *parent = nullptr);
 
-    QScopedPointer<QScrollableTabBarPrivate> d_ptr;
-
-private:
-    void _q_scrollBarValueChanged(int value);
-    void _q_scrollBarRangeChanged(int min, int max);
-    void _q_closeTab();
+    QScopedPointer<QMScrollableTabBarPrivate> d_ptr;
 
 public:
     double scrollOpacity() const;
@@ -100,13 +95,18 @@ public:
     QScrollBar *scrollBar() const;
 
     int currentDraggedIndex();
-    static QScrollableTabBar *currentDraggedTabBar();
+    static QMScrollableTabBar *currentDraggedTabBar();
 
     QAbstractButton *closeButton(int index) const;
     void setCloseButton(int index, QAbstractButton *button);
 
 signals:
     void styleChanged();
+
+private:
+    void _q_scrollBarValueChanged(int value);
+    void _q_scrollBarRangeChanged(int min, int max);
+    void _q_closeTab();
 };
 
-#endif // QSCROLLABLETABBAR_H
+#endif // QMSCROLLABLETABBAR_H

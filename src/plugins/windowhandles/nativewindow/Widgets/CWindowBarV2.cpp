@@ -6,9 +6,7 @@
 #include <QRandomGenerator>
 #include <QStyle>
 
-#include "QMDecoratorV2.h"
-
-#include "SystemButton.h"
+#include <QMWidgets/QMDecoratorV2.h>
 
 class TitleLabel : public QLabel {
 public:
@@ -38,15 +36,15 @@ CWindowBarV2::CWindowBarV2(QMenuBar *menuBar, QWidget *parent) : ANativeTitleBar
     m_iconButton->setObjectName("icon-button");
     m_iconButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    m_minButton = new SystemButton();
+    m_minButton = new CToolButton();
     m_minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_minButton->setObjectName("min-button");
 
-    m_maxButton = new SystemButton();
+    m_maxButton = new CToolButton();
     m_maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_maxButton->setObjectName("max-button");
 
-    m_closeButton = new SystemButton();
+    m_closeButton = new CToolButton();
     m_closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_closeButton->setObjectName("win-close-button");
 

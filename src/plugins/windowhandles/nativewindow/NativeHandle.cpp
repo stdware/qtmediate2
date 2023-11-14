@@ -4,9 +4,9 @@
 
 #include <FramelessWidgetsHelper>
 
-#include "Widgets/CWindowBarV2.h"
+#include <QMWidgets/CMenuBar.h>
 
-#include <CMenuBar.h>
+#include "Widgets/CWindowBarV2.h"
 
 NativeHandle::NativeHandle(QMainWindow *parent) : QMWindowHandle(parent) {
     titleBar = nullptr;

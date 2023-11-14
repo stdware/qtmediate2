@@ -6,26 +6,59 @@
 
 /*!
     \class QMAutoResizer
-    
+
     A QWidget which isn't in a layout is not able to update its geometry. But a widget in a scroll
     area is usually independent, this resizer is used to force the widget to adjust its size when
     a layout request event comes.
 */
 
 /*!
-    Constructs with the given parent widget.
+    \enum QMAutoResizer::SizeOption
+    \brief
+
+    \val QMAutoResizer::SizeHint
+    \brief
+
+    \val QMAutoResizer::MinimumSizeHint
+    \brief
+*/
+
+/*!
+    \enum QMAutoResizer::Width
+    \brief
+
+    \val QMAutoResizer::Height
+    \brief
+
+    \val QMAutoResizer::WidthAndHeight
+    \brief
+*/
+
+/*!
+    Constructor.
 */
 QMAutoResizer::QMAutoResizer(QWidget *parent) : QMAutoResizer(SizeHint, parent) {
 }
 
-QMAutoResizer::QMAutoResizer(QMAutoResizer::SizeOption so, QWidget *parent) : QMAutoResizer(so, false, parent) {
+/*!
+    Constructs with the given size option.
+*/
+QMAutoResizer::QMAutoResizer(QMAutoResizer::SizeOption so, QWidget *parent)
+    : QMAutoResizer(so, false, parent) {
 }
 
+/*!
+    Constructs with the given size option and fixed option.
+*/
 QMAutoResizer::QMAutoResizer(QMAutoResizer::SizeOption so, bool fixed, QWidget *parent)
     : QMAutoResizer(so, fixed, WidthAndHeight, parent) {
 }
 
-QMAutoResizer::QMAutoResizer(QMAutoResizer::SizeOption so, bool fixed, QMAutoResizer::MeasureOption mo, QWidget *parent)
+/*!
+    Constructs with the given size option, fixed option and measure option.
+*/
+QMAutoResizer::QMAutoResizer(QMAutoResizer::SizeOption so, bool fixed,
+                             QMAutoResizer::MeasureOption mo, QWidget *parent)
     : QObject(parent), w(parent), so(so), fix(fixed), mo(mo) {
     w->installEventFilter(this);
 }
@@ -46,7 +79,8 @@ bool QMAutoResizer::eventFilter(QObject *obj, QEvent *event) {
                         fix ? w->setFixedWidth(size.width()) : w->resize(size.width(), w->height());
                         break;
                     case Height:
-                        fix ? w->setFixedHeight(size.height()) : w->resize(w->width(), size.height());
+                        fix ? w->setFixedHeight(size.height())
+                            : w->resize(w->width(), size.height());
                         break;
                     default:
                         fix ? w->setFixedSize(size) : w->resize(size);
@@ -61,3 +95,19 @@ bool QMAutoResizer::eventFilter(QObject *obj, QEvent *event) {
     }
     return QObject::eventFilter(obj, event);
 }
+
+/*!
+    \fn QWidget *QMAutoResizer::widget() const
+*/
+
+/*!
+    \fn QMAutoResizer::SizeOption QMAutoResizer::sizeOption() const
+*/
+
+/*!
+    \fn bool QMAutoResizer::fixed() const
+*/
+
+/*!
+    \fn QMAutoResizer::MeasureOption QMAutoResizer::measureOption() const
+*/

@@ -17,7 +17,7 @@
 
 #include <QMap>
 
-#include "CWorkflowPage.h"
+#include <QMWidgetTools/CWorkflowPage.h>
 
 class CWorkflowPagePrivate : public QObject {
     Q_OBJECT

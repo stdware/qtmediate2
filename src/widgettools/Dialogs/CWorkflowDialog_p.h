@@ -10,13 +10,13 @@
 // version without notice, or may even be removed.
 //
 
-#include "CWorkflowDialog.h"
 
 #include <QLabel>
 #include <QPropertyAnimation>
 
-#include "CTabButton.h"
-#include "QMEqualBoxLayout.h"
+#include <QMWidgetTools/CWorkflowDialog.h>
+#include <QMWidgets/CTabButton.h>
+#include <QMWidgets/QMEqualBoxLayout.h>
 
 class QMWorkflowDialogContainer;
 

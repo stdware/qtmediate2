@@ -15,19 +15,19 @@ option(QTMEDIATE_INSTALL "Install library" ON)
 # CMake Settings
 # ----------------------------------
 if(NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out-Libraries/bin)
 endif()
 
 if(NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out-Libraries/lib)
 endif()
 
 if(NOT DEFINED CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out-Libraries/lib)
 endif()
 
 if(NOT DEFINED CMAKE_BUILD_SHARE_DIR)
-    set(CMAKE_BUILD_SHARE_DIR ${CMAKE_BINARY_DIR}/share)
+    set(CMAKE_BUILD_SHARE_DIR ${CMAKE_BINARY_DIR}/out-Libraries/share)
 endif()
 
 if(MSVC)
@@ -57,6 +57,8 @@ set(QTMEDIATE_TRANSLATIONS zh_CN zh_HK ja_JP)
 # ----------------------------------
 # Main Project
 # ----------------------------------
+find_package(qtmediateCM REQUIRED)
+
 add_subdirectory(src)
 
 add_subdirectory(share)

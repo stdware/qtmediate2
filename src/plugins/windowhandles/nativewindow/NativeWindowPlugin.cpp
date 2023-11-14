@@ -1,7 +1,7 @@
 #include "NativeWindowPlugin.h"
 #include "NativeHandle.h"
 
-#include <framelessconfig_p.h>
+#include <FramelessHelper/Core/private/framelessconfig_p.h>
 
 NativeWindowPlugin::NativeWindowPlugin(QObject *parent) : QMWindowHandlePlugin(parent) {
     using namespace wangwenx190::FramelessHelper;

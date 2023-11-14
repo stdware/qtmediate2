@@ -4,7 +4,7 @@
 #include <QFrame>
 #include <QSplitter>
 
-#include "QMWidgetToolsGlobal.h"
+#include <QMWidgetTools/QMWidgetToolsGlobal.h>
 
 class CWorkflowPagePrivate;
 

@@ -1,18 +1,18 @@
-#include "CCheckBox.h"
+#include "QMNewCheckBox.h"
 
 #include <QMouseEvent>
 
-#include "CToolButton.h"
+#include <QMWidgets/CToolButton.h>
 
-class CCheckBoxPrivate {
+class QMNewCheckBoxPrivate {
 public:
-    CCheckBox *q;
+    QMNewCheckBox *q;
 
     CToolButton *m_box;
     QLabel *m_label;
     QHBoxLayout *m_layout;
 
-    explicit CCheckBoxPrivate(CCheckBox *q) : q(q) {
+    explicit QMNewCheckBoxPrivate(QMNewCheckBox *q) : q(q) {
         q->setAttribute(Qt::WA_StyledBackground);
 
         m_box = new CToolButton();
@@ -35,36 +35,36 @@ public:
         q->setLayout(m_layout);
         q->setCheckable(true);
 
-        QObject::connect(m_box, &CToolButton::toggled, q, &CCheckBox::setChecked);
+        QObject::connect(m_box, &CToolButton::toggled, q, &QMNewCheckBox::setChecked);
     }
 };
 
 /*!
-    \class CCheckBox
-    \brief CCheckBox is a combination of a label and a tool button and appears like a check box.
+    \class QMNewCheckBox
+    \brief QMNewCheckBox is a combination of a label and a tool button and appears like a check box.
 */
 
 /*!
     Constructs with no text.
 */
-CCheckBox::CCheckBox(QWidget *parent) : QAbstractButton(parent), d(new CCheckBoxPrivate(this)) {
+QMNewCheckBox::QMNewCheckBox(QWidget *parent) : QAbstractButton(parent), d(new QMNewCheckBoxPrivate(this)) {
 }
 
 /*!
     Constructs with the given text.
 */
-CCheckBox::CCheckBox(const QString &text, QWidget *parent) : CCheckBox(parent) {
+QMNewCheckBox::QMNewCheckBox(const QString &text, QWidget *parent) : QMNewCheckBox(parent) {
     setText(text);
 }
 
 /*!
     Destructor.
 */
-CCheckBox::~CCheckBox() {
+QMNewCheckBox::~QMNewCheckBox() {
     delete d;
 }
 
-void CCheckBox::paintEvent(QPaintEvent *event) {
+void QMNewCheckBox::paintEvent(QPaintEvent *event) {
     bool checkable = this->isCheckable();
     bool checked = this->isChecked();
     QString text = this->text();

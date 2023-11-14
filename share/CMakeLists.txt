@@ -1,50 +1,30 @@
 if(QTMEDIATE_BUILD_TRANSLATIONS)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS LinguistTools REQUIRED)
     find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools REQUIRED)
-    
+
+    add_custom_target(qtmediate_lupdate_task)
+    add_custom_target(qtmediate_lrelease_task)
+
+    # qtbase
+    file(GLOB _ts_files translations/qtbase_*.ts)
     set(_qm_dir ${CMAKE_BUILD_SHARE_DIR}/${QTMEDIATE_INSTALL_NAME}/translations)
-
-    # Add qtbase translations
-    set(_qtbase_qm_files)
-    file(GLOB _qtbase_ts_files ${CMAKE_CURRENT_SOURCE_DIR}/translations/qtbase*.ts)
-    set_source_files_properties(${_qtbase_ts_files}
-        PROPERTIES OUTPUT_LOCATION ${_qm_dir}
-    )
-    qt5_add_translation(_qtbase_qm_files ${_qtbase_ts_files})
-
-    # Add qtmediate translations
-    set(_my_ts_files)
-    set(_my_qm_files)
-
-    foreach(_item ${QTMEDIATE_TRANSLATIONS})
-        list(APPEND _my_ts_files ${CMAKE_CURRENT_SOURCE_DIR}/translations/qtmediate_${_item}.ts)
-    endforeach()
-
-    set_source_files_properties(${_my_ts_files}
-        PROPERTIES OUTPUT_LOCATION ${_qm_dir}
+    qtmediate_add_translation(qtbase_translations
+        TS_FILES ${_ts_files}
+        QM_DIR ${_qm_dir}
+        QM_DEPENDS qtmediate_lrelease_task
     )
 
+    # qtmediate
     get_property(_targets GLOBAL PROPERTY QTMEDIATE_TRANSLATE_TARGETS)
-    set(_src)
-
-    foreach(_item ${_targets})
-        get_target_property(_files ${_item} SOURCES)
-        list(FILTER _files INCLUDE REGEX ".+\\.(cpp|cc)")
-        list(FILTER _files EXCLUDE REGEX "(qasc|moc)_.+")
-
-        get_target_property(_dir ${_item} SOURCE_DIR)
-
-        foreach(_file ${_files})
-            get_filename_component(_abs_file ${_file} ABSOLUTE BASE_DIR ${_dir})
-            list(APPEND _src ${_abs_file})
-        endforeach()
-    endforeach()
-
-    qt5_create_translation(_my_qm_files ${_my_ts_files} ${_src})
-
-    # Add targets
-    add_custom_target(qtmediate_lupdate_task DEPENDS ${_my_ts_files})
-    add_custom_target(qtmediate_lrelease_task DEPENDS ${_my_qm_files} ${_qtbase_qm_files})
+    qtmediate_add_translation(qtmediate_translations
+        LOCALES ja_JP zh_CN zh_HK
+        PREFIX qtmediate
+        TARGETS ${_targets}
+        TS_DIR translations
+        QM_DIR ${_qm_dir}
+        TS_DEPENDS qtmediate_lupdate_task
+        QM_DEPENDS qtmediate_lrelease_task
+    )
 
     if(QTMEDIATE_INSTALL)
         install(CODE "

@@ -10,12 +10,11 @@
 // version without notice, or may even be removed.
 //
 
-#include "CConfigurableDialog.h"
-
 #include <QVBoxLayout>
 
-#include <CTabButton.h>
-#include <QMEqualBoxLayout.h>
+#include <QMWidgets/CTabButton.h>
+#include <QMWidgets/QMEqualBoxLayout.h>
+#include <QMWidgetTools/CConfigurableDialog.h>
 
 class CConfigurableDialogPrivate : public QObject {
     Q_OBJECT

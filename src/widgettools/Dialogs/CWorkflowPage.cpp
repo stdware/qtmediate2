@@ -1,7 +1,7 @@
 #include "CWorkflowPage.h"
 #include "CWorkflowPage_p.h"
 
-#include <QMDecoratorV2.h>
+#include <QMWidgets/QMDecoratorV2.h>
 
 CWorkflowPagePrivate::CWorkflowPagePrivate() {
 }

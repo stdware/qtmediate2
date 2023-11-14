@@ -1,15 +1,15 @@
-#include "CNavFrame.h"
+#include "QMNavWidget.h"
 
 #include <QButtonGroup>
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QStackedLayout>
 
-#include "CTabButton.h"
+#include <QMWidgets/CTabButton.h>
 
-class CNavFramePrivate {
+class QMNavWidgetPrivate {
 public:
-    CNavFrame *q_ptr;
+    QMNavWidget *q_ptr;
 
     QHBoxLayout *layout;
     QVBoxLayout *leftLayout;
@@ -28,7 +28,7 @@ public:
     QButtonGroup *btnGroup;
 };
 
-CNavFrame::CNavFrame(QWidget *parent) : QFrame(parent), d_ptr(new CNavFramePrivate()) {
+QMNavWidget::QMNavWidget(QWidget *parent) : QFrame(parent), d_ptr(new QMNavWidgetPrivate()) {
     auto &d = *d_ptr.data();
     d.q_ptr = this;
 
@@ -79,18 +79,22 @@ CNavFrame::CNavFrame(QWidget *parent) : QFrame(parent), d_ptr(new CNavFramePriva
     d.topWidget = nullptr;
     d.bottomWidget = nullptr;
 
-    connect(d.stack, &QStackedLayout::currentChanged, this, &CNavFrame::_q_currentChanged);
-    connect(d.btnGroup, &QButtonGroup::idClicked, this, &CNavFrame::_q_buttonClicked);
+    connect(d.stack, &QStackedLayout::currentChanged, this, &QMNavWidget::_q_currentChanged);
+    connect(d.btnGroup, &QButtonGroup::idClicked, this, &QMNavWidget::_q_buttonClicked);
 }
 
-CNavFrame::~CNavFrame() {
+QMNavWidget::~QMNavWidget() {
 }
 
-QWidget *CNavFrame::topWidget() const {
+QSplitter *QMNavWidget::splitter() const {
+    return d_ptr->splitter;
+}
+
+QWidget *QMNavWidget::topWidget() const {
     return d_ptr->topWidget;
 }
 
-void CNavFrame::setTopWidget(QWidget *w) {
+void QMNavWidget::setTopWidget(QWidget *w) {
     auto &d = *d_ptr.data();
 
     takeTopWidget();
@@ -98,7 +102,7 @@ void CNavFrame::setTopWidget(QWidget *w) {
     d.topWidget = w;
 }
 
-QWidget *CNavFrame::takeTopWidget() {
+QWidget *QMNavWidget::takeTopWidget() {
     auto &d = *d_ptr.data();
     QWidget *w = nullptr;
     if (d.topWidget) {
@@ -109,11 +113,11 @@ QWidget *CNavFrame::takeTopWidget() {
     return w;
 }
 
-QWidget *CNavFrame::bottomWidget() const {
+QWidget *QMNavWidget::bottomWidget() const {
     return d_ptr->bottomWidget;
 }
 
-void CNavFrame::setBottomWidget(QWidget *w) {
+void QMNavWidget::setBottomWidget(QWidget *w) {
     auto &d = *d_ptr.data();
 
     takeBottomWidget();
@@ -121,7 +125,7 @@ void CNavFrame::setBottomWidget(QWidget *w) {
     d.bottomWidget = w;
 }
 
-QWidget *CNavFrame::takeBottomWidget() {
+QWidget *QMNavWidget::takeBottomWidget() {
     auto &d = *d_ptr.data();
     QWidget *w = nullptr;
     if (d.bottomWidget) {
@@ -132,15 +136,11 @@ QWidget *CNavFrame::takeBottomWidget() {
     return w;
 }
 
-QSplitter *CNavFrame::splitter() const {
-    return d_ptr->splitter;
-}
-
-QAbstractButton *CNavFrame::addWidget(QWidget *w) {
+QAbstractButton *QMNavWidget::addWidget(QWidget *w) {
     return insertWidget(count(), w);
 }
 
-QAbstractButton *CNavFrame::insertWidget(int index, QWidget *w) {
+QAbstractButton *QMNavWidget::insertWidget(int index, QWidget *w) {
     index = qMin(index, count());
 
     auto &d = *d_ptr.data();
@@ -157,11 +157,11 @@ QAbstractButton *CNavFrame::insertWidget(int index, QWidget *w) {
     return btn;
 }
 
-void CNavFrame::removeWidget(QWidget *w) {
+void QMNavWidget::removeWidget(QWidget *w) {
     removeAt(d_ptr->stack->indexOf(w));
 }
 
-void CNavFrame::removeAt(int index) {
+void QMNavWidget::removeAt(int index) {
     if (index >= count() || index < 0) {
         return;
     }
@@ -179,39 +179,40 @@ void CNavFrame::removeAt(int index) {
     btn->deleteLater();
 }
 
-QWidget *CNavFrame::widget(int index) {
+QWidget *QMNavWidget::widget(int index) {
     return d_ptr->stack->widget(index);
 }
 
-QWidget *CNavFrame::currentWidget() const {
+QWidget *QMNavWidget::currentWidget() const {
     return d_ptr->stack->currentWidget();
 }
 
-int CNavFrame::currentIndex() const {
+int QMNavWidget::currentIndex() const {
     return d_ptr->stack->currentIndex();
 }
 
-int CNavFrame::count() const {
+int QMNavWidget::count() const {
     return d_ptr->stack->count();
 }
 
-int CNavFrame::indexOf(QWidget *w) const {
+int QMNavWidget::indexOf(QWidget *w) const {
     return d_ptr->stack->indexOf(w);
 }
 
-void CNavFrame::setCurrentIndex(int index) {
+void QMNavWidget::setCurrentIndex(int index) {
     d_ptr->stack->setCurrentIndex(index);
 }
 
-void CNavFrame::setCurrentWidget(QWidget *w) {
+void QMNavWidget::setCurrentWidget(QWidget *w) {
     d_ptr->stack->setCurrentWidget(w);
 }
 
-void CNavFrame::_q_currentChanged(int index) {
+void QMNavWidget::_q_currentChanged(int index) {
     qobject_cast<QAbstractButton *>(d_ptr->buttonLayout->itemAt(index)->widget())->setChecked(true);
+    emit currentIndexChanged(index);
 }
 
-void CNavFrame::_q_buttonClicked(int id) {
+void QMNavWidget::_q_buttonClicked(int id) {
     Q_UNUSED(id);
 
     auto &d = *d_ptr.data();

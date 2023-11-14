@@ -1,7 +1,7 @@
 #include "CConfigurableDialog.h"
 #include "CConfigurableDialog_p.h"
 
-#include <QMDecoratorV2.h>
+#include <QMWidgets/QMDecoratorV2.h>
 
 CConfigurableDialogPrivate::CConfigurableDialogPrivate() {
     widget = nullptr;
@@ -22,9 +22,9 @@ void CConfigurableDialogPrivate::init() {
 
     buttonsLayout = new QMEqualBoxLayout(QBoxLayout::LeftToRight);
     buttonsLayout->setAlignment(Qt::AlignRight);
-    buttonsLayout->addWidgetE(okButton);
-    buttonsLayout->addWidgetE(cancelButton);
-    buttonsLayout->addWidgetE(applyButton);
+    buttonsLayout->addWidget2(okButton);
+    buttonsLayout->addWidget2(cancelButton);
+    buttonsLayout->addWidget2(applyButton);
 
     mainLayout = new QVBoxLayout();
     mainLayout->addLayout(buttonsLayout);
