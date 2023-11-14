@@ -12,6 +12,8 @@
 
 #include "QMSystem.h"
 
+#include "qmconf.h"
+
 #ifdef Q_OS_WINDOWS
 #  include <Windows.h>
 #elif defined(Q_OS_MACOS)

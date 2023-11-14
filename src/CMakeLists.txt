@@ -1,6 +1,14 @@
 set(QTMEDIATE_PROJECT_DESCRIPTION "Qt Intermediate Extension Framework")
 set(QTMEDIATE_PROJECT_COPYRIGHT "Copyright 2019-2023 SineStriker")
 set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
+set(QTMEDIATE_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../etc/include)
+
+# ----------------------------------
+# Configurations
+# ----------------------------------
+qtmediate_add_definition(QTMEDIATE_WIN32_MSGBOX_TOPMOST true)
+
+qtmediate_generate_config(${QTMEDIATE_BUILD_INCLUDE_DIR}/qmconf.h)
 
 # ----------------------------------
 # CMake API
@@ -41,6 +49,9 @@ function(qtmediate_add_library _target)
 
     # Configure target
     qtmediate_configure_target(${_target} ${FUNC_UNPARSED_ARGUMENTS})
+
+    # Add include directories
+    target_include_directories(${_target} PRIVATE ${QTMEDIATE_BUILD_INCLUDE_DIR})
 
     # Library name
     string(LENGTH "${_target}" _stringLength)
