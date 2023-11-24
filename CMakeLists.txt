@@ -57,7 +57,7 @@ set(QTMEDIATE_TRANSLATIONS zh_CN zh_HK ja_JP)
 # ----------------------------------
 # Main Project
 # ----------------------------------
-find_package(qtmediateCM REQUIRED)
+find_package(qmcmake REQUIRED)
 
 add_subdirectory(src)
 

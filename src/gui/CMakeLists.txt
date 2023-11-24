@@ -6,7 +6,7 @@ project(QMGui
 # Configure target
 file(GLOB_RECURSE _src *.h *.hpp *.cpp *.cc)
 
-qtmediate_add_library(${PROJECT_NAME}
+qtmediate_add_library(${PROJECT_NAME} AUTOGEN
     SOURCES ${_src}
     LINKS QMCore
     INCLUDE_PRIVATE Global Kernel Painting Svgx Tools

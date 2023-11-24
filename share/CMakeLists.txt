@@ -1,6 +1,5 @@
 if(QTMEDIATE_BUILD_TRANSLATIONS)
-    find_package(QT NAMES Qt6 Qt5 COMPONENTS LinguistTools REQUIRED)
-    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools REQUIRED)
+    qtmediate_find_qt_libraries(LinguistTools)
 
     add_custom_target(qtmediate_lupdate_task)
     add_custom_target(qtmediate_lrelease_task)

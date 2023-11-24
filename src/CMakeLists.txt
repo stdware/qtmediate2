@@ -14,14 +14,16 @@ qtmediate_generate_config(${QTMEDIATE_BUILD_INCLUDE_DIR}/qmconf.h)
 # CMake API
 # ----------------------------------
 function(qtmediate_add_library _target)
-    set(options)
-    set(oneValueArgs PREFIX)
-    set(multiValueArgs)
+    set(options AUTOGEN NO_SYNC_INCLUDE NO_WIN_RC)
+    set(oneValueArgs SYNC_INCLUDE_PREFIX PREFIX)
+    set(multiValueArgs SYNC_INCLUDE_OPTIONS)
     cmake_parse_arguments(FUNC "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    set(CMAKE_AUTOUIC on)
-    set(CMAKE_AUTOMOC on)
-    set(CMAKE_AUTORCC on)
+    if(FUNC_AUTOGEN)
+        set(CMAKE_AUTOMOC ON)
+        set(CMAKE_AUTOUIC ON)
+        set(CMAKE_AUTORCC ON)
+    endif()
 
     if(QTMEDIATE_BUILD_STATIC)
         set(_type STATIC)
@@ -31,7 +33,7 @@ function(qtmediate_add_library _target)
 
     add_library(${_target} ${_type})
 
-    if(WIN32 AND NOT QTMEDIATE_BUILD_STATIC)
+    if(WIN32 AND NOT FUNC_NO_WIN_RC AND(${_type} STREQUAL "SHARED"))
         qtmediate_add_win_rc(${_target}
             DESCRIPTION ${QTMEDIATE_PROJECT_DESCRIPTION}
             COPYRIGHT ${QTMEDIATE_PROJECT_COPYRIGHT}
@@ -54,12 +56,25 @@ function(qtmediate_add_library _target)
     target_include_directories(${_target} PRIVATE ${QTMEDIATE_BUILD_INCLUDE_DIR})
 
     # Library name
-    string(LENGTH "${_target}" _stringLength)
-    math(EXPR _startIndex "2")
-    math(EXPR _length "${_stringLength} - ${_startIndex}")
-    string(SUBSTRING "${_target}" ${_startIndex} ${_length} _name)
+    if(${_target} MATCHES "^QM.*")
+        string(LENGTH "${_target}" _stringLength)
+        math(EXPR _startIndex "2")
+        math(EXPR _length "${_stringLength} - ${_startIndex}")
+        string(SUBSTRING "${_target}" ${_startIndex} ${_length} _name)
+        set_target_properties(${_target} PROPERTIES EXPORT_NAME ${_name})
+    else()
+        set(_name ${_target})
+    endif()
+
     add_library(qtmediate::${_name} ALIAS ${_target})
-    set_target_properties(${_target} PROPERTIES EXPORT_NAME ${_name})
+
+    if(FUNC_SYNC_INCLUDE_PREFIX)
+        set(_inc_name ${FUNC_SYNC_INCLUDE_PREFIX})
+    else()
+        set(_inc_name ${_target})
+    endif()
+
+    set(_install_options)
 
     if(QTMEDIATE_INSTALL)
         install(TARGETS ${_target}
@@ -73,16 +88,20 @@ function(qtmediate_add_library _target)
             "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}>"
         )
 
-        set(_gen_include_options INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_target}")
-    else()
-        set(_gen_include_options)
+        set(_install_options
+            INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}/${_inc_name}"
+        )
     endif()
 
-    # Generate a standard include directory in build directory
-    qtmediate_sync_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_target}" CLEAN ${_gen_include_options})
-    target_include_directories(${PROJECT_NAME} PUBLIC
-        "$<BUILD_INTERFACE:${QTMEDIATE_GENERATED_INCLUDE_DIR}>"
-    )
+    if(NOT FUNC_NO_SYNC_INCLUDE)
+        # Generate a standard include directory in build directory
+        qtmediate_sync_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_inc_name}" ${_install_options}
+            ${FUNC_SYNC_INCLUDE_OPTIONS}
+        )
+        target_include_directories(${PROJECT_NAME} PUBLIC
+            "$<BUILD_INTERFACE:${QTMEDIATE_GENERATED_INCLUDE_DIR}>"
+        )
+    endif()
 
     # Add to translate targets
     set_property(GLOBAL APPEND PROPERTY QTMEDIATE_TRANSLATE_TARGETS ${_target})
