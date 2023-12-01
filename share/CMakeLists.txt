@@ -1,5 +1,6 @@
 if(QTMEDIATE_BUILD_TRANSLATIONS)
-    qtmediate_find_qt_libraries(LinguistTools)
+    qm_import(Translate)
+    qm_find_qt(LinguistTools)
 
     add_custom_target(qtmediate_lupdate_task)
     add_custom_target(qtmediate_lrelease_task)
@@ -7,7 +8,7 @@ if(QTMEDIATE_BUILD_TRANSLATIONS)
     # qtbase
     file(GLOB _ts_files translations/qtbase_*.ts)
     set(_qm_dir ${CMAKE_BUILD_SHARE_DIR}/${QTMEDIATE_INSTALL_NAME}/translations)
-    qtmediate_add_translation(qtbase_translations
+    qm_add_translation(qtbase_translations
         TS_FILES ${_ts_files}
         QM_DIR ${_qm_dir}
         QM_DEPENDS qtmediate_lrelease_task
@@ -15,7 +16,7 @@ if(QTMEDIATE_BUILD_TRANSLATIONS)
 
     # qtmediate
     get_property(_targets GLOBAL PROPERTY QTMEDIATE_TRANSLATE_TARGETS)
-    qtmediate_add_translation(qtmediate_translations
+    qm_add_translation(qtmediate_translations
         LOCALES ja_JP zh_CN zh_HK
         PREFIX qtmediate
         TARGETS ${_targets}

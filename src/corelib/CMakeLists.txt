@@ -23,5 +23,5 @@ qtmediate_add_library(${PROJECT_NAME} AUTOGEN
     INCLUDE_PRIVATE Collections Global Kernel Serialization Text
     QT_LINKS Core
     QT_INCLUDE_PRIVATE Core
-    SKIP_AUTOMOC_DIRS Collections Serialization Text
+    SKIP_AUTOMOC Collections Serialization Text
 )

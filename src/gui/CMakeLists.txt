@@ -12,5 +12,5 @@ qtmediate_add_library(${PROJECT_NAME} AUTOGEN
     INCLUDE_PRIVATE Global Kernel Painting Svgx Tools
     QT_LINKS Core Gui
     QT_INCLUDE_PRIVATE Core Gui
-    SKIP_AUTOMOC_DIRS Tools
+    SKIP_AUTOMOC Tools
 )

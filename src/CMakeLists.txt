@@ -1,3 +1,5 @@
+qm_import(Preprocess)
+
 set(QTMEDIATE_PROJECT_DESCRIPTION "Qt Intermediate Extension Framework")
 set(QTMEDIATE_PROJECT_COPYRIGHT "Copyright 2019-2023 SineStriker")
 set(QTMEDIATE_GENERATED_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
@@ -6,9 +8,11 @@ set(QTMEDIATE_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../etc/include)
 # ----------------------------------
 # Configurations
 # ----------------------------------
-qtmediate_add_definition(QTMEDIATE_WIN32_MSGBOX_TOPMOST true)
+set(QMSETUP_DEFINITION_SCOPE DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-qtmediate_generate_config(${QTMEDIATE_BUILD_INCLUDE_DIR}/qmconf.h)
+qm_add_definition(QTMEDIATE_WIN32_MSGBOX_TOPMOST true)
+
+qm_generate_config(${QTMEDIATE_BUILD_INCLUDE_DIR}/qmconf.h)
 
 # ----------------------------------
 # CMake API
@@ -34,7 +38,7 @@ function(qtmediate_add_library _target)
     add_library(${_target} ${_type})
 
     if(WIN32 AND NOT FUNC_NO_WIN_RC AND(${_type} STREQUAL "SHARED"))
-        qtmediate_add_win_rc(${_target}
+        qm_add_win_rc(${_target}
             DESCRIPTION ${QTMEDIATE_PROJECT_DESCRIPTION}
             COPYRIGHT ${QTMEDIATE_PROJECT_COPYRIGHT}
         )
@@ -47,26 +51,24 @@ function(qtmediate_add_library _target)
     endif()
 
     # Set global definitions
-    qtmediate_export_defines(${_target} ${_prefix_option})
+    qm_export_defines(${_target} ${_prefix_option})
 
     # Configure target
-    qtmediate_configure_target(${_target} ${FUNC_UNPARSED_ARGUMENTS})
+    qm_configure_target(${_target} ${FUNC_UNPARSED_ARGUMENTS})
 
     # Add include directories
     target_include_directories(${_target} PRIVATE ${QTMEDIATE_BUILD_INCLUDE_DIR})
+    target_include_directories(${_target} PRIVATE .)
 
     # Library name
-    if(${_target} MATCHES "^QM.*")
-        string(LENGTH "${_target}" _stringLength)
-        math(EXPR _startIndex "2")
-        math(EXPR _length "${_stringLength} - ${_startIndex}")
-        string(SUBSTRING "${_target}" ${_startIndex} ${_length} _name)
+    if(${_target} MATCHES "^QM(.+)")
+        set(_name ${CMAKE_MATCH_1})
         set_target_properties(${_target} PROPERTIES EXPORT_NAME ${_name})
     else()
         set(_name ${_target})
     endif()
 
-    add_library(qtmediate::${_name} ALIAS ${_target})
+    add_library(${QTMEDIATE_INSTALL_NAME}::${_name} ALIAS ${_target})
 
     if(FUNC_SYNC_INCLUDE_PREFIX)
         set(_inc_name ${FUNC_SYNC_INCLUDE_PREFIX})
@@ -84,7 +86,7 @@ function(qtmediate_add_library _target)
             ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" OPTIONAL
         )
 
-        target_include_directories(${PROJECT_NAME} PUBLIC
+        target_include_directories(${_target} PUBLIC
             "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QTMEDIATE_INSTALL_NAME}>"
         )
 
@@ -95,10 +97,10 @@ function(qtmediate_add_library _target)
 
     if(NOT FUNC_NO_SYNC_INCLUDE)
         # Generate a standard include directory in build directory
-        qtmediate_sync_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_inc_name}" ${_install_options}
+        qm_sync_include(. "${QTMEDIATE_GENERATED_INCLUDE_DIR}/${_inc_name}" ${_install_options}
             ${FUNC_SYNC_INCLUDE_OPTIONS}
         )
-        target_include_directories(${PROJECT_NAME} PUBLIC
+        target_include_directories(${_target} PUBLIC
             "$<BUILD_INTERFACE:${QTMEDIATE_GENERATED_INCLUDE_DIR}>"
         )
     endif()
@@ -116,14 +118,15 @@ function(qtmediate_add_plugin _target _category)
     add_library(qtmediate::${_target} ALIAS ${_target})
 
     if(WIN32)
-        qtmediate_add_win_rc(${_target}
+        qm_add_win_rc(${_target}
+            NAME ${QTMEDIATE_INSTALL_NAME}
             DESCRIPTION ${QTMEDIATE_PROJECT_DESCRIPTION}
             COPYRIGHT ${QTMEDIATE_PROJECT_COPYRIGHT}
         )
     endif()
 
     # Configure target
-    qtmediate_configure_target(${_target} ${ARGN})
+    qm_configure_target(${_target} ${ARGN})
 
     # Set plugin output
     set(_output_dir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${QTMEDIATE_INSTALL_NAME}/plugins/${_category})
@@ -173,11 +176,13 @@ if(QTMEDIATE_BUILD_DOCUMENTATIONS)
 
     set(_doc_targets QMCore QMGui QMWidgets QMWidgetTools)
 
-    set(QTMEDIATE_DOXYGEN_TAGFILE ${CMAKE_BUILD_SHARE_DIR}/doc/${QTMEDIATE_INSTALL_NAME}/qtmediate_tagfile.xml
+    set(QTMEDIATE_DOXYGEN_TAGFILE
+        ${CMAKE_BUILD_SHARE_DIR}/doc/${QTMEDIATE_INSTALL_NAME}/${QTMEDIATE_INSTALL_NAME}_tagfile.xml
         CACHE FILEPATH "qtmediate doxygen tag file path" FORCE
     )
 
-    qtmediate_setup_doxygen(qtmediate_RunDoxygen
+    qm_import(Doxygen)
+    qm_setup_doxygen(qtmediate_RunDoxygen
         NAME "Qt Mediate"
         DESCRIPTION "${QTMEDIATE_PROJECT_DESCRIPTION}"
         MDFILE ../README.md
@@ -224,7 +229,7 @@ if(QTMEDIATE_INSTALL)
     # Install cmake targets files
     install(EXPORT ${QTMEDIATE_INSTALL_NAME}Targets
         FILE "${QTMEDIATE_INSTALL_NAME}Targets.cmake"
-        NAMESPACE qtmediate::
+        NAMESPACE ${QTMEDIATE_INSTALL_NAME}::
         DESTINATION ${_install_dir}
     )
 endif()

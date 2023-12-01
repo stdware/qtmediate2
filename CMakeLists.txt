@@ -14,22 +14,6 @@ option(QTMEDIATE_INSTALL "Install library" ON)
 # ----------------------------------
 # CMake Settings
 # ----------------------------------
-if(NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out-Libraries/bin)
-endif()
-
-if(NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out-Libraries/lib)
-endif()
-
-if(NOT DEFINED CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out-Libraries/lib)
-endif()
-
-if(NOT DEFINED CMAKE_BUILD_SHARE_DIR)
-    set(CMAKE_BUILD_SHARE_DIR ${CMAKE_BINARY_DIR}/out-Libraries/share)
-endif()
-
 if(MSVC)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /manifest:no")
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /manifest:no")
@@ -55,10 +39,16 @@ set(QTMEDIATE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(QTMEDIATE_TRANSLATIONS zh_CN zh_HK ja_JP)
 
 # ----------------------------------
+# Find basic dependencies
+# ----------------------------------
+find_package(qmsetup REQUIRED)
+
+qm_import(Filesystem)
+qm_init_directories()
+
+# ----------------------------------
 # Main Project
 # ----------------------------------
-find_package(qmcmake REQUIRED)
-
 add_subdirectory(src)
 
 add_subdirectory(share)
